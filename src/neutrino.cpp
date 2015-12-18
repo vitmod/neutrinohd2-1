@@ -3247,6 +3247,10 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 						webtv->showInfo();
 					}
 				}
+				else if(mode == mode_ts)
+				{
+					moviePlayerGui->showMovieInfoBar();
+				}
 				else
 				{
 					bool show_info = ((msg != NeutrinoMessages::SHOW_INFOBAR) || (g_InfoViewer->is_visible || g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] != 0));

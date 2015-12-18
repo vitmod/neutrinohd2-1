@@ -41,6 +41,7 @@ class CPictureViewer
 	private:
 		CFrameBuffer::ScalingMode m_scaling;
 		float m_aspect;
+		
 		std::string m_NextPic_Name;
 		unsigned char* m_NextPic_Buffer;
 		int m_NextPic_X;
@@ -49,6 +50,7 @@ class CPictureViewer
 		int m_NextPic_YPos;
 		int m_NextPic_XPan;
 		int m_NextPic_YPan;
+		
 		std::string m_CurrentPic_Name;
 		unsigned char* m_CurrentPic_Buffer;
 		int m_CurrentPic_X;
@@ -84,8 +86,6 @@ class CPictureViewer
 		void Cleanup();
 		void SetVisible(int startx, int endx, int starty, int endy);
 		static double m_aspect_ratio_correction;
-		
-		bool DisplayImage(const std::string & name, int posx = 0, int posy = 0, int width = CFrameBuffer::getInstance()->getScreenWidth(true), int height = CFrameBuffer::getInstance()->getScreenHeight(true));
 		
 		// for picons
 		bool DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);

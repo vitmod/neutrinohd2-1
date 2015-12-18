@@ -59,7 +59,7 @@
 
 #include <unistd.h>
 
-#include "textbox.h"
+#include <textbox.h>
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
@@ -74,8 +74,6 @@
 #define MIN_WINDOW_WIDTH  	((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
 #define MIN_WINDOW_HEIGHT 	40
 
-#include <gui/pictureviewer.h>
-extern CPictureViewer * g_PicViewer;
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
@@ -438,7 +436,7 @@ void CTextBox::refreshText(void)
 		}
 		
 		// display screenshot
-		g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
+		frameBuffer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
 	}
 	
 	int y = m_cFrameTextRel.iY + TEXT_BORDER_WIDTH;

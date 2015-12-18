@@ -76,10 +76,6 @@
 #include <sys/time.h>
 #include <fstream>
 #include <iostream>
-//#include <sstream>
-
-#include <gui/pictureviewer.h>
-#include <audio_cs.h>
 
 #include <system/debug.h>
 
@@ -89,12 +85,8 @@
 #include <curl/easy.h>
 
 
-extern CPictureViewer * g_PicViewer;
 extern int current_muted;
 extern CWebTV * webtv;
-
-#include <video_cs.h>
-extern cVideo * videoDecoder;
 
 #define AUDIOPLAYERGUI_SMSKEY_TIMEOUT 1000
 #define SHOW_FILE_LOAD_LIMIT 50
@@ -1873,7 +1865,7 @@ void CAudioPlayerGui::paintInfo()
 		if (!m_curr_audiofile.MetaData.cover.empty())
 		{
 			if(!access("/tmp/cover.jpg", F_OK))
-				g_PicViewer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
+				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
 		}
 
 		// reset so fields get painted always

@@ -75,7 +75,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign, bo
 	{
 		if (m_NextPic_Buffer != NULL) 
 		{
-			free (m_NextPic_Buffer);
+			free(m_NextPic_Buffer);
 		}
 		
 		m_NextPic_Buffer = (unsigned char *) malloc (x*y*3);
@@ -200,7 +200,7 @@ bool CPictureViewer::ShowImage(const std::string & filename, bool unscaled)
 	
   	if (m_CurrentPic_Buffer != NULL) 
 	{
-		free (m_CurrentPic_Buffer);
+		free(m_CurrentPic_Buffer);
 		m_CurrentPic_Buffer = NULL;
   	}
 
@@ -219,13 +219,14 @@ bool CPictureViewer::DisplayNextImage ()
 	
   	if (m_CurrentPic_Buffer != NULL) 
 	{
-		free (m_CurrentPic_Buffer);
+		free(m_CurrentPic_Buffer);
 		m_CurrentPic_Buffer = NULL;
   	}
 
   	if (m_NextPic_Buffer != NULL)
 		CFrameBuffer::getInstance()->displayRGB(m_NextPic_Buffer, m_NextPic_X, m_NextPic_Y, m_NextPic_XPan, m_NextPic_YPan, m_NextPic_XPos, m_NextPic_YPos);
 	
+	// copy next pic in current pic
   	m_CurrentPic_Buffer = m_NextPic_Buffer;
   	m_NextPic_Buffer = NULL;
   	m_CurrentPic_Name = m_NextPic_Name;
@@ -458,37 +459,12 @@ void CPictureViewer::Cleanup()
 
 	if (m_CurrentPic_Buffer != NULL) 
 	{
-		free (m_CurrentPic_Buffer);
+		free(m_CurrentPic_Buffer);
 		m_CurrentPic_Buffer = NULL;
 	}
 }
 
 // channels logos
-// display image
-bool CPictureViewer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
-{
-	dprintf(DEBUG_NORMAL, "CPictureViewer::DisplayImage %s\n", name.c_str());
-	
-	if(!CFrameBuffer::getInstance()->getActive())
-		return false;
-	
-	bool isPNG = false;
-	
-	if( name.find(".png") == (name.length() - 4) )
-		isPNG = true;
-	
-	fb_pixel_t * data = CFrameBuffer::getInstance()->getImage(name, width, height);
-
-	if(data) 
-	{
-		CFrameBuffer::getInstance()->blit2FB(data, width, height, posx, posy, 0, 0, isPNG? true : false);
-		free(data);
-		return true;
-	}
-	
-	return false;
-}
-
 // get size
 extern int fh_png_id(const char *name);
 extern int png_load_ext(const char * name, unsigned char ** buffer, int * xp, int * yp, int * bpp);
@@ -558,19 +534,8 @@ void CPictureViewer::getLogoSize(t_channel_id channel_id, int * width, int * hei
 	char fname[255];
 	bool logo_ok = false;
 	
-	// first png, then jpg, then gif
-	std::string strLogoExt[3] = { ".png", ".jpg" , ".gif" };
-	
 	// check for logo
-	for (int i = 0; i < 3; i++)
-	{
-		sprintf(fname, "%s/%llx%s", g_settings.logos_dir.c_str(), channel_id & 0xFFFFFFFFFFFFULL, strLogoExt[i].c_str());
-		if(!access(fname, F_OK)) 
-		{
-			logo_ok = true;
-			break;
-		}
-	}
+	logo_ok = checkLogo(channel_id);
 	
 	if(logo_ok)
 	{
@@ -592,19 +557,9 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 	int logo_h = height;
 	int logo_bpp = 0;
 	
-	// first png, then jpg, then gif
-	std::string strLogoExt[3] = { ".png", ".jpg" , ".gif" };
 	
 	// check for logo
-	for (int i = 0; i < 3; i++)
-	{
-		sprintf(fname, "%s/%llx%s", g_settings.logos_dir.c_str(), channel_id & 0xFFFFFFFFFFFFULL, strLogoExt[i].c_str());
-		if(!access(fname, F_OK)) 
-		{
-			logo_ok = true;
-			break;
-		}
-	}
+	logo_ok = checkLogo(channel_id);
 	
 	if(logo_ok)
 	{
@@ -634,11 +589,11 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 				}
 			}
 			
-			ret = DisplayImage(fname, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
+			ret = CFrameBuffer::getInstance()->DisplayImage(fname, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
 		}
 		else
 		{
-			ret = DisplayImage(fname, posx, posy, width, height);
+			ret = CFrameBuffer::getInstance()->DisplayImage(fname, posx, posy, width, height);
 		}
         }
 

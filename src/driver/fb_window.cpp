@@ -44,8 +44,6 @@ CFBWindow::CFBWindow(const int _x, const int _y, const int _dx, const int _dy)
 	if (Background != NULL)
 	{
 		frameBuffer->SaveScreen(_x, _y, _dx, _dy, Background);
-
-		//frameBuffer->blit();
 	}
 
 }
@@ -55,8 +53,6 @@ CFBWindow::~CFBWindow(void)
 	if (Background != NULL)
 	{
 		frameBuffer->RestoreScreen(x, y, dx, dy, Background);
-
-		//frameBuffer->blit();
 	}
 		
 	delete[] Background;

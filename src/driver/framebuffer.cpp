@@ -1440,24 +1440,24 @@ void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, i
         if(rgbbuff == NULL)
                 return;
 
-        /* correct panning */
+        // correct panning
         if(x_pan > x_size - (int)xRes) 
 		x_pan = 0;
         if(y_pan > y_size - (int)yRes) 
 		y_pan = 0;
 
-        /* correct offset */
+        // correct offset
         if(x_offs + x_size > (int)xRes) 
 		x_offs = 0;
         if(y_offs + y_size > (int)yRes) 
 		y_offs = 0;
 
-        /* convert */
+        // convert
         fbbuff = convertRGB2FB(rgbbuff, x_size, y_size, transp);
         if(fbbuff == NULL)
                 return;
 
-        /* ClearFB if image is smaller */
+        // ClearFB if image is smaller
         if(clearfb)
                 ClearFrameBuffer();
 
@@ -1835,6 +1835,31 @@ void CFrameBuffer::blit(int mode3d)
 	}
 #endif	
 //#endif
+}
+
+// display image
+bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
+{
+	dprintf(DEBUG_NORMAL, "CFrameBuffer::DisplayImage %s\n", name.c_str());
+	
+	if(!getActive())
+		return false;
+	
+	bool isPNG = false;
+	
+	if( name.find(".png") == (name.length() - 4) )
+		isPNG = true;
+	
+	fb_pixel_t * data = getImage(name, width, height);
+
+	if(data) 
+	{
+		blit2FB(data, width, height, posx, posy, 0, 0, isPNG? true : false);
+		free(data);
+		return true;
+	}
+	
+	return false;
 }
 
 

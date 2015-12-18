@@ -75,7 +75,7 @@ class CMoviePlayerGui : public CMenuTarget
 			R_TIMESHIFT	// rewind timeshift
 		};
 		
-		//
+	private:
 		int playstate;
 
 		int speed;
@@ -98,7 +98,7 @@ class CMoviePlayerGui : public CMenuTarget
 		unsigned int g_currentapid;
 		unsigned int g_currentac3;
 		
-		// multi select
+		// playlist
 		CFileList filelist;
 		unsigned int selected;
 		
@@ -106,7 +106,9 @@ class CMoviePlayerGui : public CMenuTarget
 		std::string Title;
 		std::string Info1;
 		std::string Info2;
-		std::string thumbnail;
+		std::string Thumbnail;
+		
+		//lcd
 		std::string sel_filename;
 		
 		// global flags
@@ -150,16 +152,20 @@ class CMoviePlayerGui : public CMenuTarget
 
 		void showHelpTS(void);
 		
+		// lcd
+		void updateLcd(const std::string & sel_filename);
+		
 	public:
 		CMoviePlayerGui();
 		~CMoviePlayerGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		
-		// lcd
-		void updateLcd(const std::string & sel_filename);
-		
 		// show infos
-		void showFileInfo();
+		void showFileInfo(); // needed in infoviewer.cpp
+		void addToPlaylist(CFile& file);
+		
+		int getPercent() {return file_prozent;};
+		void showMovieInfoBar();
 };
 
 #endif

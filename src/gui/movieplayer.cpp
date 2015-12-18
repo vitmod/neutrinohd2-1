@@ -138,7 +138,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 	playback = new cPlayback();
 
 	// tsfilefilter
-#if defined (ENABLE_LIBEPLAYER3) || defined (ENABLE_GSTREAMER)
 	tsfilefilter.addFilter("ts");
 	tsfilefilter.addFilter("mpg");
 	tsfilefilter.addFilter("mpeg");
@@ -163,8 +162,7 @@ CMoviePlayerGui::CMoviePlayerGui()
 	tsfilefilter.addFilter("flac");
 	tsfilefilter.addFilter("mp3");
 	tsfilefilter.addFilter("wma");
-	tsfilefilter.addFilter("ogg");
-#endif	
+	tsfilefilter.addFilter("ogg");	
 }
 
 CMoviePlayerGui::~CMoviePlayerGui()
@@ -303,6 +301,13 @@ void CMoviePlayerGui::updateLcd(const std::string & lcd_filename)
 	CVFD::getInstance()->showMenuText(0, lcd.c_str(), -1, true);	
 }
 
+void CMoviePlayerGui::addToPlaylist(CFile& file)
+{	
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.Name.c_str());
+	
+	filelist.push_back(file);
+}
+
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::exec: actionKey = %s\n", actionKey.c_str());
@@ -347,9 +352,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	playstate = CMoviePlayerGui::STOPPED;
 	is_file_player = false;
 	
-	//ac3state = CInfoViewer::NO_AC3;
-	//showaudioselectdialog = false;
-	
 	// timeosd
 	time_forced = false;
 	
@@ -361,6 +363,9 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	g_vtype = 0;
 	g_currentapid = 0;
 	g_currentac3 = 0;
+	
+	filename = NULL;
+	sel_filename.clear();
 	
 	// cutneutrino
 	cutNeutrino();
@@ -463,8 +468,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	if(!Info2.empty())
 		Info2.clear();
 	
-	if(!thumbnail.empty())
-		thumbnail.clear();
+	if(!Thumbnail.empty())
+		Thumbnail.clear();
 	
 	if (actionKey == "fileplayback") 
 	{
@@ -517,22 +522,34 @@ void CMoviePlayerGui::PlayFile(void)
 		//
 		if(!filelist.empty())
 		{
-			filename = filelist[0].Name.c_str();
-			sel_filename = filelist[0].getFileName();
-						
-			Title = sel_filename;
-			Info1 = sel_filename;
-			Info2 = sel_filename;
-			
-			// thumbnail
-			if(thumbnail.empty())
+			if(filelist[0].Url.empty())
 			{
-				std::string fname = "";
-				fname = filename;
-				changeFileNameExt(fname, ".jpg");
-					
-				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
+				filename = filelist[0].Name.c_str();
+				sel_filename = filelist[0].getFileName();
+							
+				Title = sel_filename;
+				Info1 = sel_filename;
+				Info2 = sel_filename;
+				
+				// thumbnail
+				if(Thumbnail.empty())
+				{
+					std::string fname = "";
+					fname = filename;
+					changeFileNameExt(fname, ".jpg");
+						
+					if(!access(fname.c_str(), F_OK) )
+						Thumbnail = fname.c_str();
+				}
+			}
+			else
+			{
+				filename = filelist[0].Url.c_str();
+				sel_filename = filelist[0].Name.c_str();	
+				Title = filelist[0].Title;
+				Info1 = filelist[0].Info1;
+				Info2 = filelist[0].Info2;
+				Thumbnail = filelist[0].Thumbnail;
 			}
 
 			update_lcd = true;
@@ -541,35 +558,6 @@ void CMoviePlayerGui::PlayFile(void)
 			is_file_player = true;
 			if(filelist.size() > 1)
 				m_multiselect = true;
-			
-			printf("URL: filename: %s\n", filename);
-		}
-		else if(filename != NULL)
-		{
-			sel_filename = std::string(rindex(filename, '/') + 1);
-			
-			if(Title.empty())
-				Title = sel_filename;
-			if(Info1.empty())
-				Info1 = sel_filename;
-			if(Info2.empty())
-				Info2 = sel_filename;
-			
-			//thumbnail
-			if(thumbnail.empty())
-			{
-				std::string fname = "";
-				fname = filename;
-				changeFileNameExt(fname, ".jpg");
-					
-				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
-			}
-			
-			update_lcd = true;
-			start_play = true;
-			was_file = true;
-			is_file_player = true;
 		}
 						
 		CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
@@ -628,13 +616,13 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = sel_filename;
 				Info2 = sel_filename;
 				//thumbnail
-				thumbnail = "";
+				Thumbnail = "";
 				std::string fname = "";
 				fname = filelist[selected].Name;
 				changeFileNameExt(fname, ".jpg");
 					
 				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
+					Thumbnail = fname.c_str();
  
 				update_lcd = true;
 				start_play = true;
@@ -648,13 +636,13 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = sel_filename;
 				Info2 = sel_filename;
 				//thumbnail
-				thumbnail = "";
+				Thumbnail = "";
 				std::string fname = "";
 				fname = filename;
 				changeFileNameExt(fname, ".jpg");
 					
 				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
+					Thumbnail = fname.c_str();
  
 				update_lcd = true;
 				start_play = true;
@@ -935,7 +923,7 @@ void CMoviePlayerGui::PlayFile(void)
 						Title = p_movie_info->epgTitle;
 						Info1 = p_movie_info->epgInfo1;
 						Info2 = p_movie_info->epgInfo2;
-						thumbnail = p_movie_info->tfile;
+						Thumbnail = p_movie_info->tfile;
 						
 						dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: file %s apid 0x%X atype %d vpid 0x%X vtype %d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype);
 						
@@ -973,8 +961,8 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						CFile *file = filebrowser->getSelectedFile();
-						filelist.clear();
-						filelist.push_back(*file);
+						
+						addToPlaylist(*file);
 					}
 
 					if(!filelist.empty())
@@ -985,13 +973,13 @@ void CMoviePlayerGui::PlayFile(void)
 						Title = sel_filename;
 						Info1 = sel_filename;
 						Info2 = sel_filename;
-						thumbnail = "";
+						Thumbnail = "";
 						std::string fname = "";
 						fname = filelist[selected].Name;
 						changeFileNameExt(fname, ".jpg");
 					
 						if(!access(fname.c_str(), F_OK) )
-							thumbnail = fname.c_str();
+							Thumbnail = fname.c_str();
 
 						update_lcd = true;
 						start_play = true;
@@ -1782,13 +1770,13 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = sel_filename = sel_filename;
 				Info2 = sel_filename;
 				//thumbnail
-				thumbnail = "";
+				Thumbnail = "";
 				std::string fname = "";
 				fname = filelist[selected].Name;
 				changeFileNameExt(fname, ".jpg");
 						
 				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
+					Thumbnail = fname.c_str();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1806,13 +1794,13 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = sel_filename = sel_filename;
 				Info2 = sel_filename;
 				//thumbnail
-				thumbnail = "";
+				Thumbnail = "";
 				std::string fname = "";
 				fname = filelist[selected].Name;
 				changeFileNameExt(fname, ".jpg");
 						
 				if(!access(fname.c_str(), F_OK) )
-					thumbnail = fname.c_str();
+					Thumbnail = fname.c_str();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1933,14 +1921,21 @@ void CMoviePlayerGui::showFileInfo()
 	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 10 + SCROLLBAR_WIDTH);
 	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
 		
-	if(access(thumbnail.c_str(), F_OK))
-		thumbnail = "";
+	if(access(Thumbnail.c_str(), F_OK))
+		Thumbnail = "";
 	
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 	CInfoBox * infoBox = new CInfoBox(Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-	infoBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
+	infoBox->setText(&buffer, Thumbnail, lx, ly, picw, pich);
 	infoBox->exec();
 	delete infoBox;
 }
+
+void CMoviePlayerGui::showMovieInfoBar()
+{
+	g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+}
+
+

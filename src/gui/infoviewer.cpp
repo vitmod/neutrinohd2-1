@@ -680,7 +680,6 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 
 	if (!calledFromNumZap) 
 	{
-
 		bool hideIt = true;
 		virtual_zap_mode = false;
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
@@ -760,7 +759,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 				{
 					if (msg == CRCInput::RC_standby) 
 					{
-						g_RCInput->killTimer (sec_timer_id);
+						g_RCInput->killTimer(sec_timer_id);
 					}
 					
 					res = neutrino->handleMsg (msg, data);
@@ -1009,7 +1008,8 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(durationTextPos, TitleHeight, durationWidth, cDisplayTime, COL_INFOBAR);
 	
 	// progressbar
-	runningPercent = Percent;
+	//runningPercent = Percent;
+	runningPercent = moviePlayerGui->getPercent();
 	
 	if(Percent < 0)
 		runningPercent = 0;
@@ -1046,9 +1046,6 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 				paintTime(show_dot, false, BoxEndX, BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]);
 				show_dot = !show_dot;
 			}
-			
-			//
-			updatePos();
 		} 
 		else if(msg == CRCInput::RC_info)
 		{
@@ -1074,7 +1071,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 				g_RCInput->killTimer (sec_timer_id);
 			}
 					
-			res = neutrino->handleMsg (msg, data);
+			res = neutrino->handleMsg(msg, data);
 					
 			if (res & messages_return::unhandled) 
 			{
@@ -1092,30 +1089,6 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
-}
-
-void CInfoViewer::updatePos()
-{
-	// recalculate dimension
-	BoxHeight = BOXHEIGHT_MOVIEINFO;
-	
-	// buttonbarheight
-	buttonBarHeight = (icon_h_vtxt? icon_h_vtxt : BUTTON_BAR_HEIGHT) + 6;
-	
-	BoxEndX = g_settings.screen_EndX - 10;
-	BoxEndY = g_settings.screen_EndY - (10 + SHADOW_OFFSET + buttonBarHeight);
-	BoxStartX = g_settings.screen_StartX + 10;
-	BoxStartY = BoxEndY - (BoxHeight);
-	BoxWidth = BoxEndX - BoxStartX;
-	
-	//FIXME: file_prozent cant be at this way updated
-	/*
-	if(m_visible)
-	{
-		if(moviescale->getPercent() != file_prozent)
-			moviescale->paint(BoxStartX + 5, BoxStartY + SAT_INFOBOX_HEIGHT, file_prozent);
-	}
-	*/
 }
 
 void CInfoViewer::showSubchan()
@@ -1152,7 +1125,8 @@ void CInfoViewer::showSubchan()
 	  		int w = 20 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth (g_Locale->getText (LOCALE_NVODSELECTOR_DIRECTORMODE), true) + 20;	// UTF-8
 	  		if (w > dx)
 				dx = w;
-	  			dy = dy * 2;
+			
+	  		dy = dy * 2;
 		} 
 		else
 	  		dy = dy + 5;
@@ -2283,7 +2257,7 @@ void CInfoViewer::showEpgInfo()   //message on event change
 {
 	int mode = CNeutrinoApp::getInstance()->getMode();
 	
-	/* show epg info only if we in TV- or Radio mode and current event is not the same like before */
+	// show epg info only if we in TV- or Radio mode and current event is not the same like before
 	if ((eventname != info_CurrentNext.current_name) && (mode == NeutrinoMessages::mode_tv || mode == NeutrinoMessages::mode_radio))
 	{
 		eventname = info_CurrentNext.current_name;
@@ -2299,7 +2273,7 @@ int CInfoViewerHandler::exec(CMenuTarget * parent, const std::string &/*actionke
 	CInfoViewer * i;
 	
 	if (parent) 
-		parent->hide ();
+		parent->hide();
 	
 	i = new CInfoViewer;
 	

@@ -181,7 +181,6 @@ class CAudioPlayerGui : public CMenuTarget
 		void showMetaData();
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
 
-		//void addToPlaylist(CAudiofileExt &file);
 		void removeFromPlaylist(long pos);
 
 		/**

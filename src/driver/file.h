@@ -128,7 +128,7 @@ class CFile
 		std::string Title;
 		std::string Info1;
 		std::string Info2;
-		std::string thumbnail;
+		std::string Thumbnail;
 		unsigned int Index;
 		mode_t Mode;
 		bool Marked;

@@ -221,7 +221,6 @@ class CInfoViewer
 		CProgressBar *moviescale;
 		bool m_visible;
 		void showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool show_duration = true, bool show_bookmark = false);
-		void updatePos();
 };
 
 class CInfoViewerHandler : public CMenuTarget

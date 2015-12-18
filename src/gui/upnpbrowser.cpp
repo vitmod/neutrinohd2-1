@@ -574,7 +574,11 @@ void CUpnpBrowserGui::playnext(void)
 					m_frameBuffer->ClearFrameBuffer();
 					m_frameBuffer->blit();	
 					
-					moviePlayerGui->filename = (*entries)[0].resources[preferred].url.c_str(); //FIXME
+					CFile mfile;
+					
+					mfile.Name = (*entries)[0].resources[preferred].url.c_str(); //FIXME
+					
+					moviePlayerGui->addToPlaylist(mfile);
 					moviePlayerGui->exec(NULL, "urlplayback");
 					
 					return;
@@ -838,7 +842,10 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						m_frameBuffer->ClearFrameBuffer();
 						m_frameBuffer->blit();	
 						
-						moviePlayerGui->filename = (*entries)[selected - index].resources[preferred].url.c_str(); //FIXME
+						CFile file;
+						file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); //FIXME
+						
+						moviePlayerGui->addToPlaylist(file);
 						moviePlayerGui->exec(NULL, "urlplayback");
 						
 						changed = true;
