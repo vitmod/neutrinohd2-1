@@ -63,10 +63,20 @@ DVD_BROWSER:
 		Path_dvd = fileBrowser.getCurrentDir();
 
 		// filelist player
-		moviePlayerGui->filelist = fileBrowser.getSelectedFiles();;
+		//moviePlayerGui->filelist = fileBrowser.getSelectedFiles();;
 		
-		if(!moviePlayerGui->filelist.empty())
-			moviePlayerGui->exec(NULL, "urlplayback");
+		//if(!moviePlayerGui->filelist.empty())
+		CFileList::const_iterator files = fileBrowser.getSelectedFiles().begin();
+		for(; files != fileBrowser.getSelectedFiles().end(); files++)
+		{
+			CFile file;
+			
+			file.Name = files->Name;
+			
+			moviePlayerGui->addToPlaylist(file);
+		}
+		
+		moviePlayerGui->exec(NULL, "urlplayback");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;

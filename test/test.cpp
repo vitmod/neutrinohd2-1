@@ -69,6 +69,8 @@ class CTestMenu : CMenuTarget
 		void testPlayMovieURL();
 		void testPlayAudioURL();
 		void testShowPictureURL();
+		//
+		void testPlayMovieFolder();
 		void testPlayAudioFolder();
 		void testShowPictureFolder();
 		//
@@ -574,13 +576,7 @@ BROWSER:
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
 		
-			moviePlayerGui->filename = file->Name.c_str();
-				
-			// movieinfos
-			moviePlayerGui->Title = file->Title;
-			moviePlayerGui->Info1 = file->Info1;
-			moviePlayerGui->Info2 = file->Info2;
-			moviePlayerGui->thumbnail = file->thumbnail;
+			moviePlayerGui->addToPlaylist(*file);
 				
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");
@@ -704,6 +700,74 @@ BROWSER:
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete fileBrowser;
+}
+
+void CTestMenu::testPlayMovieFolder()
+{
+	CFileBrowser * fileBrowser;
+	
+	fileBrowser = new CFileBrowser();
+	
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	fileBrowser->Multi_Select = true;
+	fileBrowser->Filter = &fileFilter;
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+
+BROWSER:
+	if (fileBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = fileBrowser->getCurrentDir();
+		CFile file;
+		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
+		for(; files != fileBrowser->getSelectedFiles().end(); files++)
+		{
+			file.Name = files->Name;
+			
+			moviePlayerGui->addToPlaylist(file);
+		}
+		
+		moviePlayerGui->exec(NULL, "urlplayback");
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
 		if (msg != CRCInput::RC_home) 
 		{
@@ -1142,6 +1206,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testShowPictureURL();
 	}
+	else if(actionKey == "playmoviefolder")
+	{
+		testPlayMovieFolder();
+	}
 	else if(actionKey == "playaudiofolder")
 	{
 		testPlayAudioFolder();
@@ -1256,6 +1324,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
+	mainMenu->addItem(new CMenuForwarder("PlayMovieFolder", true, NULL, this, "playmoviefolder"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );

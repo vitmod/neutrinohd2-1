@@ -101,11 +101,7 @@ BROWSER:
 			}
 			else if(file->getType() == CFile::FILE_VIDEO)
 			{
-				moviePlayerGui->filename = file->Name.c_str();
-				
-				moviePlayerGui->Title = file->Title;
-				moviePlayerGui->Info1 = file->Info1;
-				moviePlayerGui->Info2 = file->Info2;
+				moviePlayerGui->addToPlaylist(*file);
 				
 				// play
 				moviePlayerGui->exec(NULL, "urlplayback");

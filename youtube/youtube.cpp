@@ -1195,15 +1195,15 @@ BROWSER:
 
 		if ((file = moviebrowser->getSelectedFile()) != NULL) 
 		{
-			moviePlayerGui->filename = file->Url.c_str();
-			
 			// movieinfos
 			p_movie_info = moviebrowser->getCurrentMovieInfo();
 			
-			moviePlayerGui->Title = p_movie_info->epgTitle;
-			//moviePlayerGui->Info1 = p_movie_info->epgInfo1; //category ist always empty
-			moviePlayerGui->Info2 = p_movie_info->epgInfo2;
-			moviePlayerGui->thumbnail = p_movie_info->tfile;
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+			
+			moviePlayerGui->addToPlaylist(*file);
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");

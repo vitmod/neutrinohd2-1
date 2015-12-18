@@ -80,12 +80,16 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
+		CFile file;
+		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
+		for(; files != fileBrowser->getSelectedFiles().end(); files++)
+		{
+			file.Name = files->Name;
+			
+			moviePlayerGui->addToPlaylist(file);
+		}
 		
-		// filelist player
-		moviePlayerGui->filelist = fileBrowser->getSelectedFiles();
-		
-		if(!moviePlayerGui->filelist.empty())
-			moviePlayerGui->exec(NULL, "urlplayback");
+		moviePlayerGui->exec(NULL, "urlplayback");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
