@@ -139,6 +139,9 @@
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/psisetup.h>
 #include <gui/rc_lock.h>
+#include <gui/mediaplayer.h>
+#include <gui/service_setup.h>
+#include <gui/main_setup.h>
 
 #include <system/localize.h>
 #include <system/settings.h>
@@ -249,7 +252,7 @@ extern CBouquetList   		* RADIOallList;
 extern CPlugins       		* g_PluginList;
 extern CRemoteControl 		* g_RemoteControl;
 extern SMSKeyInput 		* c_SMSKeyInput;	//defined in filebrowser and used in ChanneList
-extern CMoviePlayerGui		* moviePlayerGui;
+//extern CMoviePlayerGui		* moviePlayerGui;
 extern CPictureViewer 		* g_PicViewer;
 //extern CCAMMenuHandler 	* g_CamHandler;
 

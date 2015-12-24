@@ -784,8 +784,8 @@ void CTimerList::paintItem(int pos)
 
 void CTimerList::paintHead()
 {
-	//
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	// headbox
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// icon
 	int icon_w, icon_h;

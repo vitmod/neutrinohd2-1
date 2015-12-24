@@ -121,6 +121,7 @@ class CBEBouquetWidget : public CMenuWidget
 
 	public:
 		CBEBouquetWidget();
+		~CBEBouquetWidget();
 
 		BouquetList * Bouquets;
 		int exec(CMenuTarget* parent, const std::string & actionKey);

@@ -898,7 +898,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 	int colwidth1, colwidth2, colwidth3, colwidth1_dir, colwidth2_dir;
 	uint8_t color;
 	fb_pixel_t bgcolor;
-	int ypos = y+ theight+0 + pos*fheight;
+	int ypos = y + theight + pos*fheight;
 	CFile * actual_file = NULL;
 	std::string fileicon;
 
@@ -918,7 +918,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 
 	if( (liststart + pos) < filelist.size() )
 	{
-		actual_file = &filelist[liststart+pos];
+		actual_file = &filelist[liststart + pos];
 		if (actual_file->Marked)
 		{
 			color = COL_MENUCONTENTINACTIVE; //+= 2; FIXME
@@ -937,7 +937,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 		colwidth1 = width - 35 - colwidth2 - colwidth3 - 10;
 
-		frameBuffer->paintBoxRel(x,ypos, width- 15, fheight, bgcolor );
+		frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (liststart + pos == selected)? true : false);
 
 		if ( actual_file->Name.length() > 0 )
 		{
@@ -966,9 +966,11 @@ void CFileBrowser::paintItem(unsigned int pos)
 				default:
 					fileicon = NEUTRINO_ICON_FILE;
 			}
-			frameBuffer->paintIcon(fileicon, x+5 , ypos + (fheight-16) / 2 );
+			int ih, iw;
+			frameBuffer->getIconSize(fileicon.c_str(), &iw, &ih);
+			frameBuffer->paintIcon(fileicon, x + ICON_OFFSET, ypos + (fheight - ih) / 2 );
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 35, ypos + fheight, colwidth1 - 10 , FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()), color, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 30 + ICON_OFFSET, ypos + fheight, colwidth1 - BORDER_RIGHT, FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()), color, 0, true); // UTF-8
 
 			if( S_ISREG(actual_file->Mode) )
 			{
@@ -1031,22 +1033,22 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 	}
 	else
-		frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, COL_MENUCONTENT_PLUS_0 );
+		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
 }
 
 void CFileBrowser::paintHead()
 {
 	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// icon
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_FOLDER, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_FOLDER, x + 10, y + 8);
+	frameBuffer->paintIcon(NEUTRINO_ICON_FOLDER, x + BORDER_LEFT, y + (theight - icon_h)/2);
 
 	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + 10 + icon_w + 5, y + theight + 1, width - 10 - icon_w - 5, l_name, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label FileBrowserButtons[3] =
@@ -1103,7 +1105,7 @@ void CFileBrowser::paintFoot()
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + 2*dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR, 0, true); // UTF-8
 
-		if(m_SMSKeyInput.getOldKey() !=0)
+		if(m_SMSKeyInput.getOldKey() != 0)
 		{
 			char cKey[2] = {m_SMSKeyInput.getOldKey(), 0};
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 16, by2 , 16, cKey, COL_MENUHEAD, 0, true); // UTF-8
@@ -1131,7 +1133,7 @@ void CFileBrowser::paint()
 	int sbs= (selected/listmaxshow);
 
 	// scroll bar
-	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + sbs*(sb - 4)/sbc, 11, (sb - 4)/sbc, COL_MENUCONTENT_PLUS_3 );
+	frameBuffer->paintBoxRel(x + width - (SCROLLBAR_WIDTH - 2), ypos + 2 + sbs*(sb - 4)/sbc, 11, (sb - 4)/sbc, COL_MENUCONTENT_PLUS_3 );
 }
 
 void CFileBrowser::SMSInput(const neutrino_msg_t msg)

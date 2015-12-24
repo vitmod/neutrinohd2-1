@@ -85,51 +85,30 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		};
 
 		CConfigFile configfile;
-		
-		// network
-		int network_dhcp;
-		int network_automatic_start;
-		
-		std::string network_hostname;
-		std::string mac_addr;
-		
-		std::string network_ssid;
-		std::string network_key;
-		int network_encryption;
 
 		// font
-		neutrino_font_descr_struct      font;
+		neutrino_font_descr_struct font;
 
 		// modes
-		int				mode;
-		int				lastMode;
+		int mode;
+		int lastMode;
 		
 		CTimerd::RecordingInfo * nextRecordingInfo;
 
-		struct timeval                  standby_pressed_at;
+		struct timeval standby_pressed_at;
 
-		CZapitClient::responseGetLastChannel    firstchannel;
-		st_rmsg				sendmessage;
+		CZapitClient::responseGetLastChannel firstchannel;
+		st_rmsg sendmessage;
 
-		bool				skipShutdownTimer;
+		bool skipShutdownTimer;
 
-		CColorSetupNotifier		*colorSetupNotifier;
-		CKeySetupNotifier       	*keySetupNotifier;
-		CNVODChangeExec         	*NVODChanger;
-		CTuxtxtChangeExec		*TuxtxtChanger;		// for user menu
-		CIPChangeNotifier		*MyIPChanger;
-		CRCLock                         *rcLock;
-                CTimerList                      *Timerlist;			// for user menu
+		CNVODChangeExec *NVODChanger;
+		CTuxtxtChangeExec *TuxtxtChanger;		// for user menu
+		CRCLock *rcLock;
+                CTimerList *Timerlist;			// for user menu
 
-		/* neutrino_menue.cpp */
-                bool showUserMenu(int button);
-                bool getNVODMenu(CMenuWidget * menu);
-
-		/* neutrino.cpp */
+		// neutrino.cpp
 		void firstChannel();
-		
-		void setupRecordingDevice(void);
-		void startNextRecording();
 		
 		void tvMode( bool rezap = true );
 		void radioMode( bool rezap = true );
@@ -141,51 +120,10 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		
 		void saveEpg();
 		
-		void RealRun(CMenuWidget &mainSettings);
+		void RealRun(CMenuWidget& _mainMenu);
 		void InitZapper();
-		
-		void InitKeySettings(CMenuWidget &, CMenuWidget &bindSettings);
-		void InitServiceSettings(CMenuWidget &, CMenuWidget &TunerSetup);
-		void InitVideoSettings( CMenuWidget &videoSettings, CVideoSetupNotifier* videoSetupNotifier );
-		void InitAudioSettings( CMenuWidget &audioSettings, CAudioSetupNotifier* audioSetupNotifier );
-		void InitParentalLockSettings(CMenuWidget &);
-		void InitColorSettingsMenuColors(CMenuWidget &);
-		void InitColorSettings(CMenuWidget &);
-		void InitLanguageSettings(CMenuWidget &);
-		void InitColorSettingsStatusBarColors(CMenuWidget &colorSettings_menuColors);
-		void InitColorSettingsTiming(CMenuWidget &colorSettings_timing);
-		void InitLcdSettings(CMenuWidget &lcdSettings);
-		void InitNetworkSettings(CMenuWidget &networkSettings);
-		void InitRecordingSettings(CMenuWidget &recordingSettings);
-		void InitMoviePlayerSettings(CMenuWidget &moviePlayerSettings);
-		void InitScreenSettings(CMenuWidget &);
-		void InitAudioplayerSettings(CMenuWidget &);
-		void InitPicViewerSettings(CMenuWidget &);
-		void InitMiscSettings(CMenuWidget &miscSettings, 
-				      CMenuWidget &miscSettingsGeneral, 
-				      CMenuWidget &miscSettingsChannelList, 
-				      CMenuWidget &miscSettingsEPG, 
-				      CMenuWidget &miscSettingsFileBrowser );
-				      
-		void InitMainMenu(CMenuWidget &mainMenu, 
-				  CMenuWidget &mainSettings,
-				  CMenuWidget &videoSettings, 
-				  CMenuWidget &audioSettings,
-				  CMenuWidget &parentallockSettings,
-				  CMenuWidget &networkSettings1, 
-				  CMenuWidget &networkSettings2,
-		                  CMenuWidget &colorSettings, 
-				  CMenuWidget &lcdSettings, 
-				  CMenuWidget &keySettings,
-				  CMenuWidget &miscSettings, 
-				  CMenuWidget &service,
-                        	  CMenuWidget &audioplayerSettings, 
-				  CMenuWidget &PicViewerSettings, 
-				  CMenuWidget &moviePlayerSettings, 
-				  CMenuWidget &MediaPlayer);
 
 		void SetupFrameBuffer();
-		void SelectNVOD();
 		
 		void CmdParser(int argc, char **argv);
 	
@@ -194,24 +132,29 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		CNeutrinoApp();
 
 	public:
-		CMenuItem * wlanEnable[3];
-		
 		void saveSetup(const char * fname);
 		int loadSetup(const char * fname);
 		void SetupTiming();
 		void SetupFonts();
+		
+		// init main menu
+		void InitMainMenu(CMenuWidget &mainMenu);
+		void smartMenu();
+		
+		bool showUserMenu(int button);
+		void SelectNVOD();
+                bool getNVODMenu(CMenuWidget * menu);
 
 		void AudioMute( int newValue, bool isEvent= false );
 		void setVolume(const neutrino_msg_t key, const bool bDoPaint = true, bool nowait = false);
 		~CNeutrinoApp();
 
-		/* channel list */
-		CChannelList			*TVchannelList;
-		CChannelList			*RADIOchannelList;
-		CChannelList			* channelList;
+		// channel list
+		CChannelList *TVchannelList;
+		CChannelList *RADIOchannelList;
+		CChannelList * channelList;
 		
-		/* network config */
-		CNetworkConfig                 networkConfig;
+		CColorSetupNotifier *colorSetupNotifier;
 
 		static CNeutrinoApp * getInstance();
 
@@ -229,11 +172,14 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		int getMode() { return mode; }
 		int getLastMode() { return lastMode; }
 		
-		/* recording flag */
+		void setupRecordingDevice(void);
+		void startNextRecording();
+		
+		// recording flag
 		int recordingstatus;
-		/* timeshift flag */
+		// timeshift flag
 		int timeshiftstatus;
-		/* recording_id */
+		// recording_id 
 		int recording_id;
 		
 #if defined (USE_OPENGL)
@@ -262,6 +208,5 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		
 		void ExitRun(int retcode = SHUTDOWN);
 };
-
 
 #endif

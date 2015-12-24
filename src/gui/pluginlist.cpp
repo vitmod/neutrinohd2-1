@@ -291,7 +291,7 @@ void CPluginList::paintItem(int pos)
 	itemwidth = width - sb_width;
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, itemwidth, itemheight, bgcolor );
+	frameBuffer->paintBoxRel(x, ypos, itemwidth, itemheight, bgcolor, 0, 0, (liststart + pos == selected)? true : false);
 	
 	// name + desc + version + icon???
 	if(liststart + pos < pluginlist.size())
@@ -342,7 +342,7 @@ void CPluginList::paintHead()
 	int iw, ih;
 	
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// body
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - footheight, COL_MENUCONTENT_PLUS_0);

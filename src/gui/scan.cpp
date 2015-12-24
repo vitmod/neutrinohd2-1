@@ -334,7 +334,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		const char * text = g_Locale->getText(success ? LOCALE_SCANTS_FINISHED : LOCALE_SCANTS_FAILED);
 		
 		// head
-		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 		
 		// exit icon
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &_iw, &_ih);

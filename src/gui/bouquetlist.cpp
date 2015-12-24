@@ -571,8 +571,6 @@ void CBouquetList::paintItem(int pos)
 	{
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-
-		frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
 		
 		if(npos < (int) Bouquets.size())
 			CVFD::getInstance()->showMenuText(0, lname, -1, true);		
@@ -584,9 +582,10 @@ void CBouquetList::paintItem(int pos)
 		
                 color = iscurrent ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
                 bgcolor = iscurrent ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
-		
-		frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
 	}
+	
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (npos == (int) selected)? true : false);
 
 	if(npos < (int) Bouquets.size()) 
 	{
@@ -611,7 +610,7 @@ const struct button_label CBouquetListButtons[4] =
 void CBouquetList::paintHead()
 {
 	// head box
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// setup icon
 	if(CNeutrinoApp::getInstance()->GetChannelMode() == LIST_MODE_FAV || CNeutrinoApp::getInstance()->GetChannelMode() == LIST_MODE_PROV)

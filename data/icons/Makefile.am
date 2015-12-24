@@ -54,12 +54,12 @@ install_DATA += \
 
 # MenuItemsIcons
 install_DATA += \
-	tv.png radio.png mainsettings.png service.png sleeptimer.png reboot.png shutdown.png boxinfo.png \
+	tv.png radio.png mainsettings.png service.png timerlist.png reboot.png shutdown.png boxinfo.png \
 	audiosettings.png parentallock.png recordingsettings.png osdsettings.png keyssettings.png \
 	audioplayersettings.png hddsettings.png \
 	movieplayer.png internetradio.png upnpbrowser.png pictureviewer.png audioplayer.png \
 	cam.png scart.png \
-	plugins.png
+	plugins.png sleeptimer.png
 
 # usb hdd
 install_DATA += \

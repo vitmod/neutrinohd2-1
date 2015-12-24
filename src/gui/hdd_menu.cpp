@@ -76,8 +76,6 @@
 #include <mntent.h>
 
 
-extern CPictureViewer * g_PicViewer;
-extern CMoviePlayerGui * moviePlayerGui;
 extern CWebTV * webtv;
 
 
@@ -1183,10 +1181,10 @@ REPEAT:
 				}
 				else if(file->getType() == CFile::FILE_VIDEO)
 				{
-					moviePlayerGui->addToPlaylist(*file);
-				
-					// play
-					moviePlayerGui->exec(NULL, "urlplayback");
+					CMoviePlayerGui tmpMoviePlayerGui;
+					
+					tmpMoviePlayerGui.addToPlaylist(*file);
+					tmpMoviePlayerGui.exec(NULL, "urlplayback");
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{

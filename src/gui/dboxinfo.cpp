@@ -131,7 +131,7 @@ void CDBoxInfoWidget::paint()
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, ypos + SHADOW_OFFSET, width, height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
 
 	// head
-	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// icon
 	int icon_w, icon_h;

@@ -130,6 +130,7 @@
 
 int convertSetupColor2RGB(unsigned char r, unsigned char g, unsigned char b);
 int convertSetupAlpha2Alpha(unsigned char alpha);
-void fadeColor(unsigned char &r, unsigned char &g, unsigned char &b, int fade, bool protect = true);
+//void fadeColor(unsigned char &r, unsigned char &g, unsigned char &b, int fade, bool protect = true);
+uint8_t limitChar(int c);
 
 #endif

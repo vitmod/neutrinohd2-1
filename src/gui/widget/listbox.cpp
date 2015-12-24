@@ -129,13 +129,13 @@ void CListBox::paint()
 	float sbh = (sb - 4)/ sbc;
 	int sbs = (selected/listmaxshow);
 
-	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
+	frameBuffer->paintBoxRel(x + width - (SCROLLBAR_WIDTH - 2), ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
 }
 
 void CListBox::paintHead()
 {
 	// headBox
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);//round
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -226,7 +226,10 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor, 0, 0, _selected? true : false);
+	
+	// item 
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
 }
 

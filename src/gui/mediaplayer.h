@@ -1,7 +1,11 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-
+	$id: mediaplayer.h 2015.12.22 12:07:30 mohousch $
+	
+	Copyright (C) 2001 Steffen Hehn 'McClean'
+	and some other guys
+	Homepage: http://dbox.cyberphoria.org/
 
 	License: GPL
 
@@ -20,16 +24,24 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __sleeptimer__
-#define __sleeptimer__
+#ifndef __mediaplayer__
+#define __mediaplayer__
 
 #include <gui/widget/menue.h>
 
+#include <string>
 
-class CSleepTimerWidget: public CMenuTarget
+
+class CMediaPlayerMenu : public CMenuTarget
 {
+	private:
+		void showMenu();
+		
 	public:
-		int exec(CMenuTarget * parent, const std::string & actionKey);
+		CMediaPlayerMenu();
+		~CMediaPlayerMenu();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-#endif
+#endif //__mediaplayer__

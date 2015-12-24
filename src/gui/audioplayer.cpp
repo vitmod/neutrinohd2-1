@@ -1596,7 +1596,7 @@ void CAudioPlayerGui::paintItem(int pos)
 		}
 	}
 
-	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - 15, m_fheight, bgcolor );
+	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - SCROLLBAR_WIDTH, m_fheight, bgcolor, 0, 0, ((pos + m_liststart) == m_selected)? true : false);
 
 	if ((pos + m_liststart) < m_playlist.size())
 	{
@@ -1651,7 +1651,7 @@ void CAudioPlayerGui::paintHead()
 		strCaption = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
 	
 	// head box
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// head icon
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_MP3, &icon_head_w, &icon_head_h);
@@ -1916,7 +1916,7 @@ void CAudioPlayerGui::clearItemID3DetailsLine()
 	paintItemID3DetailsLine(-1);
 }
 
-void CAudioPlayerGui::paintItemID3DetailsLine (int pos)
+void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 {
 	int xpos  = m_x - ConnectLineBox_Width;
 	int ypos1 = m_y + m_title_height + m_theight+ 0 + pos*m_fheight;

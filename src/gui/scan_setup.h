@@ -1,5 +1,5 @@
 /*
-	$Id: scan_setup.h,v 1.4 2009/12/15 09:44:33 dbt Exp $
+	$Id: scan_setup.h 2015/12/22 11:40:28 mohousch Exp $
 
 	Copyright (C) 2009 Thilo Graf (dbt)
 	http://www.dbox2-tuning.de
@@ -31,7 +31,7 @@
 
 #include <driver/framebuffer.h>
 
-#include <settings.h>  /*zapit/settings.h*/
+#include <settings.h>  //zapit/settings.h
 
 #include <string>
 
@@ -127,6 +127,18 @@ class CScanSetupNotifier : public CChangeObserver
 		CScanSetupNotifier(int num = 0);
 		void addItem(int list , CMenuItem *item);
 		bool changeNotify(const neutrino_locale_t, void * Data);
+};
+
+class CTunerSetup : public CMenuTarget
+{
+	private:
+		void showMenu();
+		
+	public:
+		CTunerSetup();
+		~CTunerSetup();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 #endif

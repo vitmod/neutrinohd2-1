@@ -138,11 +138,6 @@ unsigned int CProgressWindow::getGlobalStatus(void)
 
 void CProgressWindow::hide()
 {
-	/*
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-
-	frameBuffer->blit();
-	*/
 	if (frameBuffer != NULL)
 	{
 		delete frameBuffer;
@@ -154,15 +149,19 @@ void CProgressWindow::paint()
 {
 	// title
 	int ypos = y;
+	
+	// shadow
 	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
-	CFrameBuffer::getInstance()->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	
+	// title
+	CFrameBuffer::getInstance()->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// icon
 	int icon_w = 0;
 	int icon_h = 0;
 	
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
-	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_INFO, x + 8, ypos + 8);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, ypos + (hheight - icon_h)/2);
 	
 	// caption
 	const char * l_caption;
@@ -171,7 +170,7 @@ void CProgressWindow::paint()
 	else
 		l_caption = captionString.c_str();
 	  
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 8 + icon_w + 5, ypos + hheight, width- 10, l_caption, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, ypos + hheight, width - BORDER_LEFT - BORDER_RIGHT - ICON_OFFSET, l_caption, COL_MENUHEAD, 0, true); // UTF-8
 		
 	// footer
 	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);

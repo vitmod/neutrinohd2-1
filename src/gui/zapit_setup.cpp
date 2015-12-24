@@ -32,7 +32,6 @@
 #include <neutrino.h>
 
 #include <driver/screen_max.h>
-//#include <gui/bouquetlist.h>
 #include <gui/channel_select.h>
 
 #include <system/debug.h>

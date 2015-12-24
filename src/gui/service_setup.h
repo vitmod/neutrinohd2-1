@@ -1,7 +1,11 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-
+	$id: service_setup.h 2015.12.22 17:04:28 mohousch $
+	
+	Copyright (C) 2001 Steffen Hehn 'McClean'
+	and some other guys
+	Homepage: http://dbox.cyberphoria.org/
 
 	License: GPL
 
@@ -18,18 +22,26 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+*/ 
 
-#ifndef __sleeptimer__
-#define __sleeptimer__
+#ifndef __service__
+#define __service__
 
 #include <gui/widget/menue.h>
 
+#include <string>
 
-class CSleepTimerWidget: public CMenuTarget
+
+class CServiceSetup : public CMenuTarget
 {
+	private:
+		void showMenu();
+		
 	public:
-		int exec(CMenuTarget * parent, const std::string & actionKey);
+		CServiceSetup();
+		~CServiceSetup();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-#endif
+#endif //__service__

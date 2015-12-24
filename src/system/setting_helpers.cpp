@@ -1,5 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
+	
+	$id: setting_helpers.cpp 2015.12.22 15:24:30 mohousch $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -53,6 +55,8 @@
 #include <gui/widget/hintbox.h>
 
 #include <gui/plugins.h>
+#include <gui/main_setup.h>
+
 #include <daemonc/remotecontrol.h>
 #include <xmlinterface.h>
 
@@ -124,10 +128,10 @@ CDHCPNotifier::CDHCPNotifier( CMenuForwarder* a1, CMenuForwarder* a2, CMenuForwa
 
 bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
 {
-	CNeutrinoApp::getInstance()->networkConfig.inet_static = ((*(int*)(data)) == 0);
+	CNetworkSettings::getInstance()->networkConfig.inet_static = ((*(int*)(data)) == 0);
 	
 	for(int x = 0; x < 5; x++)
-		toDisable[x]->setActive(CNeutrinoApp::getInstance()->networkConfig.inet_static);
+		toDisable[x]->setActive(CNetworkSettings::getInstance()->networkConfig.inet_static);
 	
 	return true;
 }
@@ -228,6 +232,8 @@ bool CSectionsdConfigNotifier::changeNotify(const neutrino_locale_t, void *)
 // color setup notifier
 bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 {
+	dprintf(DEBUG_NORMAL, "CColorSetupNotifier::changeNotify:\n");
+	
 	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
 	
 	// head
@@ -251,14 +257,14 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	                              8, 
 				      convertSetupAlpha2Alpha(g_settings.menu_Content_alpha) );
 
-	// menu selected
+	// menu content selected
 	frameBuffer->paletteGenFade(COL_MENUCONTENTSELECTED,
 	                              convertSetupColor2RGB(g_settings.menu_Content_Selected_red, g_settings.menu_Content_Selected_green, g_settings.menu_Content_Selected_blue),
 	                              convertSetupColor2RGB(g_settings.menu_Content_Selected_Text_red, g_settings.menu_Content_Selected_Text_green, g_settings.menu_Content_Selected_Text_blue),
 	                              8, 
 				      convertSetupAlpha2Alpha(g_settings.menu_Content_Selected_alpha) );
 
-	// menu inactiv
+	// menu content inactiv
 	frameBuffer->paletteGenFade(COL_MENUCONTENTINACTIVE,
 	                              convertSetupColor2RGB(g_settings.menu_Content_inactive_red, g_settings.menu_Content_inactive_green, g_settings.menu_Content_inactive_blue),
 	                              convertSetupColor2RGB(g_settings.menu_Content_inactive_Text_red, g_settings.menu_Content_inactive_Text_green, g_settings.menu_Content_inactive_Text_blue),
@@ -294,7 +300,7 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 				      
 	// channellist colored events
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_CHANNELLIST,
-	                              convertSetupColor2RGB(int(g_settings.menu_Content_red), int(g_settings.menu_Content_green), int(g_settings.menu_Content_blue)),
+	                              convertSetupColor2RGB(g_settings.menu_Content_red, g_settings.menu_Content_green, g_settings.menu_Content_blue),
 	                              convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue),
 	                              8, 
 				      convertSetupAlpha2Alpha(g_settings.menu_Content_alpha) );
@@ -309,6 +315,8 @@ extern int prev_video_Mode;
 
 bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
 {
+	dprintf(DEBUG_NORMAL, "CVideoSetupNotifier::changeNotify\n");
+	
 	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
 
 	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_ANALOG_MODE))	/* video analoue mode */
@@ -369,7 +377,7 @@ bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 // audio setup notifier
 bool CAudioSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
 {
-	//printf("notify: %d\n", OptionName);
+	dprintf(DEBUG_NORMAL, "CAudioSetupNotifier::changeNotify\n");
 
 	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_ANALOGOUT)) 
 	{
@@ -433,34 +441,29 @@ bool CIPChangeNotifier::changeNotify(const neutrino_locale_t locale, void * Data
 		sscanf((char*) Data, "%hhu.%hhu.%hhu.%hhu", &_ip[0], &_ip[1], &_ip[2], &_ip[3]);
 
 		sprintf(ip, "%hhu.%hhu.%hhu.255", _ip[0], _ip[1], _ip[2]);
-		CNeutrinoApp::getInstance()->networkConfig.broadcast = ip;
+		CNetworkSettings::getInstance()->networkConfig.broadcast = ip;
 
-		CNeutrinoApp::getInstance()->networkConfig.netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
+		CNetworkSettings::getInstance()->networkConfig.netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
 	}
 	else if(locale == LOCALE_NETWORKMENU_SELECT_IF) 
 	{
-#ifdef FB_BLIT
-		// Width may change. Clear framebuffer, caller will redraw anyway.
-		//CFrameBuffer::getInstance()->Clear();
-		CFrameBuffer::getInstance()->blit();
-#endif
-		CNeutrinoApp::getInstance()->networkConfig.readConfig(g_settings.ifname);
+		CNetworkSettings::getInstance()->networkConfig.readConfig(g_settings.ifname);
 		//readNetworkSettings(); //???
-		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNeutrinoApp::getInstance()->networkConfig.inet_static);
+		
+		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNetworkSettings::getInstance()->networkConfig.inet_static);
 
-		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNeutrinoApp::getInstance()->networkConfig.inet_static);
+		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNetworkSettings::getInstance()->networkConfig.inet_static);
 
-#if 1
-		int ecnt = sizeof(CNeutrinoApp::getInstance()->wlanEnable) / sizeof(CMenuItem*);
-#endif
+		int ecnt = sizeof(CNetworkSettings::getInstance()->wlanEnable) / sizeof(CMenuItem*);
+
 		for(int i = 0; i < ecnt; i++)
-			CNeutrinoApp::getInstance()->wlanEnable[i]->setActive(CNeutrinoApp::getInstance()->networkConfig.wireless);
+			CNetworkSettings::getInstance()->wlanEnable[i]->setActive(CNetworkSettings::getInstance()->networkConfig.wireless);
 
 	}
 	/*
 	else if(locale == LOCALE_NETWORKMENU_DHCP) 
 	{
-		CNeutrinoApp::getInstance()->networkConfig.inet_static = (network_dhcp == 0 );
+		CNetworkSettings::getInstance()->networkConfig.inet_static = (network_dhcp == 0 );
 		int ecnt = sizeof(dhcpDisable) / sizeof(CMenuForwarder*);
 
 		for(int i = 0; i < ecnt; i++)
@@ -474,6 +477,8 @@ bool CIPChangeNotifier::changeNotify(const neutrino_locale_t locale, void * Data
 // timing settings notifier
 bool CTimingSettingsNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
 {
+	dprintf(DEBUG_NORMAL, "CTimingSettingsNotifier::changeNotify:\n");
+		
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
 	{
 		if (ARE_LOCALES_EQUAL(OptionName, timing_setting_name[i]))

@@ -312,6 +312,9 @@ extra.north Norden
 extra.record_time Timeshift max. in Std.
 extra.rotor_swap Rotor dreht Ost/West
 servicemenu.tuner_to_scan Tuner zum scannen
+extra.mainmenu_design Hauptmenü Design
+extra.mainmenu_design_smart Smart
+extra.mainmenu_design_standard Standard
 extra.mbpreview Moviebrowser Vorschau
 extra.savecolors Speichere Farben als
 extra.saveconfig Speichere Einstellungen als
@@ -1116,8 +1119,8 @@ pinprotection.head PIN-Abfrage
 pinprotection.wrongcode Geben Sie den Code nocheinmal ein!
 plugins.notinstalled ist nicht installiert bitte erneut installieren.
 plugins.result Pluginausgabe
-pluginlist.remove_plugin plugin deinstallieren
-pluginlist.start_plugin start Plugin
+pluginlist.remove_plugin löschen
+pluginlist.start_plugin starten
 rclock.lockmsg Die Fernbedienung wird gesperrt.\n Um die Sperre aufzuheben, bitte\n <ROT> und <MENU> auf der Fernbedienung\n druecken.
 rclock.menueadd FB sperren
 rclock.title Fernbedienung sperren
@@ -1474,7 +1477,7 @@ hddmenu.hddmounted HDD Mounted
 hddmenu.hddmountfailed HDD Mount Failed
 hddmenu.hddumount HDD Umount
 hddmenu.hddumounted HDD Umounted
-mainmenu.mediaplayer Media Center
+mainmenu.mediaplayer Media Player
 osd.timezone Time Zone
 osd.corners OSD Ecken
 osd.roundedcornersoff eckig

@@ -581,7 +581,7 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 			}
 			else if ( mr & messages_return::unhandled )
 			{
-				if ( (msg <= CRCInput::RC_MaxRC) && (data == 0) )                     /* <- button pressed */
+				if ( (msg <= CRCInput::RC_MaxRC) && (data == 0) )                     // <- button pressed
 				{
 					if ( anyKeyCancels )
 						doLoop = false;

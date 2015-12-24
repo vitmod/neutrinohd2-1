@@ -113,7 +113,6 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 		
 		// itemlines	
 		paintItem2DetailsLine(paintNr, itemNr);		
@@ -125,9 +124,10 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 	{
 		color   = COL_MENUCONTENT;
 		bgcolor = COL_MENUCONTENT_PLUS_0;
-		
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 	}
+	
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, _selected? true : false);
 
 	//
 	int icon_w, icon_h;

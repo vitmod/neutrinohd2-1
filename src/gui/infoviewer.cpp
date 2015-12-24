@@ -90,7 +90,7 @@ extern fe_map_t femap;					// zapit.cpp
 extern CFrontend * getFE(int index);			// zapit.cpp
 extern int FrontendCount;				// defined in zapit.cpp
 extern CWebTV * webtv;					// defined in neutrino.cpp
-extern CMoviePlayerGui * moviePlayerGui;
+//extern CMoviePlayerGui * moviePlayerGui;		// defined in neutrino.cpp
 
 extern bool autoshift;
 extern uint32_t shift_timer;
@@ -833,7 +833,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	frameBuffer->paintBoxRel(BoxStartX + SHADOW_OFFSET, BoxStartY + SHADOW_OFFSET, BoxWidth, BoxHeight + buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH );
 		
 	// paint info box
-	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP); 
+	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)? true : false); 
 		
 	// timescale bg
 	frameBuffer->paintBoxRel(BoxStartX + 10, BoxStartY + SAT_INFOBOX_HEIGHT, BoxWidth - 20, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_SHADOW_PLUS_1 ); 
@@ -893,10 +893,13 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	// red
 	// movie info
 	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
+	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+	{
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
+	}
 		
 	// green
 	// audio
@@ -906,7 +909,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		
 	// yellow	
 	// help
-	if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)
 	{
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, BoxStartX + (BoxWidth/5)*2, buttonBarStartY+ (buttonBarHeight - icon_h)/2);
@@ -914,13 +917,16 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	}
 	
 	// blue
-	// bookmark
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, BoxStartX + (BoxWidth/5)*3, buttonBarStartY+ (buttonBarHeight - icon_h)/2);
+	// bookmark/features
+	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts && show_bookmark))
+	{
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, BoxStartX + (BoxWidth/5)*3, buttonBarStartY+ (buttonBarHeight - icon_h)/2);
+	}
 	
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*3 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_INFOVIEWER_FEATURES), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-	else if(show_bookmark)
+	else if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts && show_bookmark)
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*3 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_MOVIEPLAYER_BOOKMARK), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
 		
 	// ac3
@@ -968,7 +974,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	frameBuffer->getIconSize(icon, &icon_w, &icon_h);
 
 	//
-	int icon_x = BoxStartX + 5 + m_icon_w + 10;
+	int icon_x = BoxStartX + ICON_OFFSET + m_icon_w + BORDER_RIGHT;
 	int icon_y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + (BoxHeight - SAT_INFOBOX_HEIGHT - TIMESCALE_BAR_HEIGHT - icon_h) / 2;
 
 	frameBuffer->paintIcon(icon, icon_x, icon_y);
@@ -1008,8 +1014,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(durationTextPos, TitleHeight, durationWidth, cDisplayTime, COL_INFOBAR);
 	
 	// progressbar
-	//runningPercent = Percent;
-	runningPercent = moviePlayerGui->getPercent();
+	runningPercent = Percent;
 	
 	if(Percent < 0)
 		runningPercent = 0;
@@ -1056,13 +1061,18 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 				if(webtv)
 					webtv->showFileInfoWebTV(webtv->getTunedChannel());
 			}
+			/*
 			else if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)
 			{
 				killTitle();
 				
-				if(moviePlayerGui)
-					moviePlayerGui->showFileInfo();
+				//if(moviePlayerGui)
+				//	moviePlayerGui->showFileInfo();
+				CMoviePlayerGui tmpMoviePlayerGui;
+				
+				tmpMoviePlayerGui.showFileInfo();
 			}
+			*/
 		}
 		else 
 		{

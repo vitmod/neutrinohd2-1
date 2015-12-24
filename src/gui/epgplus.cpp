@@ -121,7 +121,7 @@ void EpgPlus::Header::init ()
 
 void EpgPlus::Header::paint ()
 {
-	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// paint time/date
 	int timestr_len = 0;

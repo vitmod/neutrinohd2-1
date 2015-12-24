@@ -161,7 +161,7 @@ void CTextBox::initVar(void)
 	m_nMode = SCROLL;
 
 	m_pcFontText = NULL;
-	m_pcFontText  =  g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
+	m_pcFontText = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
 	m_nFontTextHeight = m_pcFontText->getHeight();
 
 	m_nNrOfPages = 1;
@@ -453,7 +453,7 @@ void CTextBox::refreshText(void)
 		}
 		
 		//FIXME
-		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0) && (lx < (m_cFrameTextRel.iX + m_cFrameTextRel.iWidth - tw - 10) && /*y <= (ly + th)*/(m_nNrOfLines <= (th / m_nFontTextHeight) )) )
+		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0) && (lx < (m_cFrameTextRel.iX + m_cFrameTextRel.iWidth - tw - 10) && (m_nNrOfLines <= (th / m_nFontTextHeight) )) )
 		{
 			x_center = tw + TEXT_BORDER_WIDTH;
 		}

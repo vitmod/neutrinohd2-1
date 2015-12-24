@@ -576,8 +576,14 @@ void CMotorControl::paintStatus()
 void CMotorControl::paint()
 {
 	ypos = y;
-	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP );
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, ypos + hheight, width, (char *) g_Locale->getText(LOCALE_MOTORCONTROL_HEAD), COL_MENUHEAD, 0, true); // UTF-8
+	
+	// headBox
+	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	
+	// head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, ypos + hheight, width - BORDER_LEFT - BORDER_RIGHT, (char *) g_Locale->getText(LOCALE_MOTORCONTROL_HEAD), COL_MENUHEAD, 0, true); // UTF-8
+	
+	// footer
 	frameBuffer->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM );
 
 	ypos += hheight + (mheight >> 1) - 10;

@@ -1,5 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
+	
+	$id: update.h 2015.12.22 11:38:28 mohousch $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -88,6 +90,19 @@ class CFlashExpert : public CProgressWindow
 	public:
 		CFlashExpert();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
+
+// update setup
+class CUpdateSettings : public CMenuTarget
+{
+	private:
+		void showMenu();
+	
+	public:
+		CUpdateSettings();
+		~CUpdateSettings();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 #endif

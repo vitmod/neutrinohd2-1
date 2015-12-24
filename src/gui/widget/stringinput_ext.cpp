@@ -320,25 +320,27 @@ void CExtendedInput::paint()
 	//head
 	//shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	
+	// title
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	//foot
 	//shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width - 10, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width - BORDER_LEFT - BORDER_RIGHT, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, hintPosY, width- 20, g_Locale->getText(hint_1), COL_MENUCONTENT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, hintPosY, width - 20, g_Locale->getText(hint_1), COL_MENUCONTENT, 0, true); // UTF-8
 		if (hint_2 != NONEXISTANT_LOCALE)
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, hintPosY + iheight, width - 20, g_Locale->getText(hint_2), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 
-	for(unsigned int i=0; i<inputFields.size();i++)
+	for(unsigned int i = 0; i < inputFields.size(); i++)
 	{
-		inputFields[i]->paint( x+20, y+hheight +20, (i== (unsigned int) selectedChar) );
+		inputFields[i]->paint( x + 20, y+hheight + 20, (i == (unsigned int) selectedChar) );
 	}
 
 

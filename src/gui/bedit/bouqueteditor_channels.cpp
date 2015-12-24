@@ -99,7 +99,6 @@ void CBEChannelWidget::paintItem(int pos)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 		
 		// itemlines	
 		paintItem2DetailsLine(pos, current);		
@@ -111,9 +110,10 @@ void CBEChannelWidget::paintItem(int pos)
 	{
 		color   = COL_MENUCONTENT;
 		bgcolor = COL_MENUCONTENT_PLUS_0;
-		
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 	}
+	
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (current == selected)? true : false);
 
 	if ((current == selected) && (state == beMoving))
 	{
@@ -180,8 +180,8 @@ void CBEChannelWidget::paint()
 
 void CBEChannelWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + theight, width, caption.c_str() , COL_MENUHEAD, 0, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - BORDER_LEFT - BORDER_RIGHT, caption.c_str() , COL_MENUHEAD, 0, true);
 }
 
 const struct button_label CBEChannelWidgetButtons[4] =

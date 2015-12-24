@@ -502,7 +502,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	}
 
 	//show the epg title
-	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	//
 	// paint time/date

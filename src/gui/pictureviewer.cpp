@@ -608,14 +608,12 @@ void CPictureViewerGui::hide()
 
 void CPictureViewerGui::paintItem(int pos)
 {
-	//printf("paintItem{\n");
-	
 	int ypos = y + theight + pos*fheight;
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 
-	if ((liststart+pos < playlist.size()) && (pos & 1) )
+	if ((liststart + pos < playlist.size()) && (pos & 1) )
 	{
 		color   = COL_MENUCONTENTDARK;
 		bgcolor = COL_MENUCONTENTDARK_PLUS_0;
@@ -626,31 +624,29 @@ void CPictureViewerGui::paintItem(int pos)
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 
-	if (liststart+pos == selected)
+	if (liststart + pos == selected)
 	{
-		frameBuffer->paintBoxRel(x,ypos, width-15, fheight, bgcolor);
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
 
-	frameBuffer->paintBoxRel(x,ypos, width-15, fheight, bgcolor);
+	// itemBox
+	frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (liststart + pos == selected)? true : false);
 
 	if(liststart + pos < playlist.size())
 	{
-		std::string tmp = playlist[liststart+pos].Name;
+		std::string tmp = playlist[liststart + pos].Name;
 		tmp += " (";
-		tmp += playlist[liststart+pos].Type;
+		tmp += playlist[liststart + pos].Type;
 		tmp += ')';
 		char timestring[18];
-		strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&playlist[liststart+pos].Date));
+		strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&playlist[liststart + pos].Date));
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(timestring);
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+10,ypos+fheight, width-30 - w, tmp, color, fheight, true);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+width-20-w,ypos+fheight, w, timestring, color, fheight);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, ypos + fheight, width - 30 - w, tmp, color, fheight, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - 20 - w, ypos + fheight, w, timestring, color, fheight);
 
 	}
-
-	//printf("paintItem}\n");
 }
 
 // paint head
@@ -661,7 +657,7 @@ void CPictureViewerGui::paintHead()
 	std::string strCaption = g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD);
 	
 	//head box
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// head icon
 	//frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);

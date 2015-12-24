@@ -1704,18 +1704,15 @@ void CChannelList::paintItem(int pos)
 		
 		// details
 		paintDetails(curr);
-
-		// itembox
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 	} 
 	else 
 	{
 		color = iscurrent ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
 		bgcolor = iscurrent ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
-		
-		// itembox
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 	}
+	
+	// itembox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor, 0, 0, (curr == selected)? true : false);
 
 	//name and description
 	if(curr < chanlist.size()) 
@@ -1878,7 +1875,7 @@ const struct button_label CChannelVListButtons[NUM_VLIST_BUTTONS] =
 void CChannelList::paintHead()
 {
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);	//round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);	//round
 	
 	int ButtonWidth = (width - BORDER_LEFT - BORDER_RIGHT) / 4;
 

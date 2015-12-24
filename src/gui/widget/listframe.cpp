@@ -424,9 +424,9 @@ void CListFrame::refreshList(void)
 			color = LIST_FONT_COLOR_SELECTED;
 
 			if(m_nNrOfPages > 1)
-				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
 			else
-				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
 		}
 		
 		int width;
@@ -467,19 +467,20 @@ void CListFrame::refreshLine(int line)
 		color = LIST_FONT_COLOR_SELECTED;
 
 		if(m_nNrOfPages > 1)
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, 0, 0, true);
 		else
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, 0, 0, true);
 	}
 	else
 	{
 		color = LIST_FONT_COLOR;
 		
 		if(m_nNrOfPages > 1)
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX+m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
 		else
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX+m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
 	}
+	
 	int width;
 	int x = m_cFrameListRel.iX + TEXT_BORDER_WIDTH;
 	y += m_nFontListHeight;
@@ -549,7 +550,7 @@ void CListFrame::scrollLineDown(const int lines)
 		} 
 		else 
 		{
-			refreshLine(m_nSelectedLine-lines);
+			refreshLine(m_nSelectedLine - lines);
 			refreshLine(m_nSelectedLine);
 		}
 	} 

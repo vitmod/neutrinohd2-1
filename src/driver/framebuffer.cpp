@@ -499,22 +499,23 @@ void CFrameBuffer::setBlendLevel(int level)
 
 void CFrameBuffer::paletteFade(int i, __u32 rgb1, __u32 rgb2, int level)
 {
-	__u16 *r = cmap.red+i;
-	__u16 *g = cmap.green+i;
-	__u16 *b = cmap.blue+i;
+	__u16 *r = cmap.red + i;
+	__u16 *g = cmap.green + i;
+	__u16 *b = cmap.blue + i;
+	
 	*r= ((rgb2&0xFF0000)>>16)*level;
 	*g= ((rgb2&0x00FF00)>>8 )*level;
 	*b= ((rgb2&0x0000FF)    )*level;
-	*r+=((rgb1&0xFF0000)>>16)*(255-level);
-	*g+=((rgb1&0x00FF00)>>8 )*(255-level);
-	*b+=((rgb1&0x0000FF))*(255-level);
+	*r += ((rgb1&0xFF0000)>>16)*(255 - level);
+	*g += ((rgb1&0x00FF00)>>8 )*(255 - level);
+	*b += ((rgb1&0x0000FF))*(255 - level);
 }
 
 void CFrameBuffer::paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr)
 {
 	for (int i = 0; i < num; i++) 
 	{
-		paletteFade(in + i, rgb1, rgb2, i*(255/(num-1)));
+		paletteFade(in + i, rgb1, rgb2, i*(255/(num - 1)));
 		cmap.transp[in + i] = tr;
 		tr--; //FIXME
 	}
@@ -558,12 +559,11 @@ void CFrameBuffer::paletteSet(struct fb_cmap *map)
 
 	for (int i = 0; i < 256; i++)
 	{
-		realcolor[i] = make16color(cmap.red[i], cmap.green[i], cmap.blue[i], cmap.transp[i],
-					   rl, ro, gl, go, bl, bo, tl, to);
+		realcolor[i] = make16color(cmap.red[i], cmap.green[i], cmap.blue[i], cmap.transp[i], rl, ro, gl, go, bl, bo, tl, to);
 	}
 }
 
-void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, /*const*/ fb_pixel_t col, int radius, int type)
+void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor, int mode)
 {
 	if (!getActive())
 		return;
@@ -572,7 +572,25 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
 	uint8_t *pos = ((uint8_t *)getFrameBufferPointer()) + x*sizeof(fb_pixel_t) + stride*y;
 	uint8_t *pos0 = 0, *pos1 = 0, *pos2 = 0, *pos3 = 0;
 	fb_pixel_t *dest0, *dest1;
+	
+	// colorFading
+	uint8_t start_tr = (uint8_t)((col & 0xFF000000) >> 24);
+	uint8_t start_r  = (uint8_t)((col & 0x00FF0000) >> 16);
+	uint8_t start_g  = (uint8_t)((col & 0x0000FF00) >>  8);
+	uint8_t start_b  = (uint8_t) (col & 0x000000FF);
 
+	float steps = (float) dy;
+
+	float trStep = (float)(start_tr) / steps;
+	float rStep = (float)(start_r) / steps;
+	float gStep = (float)(start_g) / steps;
+	float bStep = (float)(start_b) / steps;
+	
+	uint8_t tr = 0;
+	uint8_t r = 0;
+	uint8_t g = 0;
+	uint8_t b = 0;
+	
 	if(R) 
 	{
 		if(--dyy <= 0) 
@@ -667,6 +685,24 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
                 		pos0 -= stride;
                 		pos1 += stride;
             		}
+            		
+            		if(fadeColor)
+			{
+				//tr = limitChar((int)(start_tr + trStep*(float)count));
+				r  = limitChar((int)(start_r + rStep*(float)sx));
+				g  = limitChar((int)(start_g + gStep*(float)sx));
+				b  = limitChar((int)(start_b + bStep*(float)sx));
+					
+				tr = start_tr;
+				//r = start_r;
+				//g = start_g;
+				//b = start_b;
+
+				col = ((tr << 24) & 0xFF000000) |
+						((r  << 16) & 0x00FF0000) |
+						((g  <<  8) & 0x0000FF00) |
+						( b         & 0x000000FF);
+			}
         	}
         	
 		if(type & 1)
@@ -690,6 +726,25 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
             		*(dest0++) = col;
 		
         	pos += stride;	
+		
+		// fade color
+		if(fadeColor)
+		{
+			//tr = limitChar((int)(start_tr + trStep*(float)count));
+			r  = limitChar((int)(start_r + rStep*(float)count));
+			g  = limitChar((int)(start_g + gStep*(float)count));
+			b  = limitChar((int)(start_b + bStep*(float)count));
+			
+			tr = start_tr;
+			//r = start_r;
+			//g = start_g;
+			//b = start_b;
+
+			col = ((tr << 24) & 0xFF000000) |
+					((r  << 16) & 0x00FF0000) |
+					((g  <<  8) & 0x0000FF00) |
+					( b         & 0x000000FF);
+		}
     	}
 }
 
@@ -777,7 +832,6 @@ void CFrameBuffer::getIconSize(const char * const filename, int * width, int * h
 		
 		if (icon_fd == -1)
 		{
-			//printf("Framebuffer getIconSize: error while loading icon: %s\n", iconfile.c_str());
 			return;
 		}
 		else
@@ -858,7 +912,6 @@ bool CFrameBuffer::paintIcon8(const std::string & filename, const int x, const i
 			
 			if (color != header.transp) 
 			{
-				//printf("icon8: col %d transp %d real %08X\n", color+offset, header.transp, realcolor[color+offset]);
 				paintPixel(d2, color + offset);
 			}
 			d2++;
@@ -942,8 +995,6 @@ bool CFrameBuffer::paintIconRaw(const std::string & filename, const int x, const
 		{
 			cache_size += dsize;
 			icon_cache.insert(std::pair <std::string, Icon> (filename, tmpIcon));
-			
-			//printf("Cached %s, cache size %d\n", newname.c_str(), cache_size);
 		}
 	} 
 	else 
@@ -995,7 +1046,6 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		{
 			dprintf(DEBUG_DEBUG, "paintIcon: error while loading icon: %s\n", newname.c_str());
 			
-			//data = getIcon(filename, &width, &height);
 			if(width == 0 || height == 0)	
 				getIconSize(filename.c_str(), &width, &height);
 			data = getImage(filename, width, height);
@@ -1124,7 +1174,7 @@ void CFrameBuffer::paintLine(int xa, int ya, int xb, int yb, const fb_pixel_t co
 			step = yb < ya ? -1 : 1;
 		}
 
-		paintPixel (x, y, col);
+		paintPixel(x, y, col);
 
 		while( x < End )
 		{
@@ -1136,7 +1186,7 @@ void CFrameBuffer::paintLine(int xa, int ya, int xb, int yb, const fb_pixel_t co
 				y += step;
 				p += twoDyDx;
 			}
-			paintPixel (x, y, col);
+			paintPixel(x, y, col);
 		}
 	}
 	else
@@ -1160,7 +1210,7 @@ void CFrameBuffer::paintLine(int xa, int ya, int xb, int yb, const fb_pixel_t co
 			step = xb < xa ? -1 : 1;
 		}
 
-		paintPixel (x, y, col);
+		paintPixel(x, y, col);
 
 		while( y < End )
 		{
@@ -1172,7 +1222,7 @@ void CFrameBuffer::paintLine(int xa, int ya, int xb, int yb, const fb_pixel_t co
 				x += step;
 				p += twoDxDy;
 			}
-			paintPixel (x, y, col);
+			paintPixel(x, y, col);
 		}
 	}
 }
@@ -1194,6 +1244,9 @@ bool CFrameBuffer::loadBackgroundPic(const std::string & filename, bool show)
 	
 	// get bg image
 	background = getImage(iconBasePath + filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT);
+	
+	if(!background) 
+		background = getImage(filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT);
 
 	// if not found
 	if (background == NULL) 
@@ -1644,7 +1697,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 	
   	if (fh) 
 	{
-		buffer = (unsigned char *) malloc (x*y*4);
+		buffer = (unsigned char *) malloc(x*y*4);
 		
 		if (buffer == NULL) 
 		{
@@ -1699,6 +1752,31 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 	}
 
 	return ret;
+}
+
+// display image
+bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
+{
+	dprintf(DEBUG_INFO, "CFrameBuffer::DisplayImage %s\n", name.c_str());
+	
+	if(!getActive())
+		return false;
+	
+	bool isPNG = false;
+	
+	if( name.find(".png") == (name.length() - 4) )
+		isPNG = true;
+	
+	fb_pixel_t * data = getImage(name, width, height);
+
+	if(data) 
+	{
+		blit2FB(data, width, height, posx, posy, 0, 0, isPNG? true : false);
+		free(data);
+		return true;
+	}
+	
+	return false;
 }
 
 //
@@ -1836,34 +1914,4 @@ void CFrameBuffer::blit(int mode3d)
 #endif	
 //#endif
 }
-
-// display image
-bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
-{
-	dprintf(DEBUG_NORMAL, "CFrameBuffer::DisplayImage %s\n", name.c_str());
-	
-	if(!getActive())
-		return false;
-	
-	bool isPNG = false;
-	
-	if( name.find(".png") == (name.length() - 4) )
-		isPNG = true;
-	
-	fb_pixel_t * data = getImage(name, width, height);
-
-	if(data) 
-	{
-		blit2FB(data, width, height, posx, posy, 0, 0, isPNG? true : false);
-		free(data);
-		return true;
-	}
-	
-	return false;
-}
-
-
-
-
-
 

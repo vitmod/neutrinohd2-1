@@ -312,6 +312,9 @@ extra.north North
 extra.record_time Fast/timeshift record time(hours)
 extra.rotor_swap Swap rotor east/west
 servicemenu.tuner_to_scan Tuner to scan
+extra.mainmenu_design Mainmenu Design
+extra.mainmenu_design_smart Smart
+extra.mainmenu_design_standard Standard
 extra.mbpreview Moviebrowser Preview
 extra.savecolors Save colors as
 extra.saveconfig Save settings as
@@ -1473,7 +1476,7 @@ hddmenu.hddmounted HDD Mounted
 hddmenu.hddmountfailed HDD Mount Failed
 hddmenu.hddumount HDD Umount
 hddmenu.hddumounted HDD Umounted
-mainmenu.mediaplayer Media Center
+mainmenu.mediaplayer Media Player
 osd.timezone Time Zone
 osd.corners OSD Corners
 osd.roundedcornersoff angular

@@ -51,6 +51,7 @@
 
 #include <system/flashtool.h>
 #include <system/httptool.h>
+#include <system/helpers.h>
 
 #include <curl/curl.h>
 //#include <curl/types.h>
@@ -780,3 +781,140 @@ int CFlashExpert::exec(CMenuTarget* parent, const std::string & actionKey)
 	
 	return menu_return::RETURN_REPAINT;
 }
+
+//
+CUpdateSettings::CUpdateSettings()
+{
+}
+
+CUpdateSettings::~CUpdateSettings()
+{
+}
+
+int CUpdateSettings::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CUpdateSettings::exec: actionKey:%s\n", actionKey.c_str());
+	
+	int ret = menu_return::RETURN_REPAINT;
+	
+	if(parent)
+		parent->hide();
+	
+	if(actionKey == "savesettings")
+	{
+		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+		
+		return ret;
+	}
+	else if (actionKey == "update_dir")
+	{
+		if(parent)
+			parent->hide();
+		
+		CFileBrowser fileBrowser;
+		fileBrowser.Dir_Mode = true;
+		
+		if (fileBrowser.exec(g_settings.update_dir) == true) 
+		{
+			const char * newdir = fileBrowser.getSelectedFile()->Name.c_str();
+			if(check_dir(newdir))
+				printf("CUpdateSettings::exec: Wrong/unsupported update dir %s\n", newdir);
+			else
+			{
+				strcpy(g_settings.update_dir, fileBrowser.getSelectedFile()->Name.c_str());
+				
+				dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new update dir %s\n", fileBrowser.getSelectedFile()->Name.c_str());
+			}
+		}
+		
+		return ret;
+	}
+	
+	showMenu();
+	
+	return ret;
+}
+
+void CUpdateSettings::showMenu()
+{
+	dprintf(DEBUG_NORMAL, "CUpdateSettings::showMenu\n");
+	
+	CMenuWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
+		
+	// intros
+	updateSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	
+	// save settings
+	updateSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	updateSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+
+	// expert-function for mtd read/write
+	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
+		
+	// intros
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	mtdexpert->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		
+	CFlashExpert * fe = new CFlashExpert();
+
+	// read mtd 
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_READFLASHMTD , true, NULL, fe, "readflashmtd" ));
+
+	// write mtd
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_WRITEFLASHMTD, true, NULL, fe, "writeflashmtd"));
+
+	// experten function
+	//FIXME: allow update only when the rootfs is jffs2/squashfs
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, "", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		
+	// update dir
+	updateSettings.addItem( new CMenuForwarder(LOCALE_EXTRA_UPDATE_DIR, true, g_settings.update_dir , this, "update_dir") );
+	
+	// url
+	CStringInputSMS * updateSettings_url_file = new CStringInputSMS(LOCALE_FLASHUPDATE_URL_FILE, g_settings.softupdate_url_file);
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_URL_FILE, true, g_settings.softupdate_url_file, updateSettings_url_file));
+
+	// show current version
+	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_CURRENTVERSION_SEP));
+
+	// get current version SBBB YYYY MM TT HH MM -- formatsting
+	CConfigFile lconfigfile('\t');
+
+	const char * versionString = (lconfigfile.loadConfig("/etc/.version")) ? (lconfigfile.getString( "version", "1200201205091849").c_str()) : "1200201205091849";
+
+	dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
+
+	static CFlashVersionInfo versionInfo(versionString);
+
+	// release cycle
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, versionInfo.getReleaseCycle() ));
+		
+	// date
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, versionInfo.getDate() ));
+		
+	// time
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONTIME, false, versionInfo.getTime()));
+		
+	// type
+	// versionInfo.getType() returns const char * which is never deallocated
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONSNAPSHOT, false, versionInfo.getType()));
+
+	// check update
+	//FIXME: allow update only when the rootfs is jffs2/squashfs
+	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	
+	// offline
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, true, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+
+	// online
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, true, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+	
+	updateSettings.exec(NULL, "");
+	updateSettings.hide();
+	
+	delete fe;
+	delete mtdexpert;
+}
+

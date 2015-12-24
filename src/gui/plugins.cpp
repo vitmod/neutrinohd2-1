@@ -340,12 +340,6 @@ void CPlugins::startPlugin(int number)
 	sprintf(tmp, "%d", g_settings.screen_EndY);
 	setenv("SCREEN_END_Y", tmp, 1);
 	
-	//
-	sprintf(tmp, "%d", CONFIGDIR);
-	setenv("CONFIGDIR", tmp, 1);
-	sprintf(tmp, "%d", PLUGINDIR);
-	setenv("PLUGINDIR", tmp, 1);
-	
 	// script type
 	if (plugin_list[number].type == CPlugins::P_TYPE_SCRIPT)
 	{

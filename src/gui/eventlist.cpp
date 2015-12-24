@@ -658,7 +658,7 @@ void EventList::paintHead(t_channel_id channel_id)
 {
 	bool logo_ok = false;
 
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	// help icon
 	int icon_h_w, icon_h_h;

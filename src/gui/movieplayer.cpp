@@ -99,7 +99,8 @@
 #define MOVIEPLAYER_START_SCRIPT 	CONFIGDIR "/movieplayer.start" 
 #define MOVIEPLAYER_END_SCRIPT 		CONFIGDIR "/movieplayer.end"
 
-cPlayback * playback = NULL;
+//cPlayback * playback = NULL;
+extern cPlayback *playback;
 
 //
 extern CInfoViewer * g_InfoViewer;
@@ -133,9 +134,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 		Path_local = g_settings.network_nfs_moviedir;
 	else
 		Path_local = "/";
-	
-	// playback
-	playback = new cPlayback();
 
 	// tsfilefilter
 	tsfilefilter.addFilter("ts");
@@ -167,8 +165,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 
 CMoviePlayerGui::~CMoviePlayerGui()
 {
-	if (playback)
-		delete playback;
 }
 
 void CMoviePlayerGui::cutNeutrino()
@@ -961,8 +957,8 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						CFile *file = filebrowser->getSelectedFile();
-						
-						addToPlaylist(*file);
+						filelist.clear();
+						filelist.push_back(*file);
 					}
 
 					if(!filelist.empty())
@@ -1748,7 +1744,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 			
-				showFileInfo();
+				//showFileInfo();
 		}
 		else if(msg == CRCInput::RC_home)
 		{
@@ -1905,8 +1901,11 @@ void CMoviePlayerGui::showHelpTS()
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
+/*
 void CMoviePlayerGui::showFileInfo()
 {
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showFileInfo:%s %s %s\n", Title.c_str(), Info1.c_str(), Info2.c_str());
+	
 	std::string buffer;
 	
 	// prepare print buffer  
@@ -1932,10 +1931,5 @@ void CMoviePlayerGui::showFileInfo()
 	infoBox->exec();
 	delete infoBox;
 }
-
-void CMoviePlayerGui::showMovieInfoBar()
-{
-	g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
-}
-
+*/
 

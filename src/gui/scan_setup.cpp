@@ -1,5 +1,5 @@
 /*
-	$Id: scan_setup.cpp,v 1.8 2011/10/11 15:26:38 mohousch Exp $
+	$Id: scan_setup.cpp 2015/12/22 11:42:38 mohousch Exp $
 
 	Neutrino-GUI  -   DBoxII-Project
 
@@ -1216,3 +1216,50 @@ void CScanSetupNotifier::addItem(int list, CMenuItem *item)
 			break;
 	}
 }
+
+//
+CTunerSetup::CTunerSetup()
+{
+}
+
+CTunerSetup::~CTunerSetup()
+{
+}
+
+int CTunerSetup::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CTunerSetup::exec: actionKey:%s\n", actionKey.c_str());
+	
+	int ret = menu_return::RETURN_REPAINT;
+	
+	if(parent)
+		parent->hide();
+	
+	showMenu();
+	
+	return ret;
+}
+
+void CTunerSetup::showMenu()
+{
+	dprintf(DEBUG_NORMAL, "CTunerSetup::showMenu\n");
+	
+	CMenuWidget TunerSetup( LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
+	
+	// intros
+	TunerSetup.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+			
+	for(int i = 0; i < FrontendCount; i++)
+	{
+		CFrontend * fe = getFE(i);
+		char tbuf[255];
+			
+		sprintf(tbuf, "Tuner-%d: %s", i + 1, fe->getInfo()->name);
+		TunerSetup.addItem(new CMenuForwarder(tbuf, true, NULL, new CScanSetup(i) ));
+	}
+	
+	TunerSetup.exec(NULL, "");
+	TunerSetup.hide();
+}
+

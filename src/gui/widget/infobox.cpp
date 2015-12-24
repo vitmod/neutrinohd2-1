@@ -440,7 +440,7 @@ void CInfoBox::refreshTitle(void)
 					m_cBoxFrameTitleRel.iWidth, 
 					m_cBoxFrameTitleRel.iHeight, 
 					COL_MENUHEAD_PLUS_0, 
-					RADIUS_MID, CORNER_TOP);
+					RADIUS_MID, CORNER_TOP, true);
 
 	int iw = 0;
 	int ih = 0;

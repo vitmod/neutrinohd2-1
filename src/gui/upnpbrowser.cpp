@@ -73,8 +73,6 @@
 #include <gui/audioplayer.h>
 
 
-extern CPictureViewer * g_PicViewer;
-extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
 extern CWebTV * webtv;
 
 const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN};
@@ -578,8 +576,10 @@ void CUpnpBrowserGui::playnext(void)
 					
 					mfile.Name = (*entries)[0].resources[preferred].url.c_str(); //FIXME
 					
-					moviePlayerGui->addToPlaylist(mfile);
-					moviePlayerGui->exec(NULL, "urlplayback");
+					CMoviePlayerGui tmpMoviePlayerGui;
+					
+					tmpMoviePlayerGui.addToPlaylist(mfile);
+					tmpMoviePlayerGui.exec(NULL, "urlplayback");
 					
 					return;
 				}
@@ -845,8 +845,9 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						CFile file;
 						file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); //FIXME
 						
-						moviePlayerGui->addToPlaylist(file);
-						moviePlayerGui->exec(NULL, "urlplayback");
+						CMoviePlayerGui tmpMoviePlayerGui;
+						tmpMoviePlayerGui.addToPlaylist(file);
+						tmpMoviePlayerGui.exec(NULL, "urlplayback");
 						
 						changed = true;
 					}
@@ -1056,7 +1057,7 @@ void CUpnpBrowserGui::paintDevice()
 
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight -icon_head_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_theight + m_title_height + 0, m_width - 45, tmp, COL_MENUHEAD, 0, true); // UTF-8
 	ypos = m_y + m_title_height;
@@ -1161,7 +1162,7 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight - icon_head_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_theight + m_title_height, m_width - 45, tmp, COL_MENUHEAD, 0, true); // UTF-8
 	

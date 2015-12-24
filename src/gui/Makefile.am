@@ -68,7 +68,9 @@ libneutrino_gui_a_SOURCES = \
 	scan_setup.cpp \
 	zapit_setup.cpp \
 	proxyserver_setup.cpp \
-	themes.cpp
+	themes.cpp \
+	service_setup.cpp \
+	main_setup.cpp
 
 libneutrino_gui2_a_SOURCES = \
 	color.cpp \
@@ -81,7 +83,8 @@ libneutrino_gui2_a_SOURCES = \
 	opkg_manager.cpp \
 	webtv.cpp \
 	channel_select.cpp \
-	audio_video_select.cpp
+	audio_video_select.cpp \
+	mediaplayer.cpp
 
 if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp

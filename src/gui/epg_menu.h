@@ -31,10 +31,9 @@ using namespace std;
 class CEPGMenuHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget* parent,  const std::string &actionkey);
+		int  exec(CMenuTarget* parent,  const std::string &actionkey);
 		int  doMenu();
 };
-
 
 #endif
 

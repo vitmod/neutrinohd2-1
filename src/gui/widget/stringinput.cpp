@@ -470,9 +470,11 @@ void CStringInput::paint()
 	int iconoffset;
 	int icol_w = 28, icol_h = 16;
 
-	//head
+	// shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP); //round
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP); //round
+	
+	// title
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true); //round
 	
 	// foot
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
@@ -482,18 +484,18 @@ void CStringInput::paint()
 	{
 		frameBuffer->getIconSize(iconfile.c_str(), &icol_w, &icol_h);
 		
-		frameBuffer->paintIcon(iconfile, x + 8, y + (hheight - icol_h)/2); //not correct fixme
+		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icol_h)/2); //not correct fixme
 
 		iconoffset = icol_w + BORDER_LEFT;
 	}
 	else
 		iconoffset = 0;
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + iconoffset + BORDER_LEFT, y + hheight, width - 10 - iconoffset, head ? head : g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + iconoffset + BORDER_LEFT, y + hheight, width - BORDER_RIGHT - iconoffset, head ? head : g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, y + hheight + mheight + iheight + 40, width- 20, getHint1(), COL_MENUCONTENT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, y + hheight + mheight + iheight + 40, width - 20, getHint1(), COL_MENUCONTENT, 0, true); // UTF-8
 		if (hint_2 != NONEXISTANT_LOCALE)
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, y + hheight + mheight + iheight*2 + 40, width - 20, g_Locale->getText(hint_2), COL_MENUCONTENT, 0, true); // UTF-8
 	}
@@ -506,8 +508,8 @@ void CStringInput::paintChar(int pos, const char c)
 {
 	const int xs = 20;
 	int ys = mheight;
-	int xpos = x + 20+ pos* xs;
-	int ypos = y + hheight+ 25;
+	int xpos = x + 20 + pos* xs;
+	int ypos = y + hheight + 25;
 
 	char ch[2] = {c, 0};
 

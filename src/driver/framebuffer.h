@@ -139,16 +139,16 @@ class CFrameBuffer
 #endif		
 
 	public:
-		// 16/32 bits
-		fb_pixel_t realcolor[256];
-
-		~CFrameBuffer();
-
-		static CFrameBuffer * getInstance();
-
-		void enableManualBlit();
-		void disableManualBlit();
+		// transparency
+		enum 
+		{
+			TM_EMPTY  = 0,
+			TM_NONE   = 1,
+			TM_BLACK  = 2,
+			TM_INI    = 3
+		};
 		
+		// three mode
 		enum threeMode
 		{
 			THREE_NONE = 0,
@@ -156,7 +156,28 @@ class CFrameBuffer
 			THREE_TOP_AND_BUTTOM
 		};
 		
-		void blit(int mode3d = THREE_NONE);
+		// scaling mode
+		enum ScalingMode
+		{
+			NONE = 0,
+			SIMPLE = 1,
+			COLOR = 2
+		};
+		
+		// gradient mode
+		enum {
+			gradientDark2Light,
+			gradientLight2Dark,
+			gradientDark2Light2Dark,
+			gradientLight2Dark2Light
+		};
+		
+		// 16/32 bits
+		fb_pixel_t realcolor[256];
+
+		~CFrameBuffer();
+
+		static CFrameBuffer * getInstance();
 
 		void init(const char * const fbDevice = "/dev/fb0");		
 		void setFrameBufferMode(unsigned int xRes, unsigned int yRes, unsigned int bpp);
@@ -171,31 +192,31 @@ class CFrameBuffer
 		unsigned int getScreenHeight(bool real = false); 
 		unsigned int getScreenX();
 		unsigned int getScreenY();
-		unsigned int getAvailableMem() const;             // size of a available mem occupied by the framebuffer
+		unsigned int getAvailableMem() const;             	// size of a available mem occupied by the framebuffer
 		
-		bool getActive() const;                     // is framebuffer active?
-		void setActive(bool enable);                // is framebuffer active?
+		bool getActive() const;                     		// is framebuffer active?
+		void setActive(bool enable);                		// is framebuffer active?
 
 		void setBlendMode(uint8_t mode);
 		void setBlendLevel(int blev);
 
-		/* Palette stuff */
+		// Palette stuff
 		void paletteFade(int i, __u32 rgb1, __u32 rgb2, int level);
-		void paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr=0);
+		void paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr = 0);
 		
 		void paletteSetColor(int i, __u32 rgb, int tr);
 		void paletteSet(struct fb_cmap * map = NULL);
 
-		/* paint functions */
+		// paint functions 
 		inline void paintPixel(fb_pixel_t * const dest, const uint8_t color) const
 		{			
-			/* 16/32 bit */
+			// 16/32 bit
 			*dest = realcolor[color];
 		};
 
 		void paintPixel(const int x, const int y, const fb_pixel_t col);
 		
-		void paintBoxRel(const int x, const int y, const int dx, const int dy, /*const*/ fb_pixel_t col, int radius = 0, int type = 0);
+		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = 0, bool fadeColor = false, int mode = gradientDark2Light);
 
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col) { paintBoxRel(xa, ya, xb - xa, yb - ya, col); }
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col, int radius, int type) { paintBoxRel(xa, ya, xb - xa, yb - ya, col, radius, type); }
@@ -210,10 +231,9 @@ class CFrameBuffer
 
 		void setIconBasePath(const std::string & iconPath);
 		void getIconSize(const char * const filename, int* width, int *height);
-		/* h is the height of the target "window", if != 0 the icon gets centered in that window */
 		bool paintIcon(const std::string & filename, const int x, const int y, const int h = 0, bool paint = true, int width = 0, int height = 0);
 		
-		// raw/pal
+		// raw/pal icons
 		bool paintIcon8(const std::string & filename, const int x, const int y, const unsigned char offset = 0);
 		bool paintIconRaw(const std::string & filename, const int x, const int y, const int h = 0, const unsigned char offset = 1, bool paint = true);
 		void loadPal(const std::string & filename, const unsigned char offset = 0, const unsigned char endidx = 255);
@@ -239,28 +259,18 @@ class CFrameBuffer
 
 		void ClearFrameBuffer();
 		
-		enum 
-		{
-			TM_EMPTY  = 0,
-			TM_NONE   = 1,
-			TM_BLACK  = 2,
-			TM_INI    = 3
-		};
-		
 		void * convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp = 0xFF, int m_transparent = TM_BLACK, bool alpha = false);
 		void blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp = 0, uint32_t yp = 0, bool transp = false);
 		void displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb = true, int transp = 0xFF);
 		
-		enum ScalingMode
-		{
-			NONE = 0,
-			SIMPLE = 1,
-			COLOR = 2
-		};
-		
 		unsigned char * Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst = NULL, bool alpha = false);
 		fb_pixel_t * getImage (const std::string & name, int width, int height);
 		bool DisplayImage(const std::string & name, int posx = 0, int posy = 0, int width = CFrameBuffer::getInstance()->getScreenWidth(true), int height = CFrameBuffer::getInstance()->getScreenHeight(true));
+		
+		// blit
+		void enableManualBlit();
+		void disableManualBlit();
+		void blit(int mode3d = THREE_NONE);
 };
 
 #define FH_ERROR_OK 0

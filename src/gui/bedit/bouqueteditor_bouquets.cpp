@@ -76,6 +76,10 @@ CBEBouquetWidget::CBEBouquetWidget()
 	Bouquets = &g_bouquetManager->Bouquets;
 }
 
+CBEBouquetWidget::~CBEBouquetWidget()
+{
+}
+
 void CBEBouquetWidget::paintItem(int pos)
 {
 	uint8_t    color;
@@ -90,7 +94,6 @@ void CBEBouquetWidget::paintItem(int pos)
 		
 		// itemBox
 		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 	} 
 	else 
 	{
@@ -100,10 +103,10 @@ void CBEBouquetWidget::paintItem(int pos)
 		
 		color   = has_channels ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
 		bgcolor = has_channels ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
-		
-		// itemBox
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 	}
+	
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (current == selected)? true : false);
 
 	if(current < Bouquets->size()) 
 	{
@@ -144,7 +147,7 @@ void CBEBouquetWidget::paint()
 
 void CBEBouquetWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() , width, g_Locale->getText(LOCALE_BOUQUETLIST_HEAD), COL_MENUHEAD, 0, true); // UTF-8
 }

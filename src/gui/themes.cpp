@@ -49,7 +49,7 @@
 
 
 #define THEMEDIR DATADIR "/neutrino/themes/"
-#define USERDIR "/var" THEMEDIR
+#define USERDIR CONFIGDIR "/themes/"
 #define FILE_PREFIX ".theme"
 
 CThemes::CThemes()
