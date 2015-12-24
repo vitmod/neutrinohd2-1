@@ -42,6 +42,8 @@ void plugin_exec(void)
 	CFileBrowser fileBrowser;
 	CFileFilter fileFilter;
 	
+	CMoviePlayerGui tmpMoviePlayerGui;
+	
 	fileFilter.addFilter("vob");
 	fileBrowser.Filter = &fileFilter;
 	fileBrowser.Multi_Select    = true;
@@ -62,10 +64,6 @@ DVD_BROWSER:
 	{
 		Path_dvd = fileBrowser.getCurrentDir();
 
-		// filelist player
-		//moviePlayerGui->filelist = fileBrowser.getSelectedFiles();;
-		
-		//if(!moviePlayerGui->filelist.empty())
 		CFileList::const_iterator files = fileBrowser.getSelectedFiles().begin();
 		for(; files != fileBrowser.getSelectedFiles().end(); files++)
 		{
@@ -73,10 +71,10 @@ DVD_BROWSER:
 			
 			file.Name = files->Name;
 			
-			moviePlayerGui->addToPlaylist(file);
+			tmpMoviePlayerGui.addToPlaylist(file);
 		}
 		
-		moviePlayerGui->exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;

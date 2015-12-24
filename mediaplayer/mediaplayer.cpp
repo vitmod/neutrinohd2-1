@@ -39,6 +39,8 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
@@ -85,11 +87,11 @@ BROWSER:
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
 			file.Name = files->Name;
-			
-			moviePlayerGui->addToPlaylist(file);
+					
+			tmpMoviePlayerGui.addToPlaylist(file);
 		}
 		
-		moviePlayerGui->exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;

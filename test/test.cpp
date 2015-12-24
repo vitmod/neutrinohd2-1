@@ -91,6 +91,10 @@ class CTestMenu : CMenuTarget
 		void testUmountGUI();
 		void testMountSmallMenu();
 		void testVFDController();
+		
+		//
+		void testFrameBox();
+		void testFrameBoxNeutrinoMenu();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -498,17 +502,26 @@ void CTestMenu::testInternetRadio()
 
 void CTestMenu::testTSMovieBrowser()
 {
-	moviePlayerGui->exec(NULL, "tsmoviebrowser");
+	//moviePlayerGui->exec(NULL, "tsmoviebrowser");
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
+	tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
 }
 
 void CTestMenu::testMovieBrowser()
 {
-	moviePlayerGui->exec(NULL, "moviebrowser");
+	//moviePlayerGui->exec(NULL, "moviebrowser");
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
+	tmpMoviePlayerGui.exec(NULL, "moviebrowser");
 }
 
 void CTestMenu::testFilePlayBack()
 {
-	moviePlayerGui->exec(NULL, "fileplayback");
+	//moviePlayerGui->exec(NULL, "fileplayback");
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
+	tmpMoviePlayerGui.exec(NULL, "fileplayback");
 }
 
 void CTestMenu::testPictureViewer()
@@ -575,11 +588,10 @@ BROWSER:
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
-		
-			moviePlayerGui->addToPlaylist(*file);
-				
-			// play
-			moviePlayerGui->exec(NULL, "urlplayback");
+			CMoviePlayerGui tmpMoviePlayerGui;
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
@@ -712,6 +724,8 @@ BROWSER:
 
 void CTestMenu::testPlayMovieFolder()
 {
+	CMoviePlayerGui tmpMoviePlayerGui;
+	
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
@@ -758,11 +772,11 @@ BROWSER:
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
 			file.Name = files->Name;
-			
-			moviePlayerGui->addToPlaylist(file);
+					
+			tmpMoviePlayerGui.addToPlaylist(file);
 		}
 		
-		moviePlayerGui->exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
@@ -1059,6 +1073,539 @@ void CTestMenu::testVFDController()
 	vfdControllerHandler = NULL;
 }
 
+void CTestMenu::testFrameBox()
+{
+	int i = 0;
+	int j = 0;
+REPAINT:  
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 20;
+	Box.iY = g_settings.screen_StartY + 20;
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 40;
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
+	
+	// paintBox (background)
+	CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, /*COL_MENUCONTENT_PLUS_0*/COL_BACKGROUND);
+	
+	// paint horizontal line top
+	CFrameBuffer::getInstance()->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
+	
+	// paint horizontal line bottom
+	CFrameBuffer::getInstance()->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 35, COL_MENUCONTENT_PLUS_5);
+	
+	// paint buttons
+	//::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35, (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET))/4, 4, Buttons, 35);
+	
+	// paint title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), "MEDIA PORTAL (FrameBoxes)", COL_MENUHEAD);
+	
+	// paint foot:FIXME: use arrays
+	if(i == 0 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_YOUTUBE), COL_MENUHEAD);
+	}
+	else if(i == 1 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_NETZKINO), COL_MENUHEAD);
+	}
+	else if(i == 2 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), "Music deluxe", COL_MENUHEAD);
+	}
+	else if(i == 3 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_INETRADIO), COL_MENUHEAD);
+	}
+	
+	// paint buttons
+	int iw, ih;
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RIGHT, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	// calculte frameBoxes
+	CBox frameBox;
+	
+	frameBox.iX = Box.iX + BORDER_LEFT;
+	frameBox.iY = Box.iY + 35 + 5;
+	frameBox.iWidth = (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT))/6;
+	frameBox.iHeight = (Box.iHeight - 80)/3;
+	
+	// framBox
+	CFrameBuffer::getInstance()->paintBoxRel(frameBox.iX + frameBox.iWidth*i, frameBox.iY + frameBox.iHeight*j, frameBox.iWidth, frameBox.iHeight, COL_MENUCONTENT_PLUS_6, RADIUS_SMALL, CORNER_BOTH);
+	
+	//FIXME: use arrays
+	// paint youtube logo in first boxframe
+	std::string yt_logo = PLUGINDIR "/youtube/youtube_small.png";
+	CFrameBuffer::getInstance()->DisplayImage(yt_logo, frameBox.iX + 5, frameBox.iY + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint netzkino logo in second boxframe
+	std::string nk_logo = PLUGINDIR "/netzkino/netzkino_small.png";
+	CFrameBuffer::getInstance()->DisplayImage(nk_logo, frameBox.iX + frameBox.iWidth + 5, frameBox.iY + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint music deluxe logo in third boxframe
+	std::string musicdeluxe_logo = PLUGINDIR "/test/musicdeluxe.png";
+	CFrameBuffer::getInstance()->DisplayImage(musicdeluxe_logo, frameBox.iX + 2*frameBox.iWidth + 5, frameBox.iY + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint internet radio logo in third boxframe
+	std::string internetradio_logo = DATADIR "/neutrino/icons/audioplayersettings.png";
+	CFrameBuffer::getInstance()->DisplayImage(internetradio_logo, frameBox.iX + 3*frameBox.iWidth + 5, frameBox.iY + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// blit all
+	CFrameBuffer::getInstance()->blit();
+	
+	// loop
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+	
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+
+	bool loop = true;
+	while (loop) 
+	{
+		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
+
+		if ((msg == CRCInput::RC_timeout ) || (msg == CRCInput::RC_home))
+		{
+			loop = false;
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+			if(i == 0 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				g_PluginList->startPlugin("youtube");
+			}
+			else if(i == 1 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				g_PluginList->startPlugin("netzkino");
+			}
+			else if(i == 2 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CFile file;
+		
+				file.Title = "Music deluxe";
+				file.Info1 = "stream";
+				file.Info2 = "Musik Sender";
+				file.Thumbnail = PLUGINDIR "/test/musicdeluxe.png";
+				file.Name = "Music Deluxe";
+				file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+				
+				CMoviePlayerGui tmpMoviePlayerGui;
+					
+				tmpMoviePlayerGui.addToPlaylist(file);
+				tmpMoviePlayerGui.exec(NULL, "urlplayback");
+				
+			}
+			else if(i == 3 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CAudioPlayerGui internetRadio(true);
+				internetRadio.exec(NULL, "");
+			}
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_right)
+		{
+			i++;
+			if (i >= 6)
+			{
+				i = 0;
+				j++;
+				
+				if(j >= 3)
+					j = 0;
+			}
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_left)
+		{
+			i--;
+			if(i < 0 && j > 0)
+			{
+				i = 5;
+				j--;
+				
+				if(j < 0)
+					j = 0;
+			}
+			
+			// stay at first framBox
+			if (i < 0)
+				i = 0;
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_down)
+		{
+			j++;
+			if (j > 2)
+				j = 2;
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_up)
+		{
+			j--;
+			if (j < 0)
+				j = 0;
+			
+			goto REPAINT;
+		}
+		else
+		{
+			CNeutrinoApp::getInstance()->handleMsg( msg, data );
+			// kein canceling...
+		}
+	}
+	
+	// hide and exit
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
+void CTestMenu::testFrameBoxNeutrinoMenu()
+{
+	int i = 0;
+	int j = 0;
+REPAINT:  
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 20;
+	Box.iY = g_settings.screen_StartY + 20;
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 40;
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
+	
+	// paintBox (background)
+	CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, /*COL_MENUCONTENT_PLUS_0*/COL_BACKGROUND);
+	
+	// paint horizontal line top
+	CFrameBuffer::getInstance()->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
+	
+	// paint horizontal line bottom
+	CFrameBuffer::getInstance()->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 35, COL_MENUCONTENT_PLUS_5);
+	
+	// paint title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), "Mainmenu (frameBoxes)", COL_MENUHEAD);
+	
+	// paint foot
+	if(i == 0 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_TVMODE), COL_MENUHEAD);
+	}
+	else if(i == 1 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_RADIOMODE), COL_MENUHEAD);
+	}
+	else if(i == 2 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_WEBTVMODE), COL_MENUHEAD);
+	}
+	else if(i == 3 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SCARTMODE), COL_MENUHEAD);
+	}
+	else if(i == 4 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_INFOVIEWER_FEATURES), COL_MENUHEAD);
+	}
+	else if(i == 5 && j == 0)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_MEDIAPLAYER), COL_MENUHEAD);
+	}
+	else if(i == 0 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_TIMERLIST_NAME), COL_MENUHEAD);
+	}
+	else if(i == 1 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_DBOXINFO), COL_MENUHEAD);
+	}
+	else if(i == 2 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SLEEPTIMER), COL_MENUHEAD);
+	}
+	else if(i == 3 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SERVICE), COL_MENUHEAD);
+	}
+	else if(i == 4 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SETTINGS), COL_MENUHEAD);
+	}
+	else if(i == 5 && j == 1)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SHUTDOWN), COL_MENUHEAD);
+	}
+	
+	// paint help buttons (foot)
+	int iw, ih;
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RIGHT, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	// calculte frameBoxes
+	CBox frameBox;
+	
+	frameBox.iX = Box.iX + BORDER_LEFT;
+	frameBox.iY = Box.iY + 35 + 5;
+	frameBox.iWidth = (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT))/6;
+	frameBox.iHeight = (Box.iHeight - 80)/3;
+	
+	// framBox
+	CFrameBuffer::getInstance()->paintBoxRel(frameBox.iX + frameBox.iWidth*i, frameBox.iY + frameBox.iHeight*j, frameBox.iWidth, frameBox.iHeight, COL_MENUCONTENT_PLUS_6, RADIUS_SMALL, CORNER_BOTH);
+	
+	// fixme: use array
+	// paint tv mode
+	std::string tv_logo = DATADIR "/neutrino/icons/tv.png";
+	CFrameBuffer::getInstance()->DisplayImage(tv_logo, frameBox.iX + 0*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint radio mode
+	std::string radio_logo = DATADIR "/neutrino/icons/radio.png";
+	CFrameBuffer::getInstance()->DisplayImage(radio_logo, frameBox.iX + 1*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint webtv
+	std::string webtv_logo = DATADIR "/neutrino/icons/webtv.png";
+	CFrameBuffer::getInstance()->DisplayImage(webtv_logo, frameBox.iX + 2*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint scart
+	std::string scart_logo = DATADIR "/neutrino/icons/scart.png";
+	CFrameBuffer::getInstance()->DisplayImage(scart_logo, frameBox.iX + 3*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint features
+	std::string features_logo = DATADIR "/neutrino/icons/plugins.png";
+	CFrameBuffer::getInstance()->DisplayImage(features_logo, frameBox.iX + 4*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint mediaplayer
+	std::string mediaplayer_logo = DATADIR "/neutrino/icons/movieplayer.png";
+	CFrameBuffer::getInstance()->DisplayImage(mediaplayer_logo, frameBox.iX + 5*frameBox.iWidth + 5, frameBox.iY + 0*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint timerlist
+	std::string timerlist_logo = DATADIR "/neutrino/icons/timerlist.png";
+	CFrameBuffer::getInstance()->DisplayImage(timerlist_logo, frameBox.iX + 0*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint boxinfo
+	std::string boxinfo_logo = DATADIR "/neutrino/icons/boxinfo.png";
+	CFrameBuffer::getInstance()->DisplayImage(boxinfo_logo, frameBox.iX + 1*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint sleeptimer
+	std::string sleeptimer_logo = DATADIR "/neutrino/icons/sleeptimer.png";
+	CFrameBuffer::getInstance()->DisplayImage(sleeptimer_logo, frameBox.iX + 2*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint service
+	std::string service_logo = DATADIR "/neutrino/icons/service.png";
+	CFrameBuffer::getInstance()->DisplayImage(service_logo, frameBox.iX + 3*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint setup
+	std::string setup_logo = DATADIR "/neutrino/icons/mainsettings.png";
+	CFrameBuffer::getInstance()->DisplayImage(setup_logo, frameBox.iX + 4*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// paint shutdown
+	std::string shutdown_logo = DATADIR "/neutrino/icons/" NEUTRINO_ICON_MENUITEM_SHUTDOWN ".png";
+	CFrameBuffer::getInstance()->DisplayImage(shutdown_logo, frameBox.iX + 5*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	
+	// blit all
+	CFrameBuffer::getInstance()->blit();
+	
+	// loop
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+	
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+
+	bool loop = true;
+	while (loop) 
+	{
+		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
+
+		if ((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home))
+		{
+			loop = false;
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+			if(i == 0 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "tv");
+			}
+			else if(i == 1 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "radio");
+			}
+			else if(i == 2 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "webtv");
+			}
+			else if(i == 3 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "scart");
+			}
+			else if(i == 4 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "features");
+			}
+			else if(i == 5 && j == 0)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+				
+				CMediaPlayerMenu tmpMediaPlayerMenu;
+				tmpMediaPlayerMenu.exec(NULL, "");
+			}
+			else if(i == 0 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+				
+				CTimerList tmpTimerList;
+				tmpTimerList.exec(NULL, "");
+			}
+			else if(i == 1 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+				
+				CDBoxInfoWidget tmpBoxInfo;
+				tmpBoxInfo.exec(NULL, "");
+			}
+			else if(i == 2 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CSleepTimerWidget tmpSleepTimer;
+				tmpSleepTimer.exec(NULL, "");
+			}
+			else if(i == 3 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CServiceSetup tmpServiceSetup;
+				tmpServiceSetup.exec(NULL, "");
+			}
+			else if(i == 4 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CMainSetup tmpMainSetup;
+				tmpMainSetup.exec(NULL, "");
+			}
+			else if(i == 5 && j == 1)
+			{
+				CFrameBuffer::getInstance()->paintBackground();
+				CFrameBuffer::getInstance()->blit();
+					
+				CNeutrinoApp::getInstance()->exec(NULL, "shutdown");
+			}
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_right)
+		{
+			i++;
+			if (i >= 6)
+			{
+				i = 0;
+				j++;
+				
+				if(j >= 3)
+					j = 0;
+			}
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_left)
+		{
+			i--;
+			if(i < 0 && j > 0)
+			{
+				i = 5;
+				j--;
+				
+				if(j < 0)
+					j = 0;
+			}
+			
+			// stay at first frameBox
+			if (i < 0)
+				i = 0;
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_down)
+		{
+			j++;
+			if (j > 2)
+				j = 2;
+			
+			goto REPAINT;
+		}
+		else if (msg == CRCInput::RC_up)
+		{
+			j--;
+			if (j < 0)
+				j = 0;
+			
+			goto REPAINT;
+		}
+		else
+		{
+			CNeutrinoApp::getInstance()->handleMsg( msg, data );
+			// kein canceling...
+		}
+	}
+	
+	// hide and exit
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1278,6 +1825,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testVFDController();
 	}
+	else if(actionKey == "framebox")
+	{
+		testFrameBox();
+	}
+	else if(actionKey == "frameboxneutrinomenu")
+	{
+		testFrameBoxNeutrinoMenu();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1344,6 +1899,9 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("FrameBoxMediaPortal", true, NULL, this, "framebox"));
+	mainMenu->addItem(new CMenuForwarder("FrameBoxNeutrinoMenu", true, NULL, this, "frameboxneutrinomenu"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

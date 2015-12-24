@@ -77,8 +77,8 @@ class CNetzKinoBrowser : public CMenuTarget
 {
 	private:
 		CFrameBuffer * m_pcWindow;
-		CListFrame * m_pcBrowser;
 		
+		CListFrame * m_pcBrowser;
 		CTextBox * m_pcInfo;
 		
 		CBox m_cBoxFrame;
