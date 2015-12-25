@@ -58,9 +58,6 @@ REPAINT:
 	// paint horizontal line bottom
 	CFrameBuffer::getInstance()->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 35, COL_MENUCONTENT_PLUS_5);
 	
-	// paint buttons
-	//::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35, (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET))/4, 4, Buttons, 35);
-	
 	// paint title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), "Media Portal", COL_MENUHEAD);
 	
