@@ -258,16 +258,6 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 				// set window id
 				//NOTE: comment out if you want to overlay video window on osd window
 				//gst_x_overlay_set_xwindow_id(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), GLWinID);
-				
-				// not needed gst overlay shall render video into full osd window
-				//gst_x_overlay_set_render_rectangle(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), /*GLxStart*/0, /*GLyStart*/0, GLWidth, GLHeight);
-				
-				// sync frames
-				//gst_x_overlay_expose(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)));
-				
-				// depends on gst rev, not working here ;(
-				//gst_x_overlay_set_window_handle(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), (guintptr)glutGetWindow());
-				//gst_x_overlay_handle_events(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), true);
 			}
 		}
 		break;
