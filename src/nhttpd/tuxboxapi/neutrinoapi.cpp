@@ -50,7 +50,7 @@ extern CFrontend * frontend;
 extern cVideo * videoDecoder;
 extern cAudio * audioDecoder;
 
-extern CRemoteControl *g_RemoteControl;	/* neutrino.cpp */
+extern CRemoteControl *g_RemoteControl;	// neutrino.cpp
 extern CZapitClient::SatelliteList satList;
 
 // yhttpd
