@@ -578,7 +578,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
-	else if (liststart+pos == current_event )
+	else if (liststart + pos == current_event )
 	{
 		color   = COL_MENUCONTENT + 1;
 		bgcolor = COL_MENUCONTENT_PLUS_1;
@@ -590,7 +590,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 	}
 
 	// paint  item box
-	frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 	if(liststart + pos < evtlist.size())
 	{
@@ -766,7 +766,7 @@ void  EventList::showFunctionBar(bool show)
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	//
-	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 
 	// -- Button Red: Timer Record & Channelswitch
 	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey))	  

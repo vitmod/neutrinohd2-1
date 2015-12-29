@@ -503,9 +503,9 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define DEFAULT_LCD_DUMP_PNG			0x00
 
 // corners (osd)
-#define RADIUS_LARGE    		(g_settings.rounded_corners ? 16 : 0)
-#define RADIUS_MID      		(g_settings.rounded_corners ? 8 : 0)
-#define RADIUS_SMALL    		(g_settings.rounded_corners ? 4 : 0)
+#define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : 0)
+#define RADIUS_MID      		(g_settings.rounded_corners ? 4 : 0)
+#define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : 0)
 
 #define BORDER_LEFT			10
 #define BORDER_RIGHT			10

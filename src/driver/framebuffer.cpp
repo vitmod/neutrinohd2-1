@@ -96,6 +96,14 @@ CFrameBuffer::CFrameBuffer()
 	// png/jpg/bmp/crw handlers
 	fh_root = NULL;
 	init_handlers();
+
+	//
+	q_circle = NULL;
+	initQCircle();
+	corner_tl = false;
+	corner_tr = false;
+	corner_bl = false;
+	corner_br = false;
 }
 
 CFrameBuffer* CFrameBuffer::getInstance()
@@ -563,187 +571,258 @@ void CFrameBuffer::paletteSet(struct fb_cmap *map)
 	}
 }
 
+//
+int CFrameBuffer::limitRadius(const int& dx, const int& dy, int& radius)
+{
+	if (radius > dx)
+		return dx;
+	if (radius > dy)
+		return dy;
+	if (radius > 540)
+		return 540;
+	return radius;
+}
+
+void CFrameBuffer::setCornerFlags(const int& type)
+{
+	corner_tl = (type & CORNER_TOP_LEFT)     == CORNER_TOP_LEFT;
+	corner_tr = (type & CORNER_TOP_RIGHT)    == CORNER_TOP_RIGHT;
+	corner_bl = (type & CORNER_BOTTOM_LEFT)  == CORNER_BOTTOM_LEFT;
+	corner_br = (type & CORNER_BOTTOM_RIGHT) == CORNER_BOTTOM_RIGHT;
+}
+
+void CFrameBuffer::initQCircle()
+{
+	/* this table contains the x coordinates for a quarter circle (the bottom right quarter) with fixed
+	   radius of 540 px which is the half of the max HD graphics size of 1080 px. So with that table we
+	   ca draw boxes with round corners and als circles by just setting dx = dy = radius (max 540). */
+	static const int _q_circle[541] = {
+		540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540, 540,
+		540, 540, 540, 540, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539, 539,
+		539, 538, 538, 538, 538, 538, 538, 538, 538, 538, 538, 538, 538, 537, 537, 537, 537, 537, 537, 537,
+		537, 537, 536, 536, 536, 536, 536, 536, 536, 536, 535, 535, 535, 535, 535, 535, 535, 535, 534, 534,
+		534, 534, 534, 534, 533, 533, 533, 533, 533, 533, 532, 532, 532, 532, 532, 532, 531, 531, 531, 531,
+		531, 531, 530, 530, 530, 530, 529, 529, 529, 529, 529, 529, 528, 528, 528, 528, 527, 527, 527, 527,
+		527, 526, 526, 526, 526, 525, 525, 525, 525, 524, 524, 524, 524, 523, 523, 523, 523, 522, 522, 522,
+		522, 521, 521, 521, 521, 520, 520, 520, 519, 519, 519, 518, 518, 518, 518, 517, 517, 517, 516, 516,
+		516, 515, 515, 515, 515, 514, 514, 514, 513, 513, 513, 512, 512, 512, 511, 511, 511, 510, 510, 510,
+		509, 509, 508, 508, 508, 507, 507, 507, 506, 506, 506, 505, 505, 504, 504, 504, 503, 503, 502, 502,
+		502, 501, 501, 500, 500, 499, 499, 499, 498, 498, 498, 497, 497, 496, 496, 496, 495, 495, 494, 494,
+		493, 493, 492, 492, 491, 491, 490, 490, 490, 489, 489, 488, 488, 487, 487, 486, 486, 485, 485, 484,
+		484, 483, 483, 482, 482, 481, 481, 480, 480, 479, 479, 478, 478, 477, 477, 476, 476, 475, 475, 474,
+		473, 473, 472, 472, 471, 471, 470, 470, 469, 468, 468, 467, 466, 466, 465, 465, 464, 464, 463, 462,
+		462, 461, 460, 460, 459, 459, 458, 458, 457, 456, 455, 455, 454, 454, 453, 452, 452, 451, 450, 450,
+		449, 449, 448, 447, 446, 446, 445, 445, 444, 443, 442, 441, 441, 440, 440, 439, 438, 437, 436, 436,
+		435, 435, 434, 433, 432, 431, 431, 430, 429, 428, 427, 427, 426, 425, 425, 424, 423, 422, 421, 421,
+		420, 419, 418, 417, 416, 416, 415, 414, 413, 412, 412, 411, 410, 409, 408, 407, 406, 405, 404, 403,
+		403, 402, 401, 400, 399, 398, 397, 397, 395, 394, 393, 393, 392, 391, 390, 389, 388, 387, 386, 385,
+		384, 383, 382, 381, 380, 379, 378, 377, 376, 375, 374, 373, 372, 371, 369, 368, 367, 367, 365, 364,
+		363, 362, 361, 360, 358, 357, 356, 355, 354, 353, 352, 351, 350, 348, 347, 346, 345, 343, 342, 341,
+		340, 339, 337, 336, 335, 334, 332, 331, 329, 328, 327, 326, 324, 323, 322, 321, 319, 317, 316, 315,
+		314, 312, 310, 309, 308, 307, 305, 303, 302, 301, 299, 297, 296, 294, 293, 291, 289, 288, 287, 285,
+		283, 281, 280, 278, 277, 275, 273, 271, 270, 268, 267, 265, 263, 261, 259, 258, 256, 254, 252, 250,
+		248, 246, 244, 242, 240, 238, 236, 234, 232, 230, 228, 225, 223, 221, 219, 217, 215, 212, 210, 207,
+		204, 202, 200, 197, 195, 192, 190, 187, 184, 181, 179, 176, 173, 170, 167, 164, 160, 157, 154, 150,
+		147, 144, 140, 136, 132, 128, 124, 120, 115, 111, 105, 101,  95,  89,  83,  77,  69,  61,  52,  40,
+		 23};
+	if (q_circle == NULL)
+		q_circle = new int[sizeof(_q_circle) / sizeof(int)];
+	memcpy(q_circle, _q_circle, sizeof(_q_circle));
+}
+
+bool CFrameBuffer::calcCorners(int *ofs, int *ofl, int *ofr, const int& dy, const int& line, const int& radius, const int& type)
+{
+// just an multiplicator for all math to reduce rounding errors
+#define MUL 32768
+	int scl, _ofs = 0;
+	bool ret = false;
+	if (ofl != NULL) *ofl = 0;
+	if (ofr != NULL) *ofr = 0;
+	int scf = (540 * MUL) / ((radius < 1) ? 1 : radius);
+
+	// one of the top corners
+	if (line < radius && (type & CORNER_TOP)) 
+	{
+		// uper round corners
+		scl = scf * (radius - line) / MUL;
+		if ((scf * (radius - line) % MUL) >= (MUL / 2)) // round up
+			scl++;
+		_ofs =  radius - (q_circle[scl] * MUL / scf);
+		if (ofl != NULL) *ofl = corner_tl ? _ofs : 0;
+		if (ofr != NULL) *ofr = corner_tr ? _ofs : 0;
+	}
+
+	// one of the bottom corners 
+	else if ((line >= dy - radius) && (type & CORNER_BOTTOM)) 
+	{
+		// lower round corners
+		scl = scf * (radius - (dy - (line + 1))) / MUL;
+		if ((scf * (radius - (dy - (line + 1))) % MUL) >= (MUL / 2)) // round up
+			scl++;
+		_ofs =  radius - (q_circle[scl] * MUL / scf);
+		if (ofl != NULL) *ofl = corner_bl ? _ofs : 0;
+		if (ofr != NULL) *ofr = corner_br ? _ofs : 0;
+	}
+	else
+		ret = true;
+
+	if (ofs != NULL) 
+		*ofs = _ofs;
+	return ret;
+}
+
+void CFrameBuffer::paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf)
+{
+	uint8_t * pos = ((uint8_t *)buf) + x * sizeof(fb_pixel_t) + box_dx * sizeof(fb_pixel_t) * y;
+	fb_pixel_t * dest = (fb_pixel_t *)pos;
+	for (int i = 0; i < dx; i++)
+		*(dest++) = col;
+}
+
+fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_pixel_t col, fb_pixel_t* buf, int radius, int type)
+{
+	if (!getActive())
+		return buf;
+
+	if (dx == 0 || dy == 0) 
+	{
+		//dprintf(DEBUG_INFO, "[CFrameBuffer] [%s - %d]: radius %d, dx %d dy %d\n", __func__, __LINE__, radius, dx, dy);
+		return buf;
+	}
+
+	fb_pixel_t* pixBuf = buf;
+	if (pixBuf == NULL) 
+	{
+		pixBuf = (fb_pixel_t*)malloc(dx*dy*sizeof(fb_pixel_t));
+		if (pixBuf == NULL) 
+		{
+			//dprintf(DEBUG_NORMAL, "[%s #%d] Error malloc\n", __func__, __LINE__);
+			return NULL;
+		}
+	}
+	memset((void*)pixBuf, '\0', dx*dy*sizeof(fb_pixel_t));
+
+	if (type && radius) 
+	{
+		setCornerFlags(type);
+		radius = limitRadius(dx, dy, radius);
+
+		int line = 0;
+		while (line < dy) 
+		{
+			int ofl, ofr;
+			calcCorners(NULL, &ofl, &ofr, dy, line, radius, type);
+
+			if (dx - ofr - ofl < 1) 
+			{
+				if (dx-ofr-ofl == 0) 
+				{
+					dprintf(DEBUG_INFO, "[%s - %d]: radius %d, end x %d y %d\n", __func__, __LINE__, radius, dx-ofr-ofl, line);
+				}
+				else {
+					dprintf(DEBUG_INFO, "[%s - %04d]: Calculated width: %d\n		      (radius %d, dx %d, offsetLeft %d, offsetRight %d).\n		      Width can not be less than 0, abort.\n",
+					       __func__, __LINE__, dx-ofr-ofl, radius, dx, ofl, ofr);
+				}
+				line++;
+				continue;
+			}
+			paintHLineRelInternal2Buf(ofl, dx - ofl - ofr, line, dx, col, pixBuf);
+			line++;
+		}
+	} 
+	else 
+	{
+		fb_pixel_t *bp = pixBuf;
+		int line = 0;
+
+		while (line < dy) 
+		{
+			for (int pos = 0; pos < dx; pos++)
+				*(bp + pos) = col;
+			bp += dx;
+			line++;
+		}
+	}
+
+	return pixBuf;
+}
+
+//
+
 void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor)
 {
 	if (!getActive())
 		return;
 
-	int F, R = radius, sx, sy, dxx = dx, dyy = dy, rx, ry, wx, wy;
-	uint8_t *pos = ((uint8_t *)getFrameBufferPointer()) + x*sizeof(fb_pixel_t) + stride*y;
-	uint8_t *pos0 = 0, *pos1 = 0, *pos2 = 0, *pos3 = 0;
-	fb_pixel_t *dest0, *dest1;
-	
-	// colorFading
+	#define MASK 0xFFFFFFFF
+	//
+	fb_pixel_t* gradientBuf = NULL;
+
+	if (gradientBuf == NULL) 
+	{
+		gradientBuf = (fb_pixel_t*)malloc(dy*sizeof(fb_pixel_t));
+
+		if (gradientBuf == NULL) 
+		{
+			return;
+		}
+	}
+	memset((void*)gradientBuf, '\0', dy*sizeof(fb_pixel_t));
+
 	uint8_t _tr = (uint8_t)((col & 0xFF000000) >> 24);
 	uint8_t _r  = (uint8_t)((col & 0x00FF0000) >> 16);
 	uint8_t _g  = (uint8_t)((col & 0x0000FF00) >>  8);
 	uint8_t _b  = (uint8_t) (col & 0x000000FF);
 
-	float steps = (float) (dy - R);
+	float steps = (float) dy;
 
 	float trStep = (float)(_tr) / steps;
 	float rStep = (float)(_r) / steps;
 	float gStep = (float)(_g) / steps;
 	float bStep = (float)(_b) / steps;
 	
-	uint8_t tr = 0;
-	uint8_t r = 0;
-	uint8_t g = 0;
-	uint8_t b = 0;
-	
-	if(R) 
+	uint8_t tr = limitChar(_tr);
+	uint8_t r = limitChar(_r);
+	uint8_t g = limitChar(_g);
+	uint8_t b = limitChar(_b);
+
+	for (int i = 0; i < dy; i++) 
 	{
-		if(--dyy <= 0) 
-		{
-			dyy = 1;
-        	}
-
-        	if(R == 1 || R > (dxx/2) || R > (dyy/2)) 
-		{
-            		R = dxx/10;
-            		F = dyy/10;
-
-            		if(R > F) 
-			{
-                		if(R > (dyy/3)) 
-				{
-                    			R = dyy/3;
-                		}
-            		} 
-			else 
-			{
-                		R = F;
-                		if(R > (dxx/3)) 
-				{
-                    			R = dxx/3;
-                		}
-            		}
-        	}
-        	
-        	sx = 0;
-        	sy = R;
-        	F = 1 - R;
-
-        	rx = R - sx;
-        	ry = R - sy;
-
-		if(type & 1) 
-		{
-        		pos1 = pos + (ry*stride); // top 1
-        		pos2 = pos + (rx*stride); // top 2
-		}
-
-		if(type & 2) 
-		{
-        		pos0 = pos + ((dyy - ry)*stride); // bottom 1
-        		pos3 = pos + ((dyy - rx)*stride); // bottom 2
-		}
-
-        	while (sx <= sy) 
-		{
-			if( (sx > sy) && (type & 2))
-			{
-				paintHLineRel(x, dx, y, col);
-			}
-
-		    	rx = R - sx;
-		    	ry = R - sy;
-		    	wx = rx<<1;
-		    	wy = ry<<1;
-			
-		    	dest0 = (fb_pixel_t *)(pos0 + rx*sizeof(fb_pixel_t));
-		    	dest1 = (fb_pixel_t *)(pos1 + rx*sizeof(fb_pixel_t));
-
-			// top1/bottom1
-		    	for (int i = 0; i < (dxx - wx); i++) 
-			{
-				if(type & 2)
-		        		*(dest0++) = col;	//bottom 1
-				if(type & 1)
-		        		*(dest1++) = col;	// top 1
-		    	}
-
-		    	dest0 = (fb_pixel_t *)(pos2 + ry*sizeof(fb_pixel_t));
-		    	dest1 = (fb_pixel_t *)(pos3 + ry*sizeof(fb_pixel_t));
-
-			// top2/bottom2
-		    	for (int i = 0; i < (dxx - wy); i++) 
-			{
-				if(type & 1)
-		        		*(dest0++) = col;	// top 2
-				if(type & 2)
-		        		*(dest1++) = col;	//bottom 2
-		    	}
-            		
-	            	sx++;
-
-            		pos2 -= stride;
-            		pos3 += stride;
-			
-            		if (F < 0) 
-			{
-                		F += (sx<<1) - 1;
-            		} 
-			else 
-			{
-                		F += ((sx - sy)<<1);
-                		sy--;
-                		pos0 -= stride;
-                		pos1 += stride;
-            		}
-            		
-            		if(fadeColor)
-			{
-				tr = limitChar((int)(_tr + trStep*(float)sx));
-				r  = limitChar((int)(_r + rStep*(float)sx));
-				g  = limitChar((int)(_g + gStep*(float)sx));
-				b  = limitChar((int)(_b + bStep*(float)sx));
-
-				col = ((tr << 24) & 0xFF000000) |
-						((r  << 16) & 0x00FF0000) |
-						((g  <<  8) & 0x0000FF00) |
-						( b         & 0x000000FF);
-
-			}
-
-        	}
-        	
-		if(type & 1)
-        		pos += R*stride;
-    	}
-	
-	int start = R;
-	int end = dyy - R;
-
-	if(!(type & 1))
-		start = 0;
-	
-	if(!(type & 2))
-		end = dyy + (R ? 1 : 0);
-
-	for (int count = start; count < end; count++) 
-	{
-		dest0 = (fb_pixel_t *)pos;
-		
-		for (int i = 0; i < dxx; i++)
-		    	*(dest0++) = col;
-		
-		pos += stride;	
-		
-		// fade color
 		if(fadeColor)
 		{
-			tr = limitChar((int)(_tr + trStep*(float)count));
-			r  = limitChar((int)(_r + rStep*(float)count));
-			g  = limitChar((int)(_g + gStep*(float)count));
-			b  = limitChar((int)(_b + bStep*(float)count));
-
-			col = ((tr << 24) & 0xFF000000) |
-					((r  << 16) & 0x00FF0000) |
-					((g  <<  8) & 0x0000FF00) |
-					( b         & 0x000000FF);
+			tr = limitChar((int)(_tr + trStep*(float)i));
+			r  = limitChar((int)(_r + rStep*(float)i));
+			g  = limitChar((int)(_g + gStep*(float)i));
+			b  = limitChar((int)(_b + bStep*(float)i));
 		}
+	
+		gradientBuf[i] = ((tr << 24) & 0xFF000000) |
+				((r  << 16) & 0x00FF0000) |
+				((g  <<  8) & 0x0000FF00) |
+				( b         & 0x000000FF);
 	}
+
+	//
+	fb_pixel_t* boxBuf = paintBoxRel2Buf(dx, dy, MASK, NULL, radius, type);
+        if (!boxBuf)
+               return;
+
+	fb_pixel_t *bp = boxBuf;
+	fb_pixel_t *gra = gradientBuf;
+
+	// vertical
+	for (int pos = 0; pos < dx; pos++) 
+	{
+		for(int count = 0; count < dy; count++) 
+		{
+			if (*(bp + pos) == MASK)
+				*(bp + pos) = (fb_pixel_t)(*(gra + count));
+			bp += dx;
+		}
+		bp = boxBuf;
+	}
+
+	blit2FB(boxBuf, dx, dy, x, y);
 }
 
 void CFrameBuffer::paintVLine(int x, int ya, int yb, const fb_pixel_t col)
@@ -783,7 +862,7 @@ void CFrameBuffer::paintHLine(int xa, int xb, int y, const fb_pixel_t col)
 
 	uint8_t * pos = ((uint8_t *)getFrameBufferPointer()) + xa * sizeof(fb_pixel_t) + stride * y;
 
-	int dx = xb -xa;
+	int dx = xb - xa;
 	fb_pixel_t * dest = (fb_pixel_t *)pos;
 	for (int i = 0; i < dx; i++)
 		*(dest++) = col;	

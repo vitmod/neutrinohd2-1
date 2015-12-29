@@ -308,7 +308,7 @@ void CInfoBox::refreshFoot(void)
 								m_cBoxFrameFootRel.iWidth, 
 								m_cBoxFrameFootRel.iHeight,  
 								COL_MENUHEAD_PLUS_0,
-								RADIUS_MID, CORNER_BOTTOM);
+								RADIUS_MID, CORNER_BOTTOM, true);
 
 	int iw, ih;
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);

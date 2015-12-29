@@ -51,9 +51,17 @@ class GLThreadObj;
 
 typedef struct fb_var_screeninfo t_fb_var_screeninfo;
 
-#define CORNER_TOP		0x1
-#define CORNER_BOTTOM		0x2 
-#define CORNER_BOTH		0x3 
+#define CORNER_NONE		0x0
+#define CORNER_TOP_LEFT		0x1
+#define CORNER_TOP_RIGHT	0x2
+#define CORNER_TOP		0x3
+#define CORNER_BOTTOM_RIGHT	0x4
+#define CORNER_RIGHT		0x6
+#define CORNER_BOTTOM_LEFT	0x8
+#define CORNER_LEFT		0x9
+#define CORNER_BOTTOM		0xC
+#define CORNER_ALL		0xF
+#define CORNER_BOTH 		CORNER_ALL
 
 // resolution
 #define DEFAULT_XRES		1280
@@ -163,6 +171,9 @@ class CFrameBuffer
 			SIMPLE = 1,
 			COLOR = 2
 		};
+
+		int *q_circle;
+		bool corner_tl, corner_tr, corner_bl, corner_br;
 		
 		// 16/32 bits
 		fb_pixel_t realcolor[256];
@@ -263,6 +274,17 @@ class CFrameBuffer
 		void enableManualBlit();
 		void disableManualBlit();
 		void blit(int mode3d = THREE_NONE);
+
+		//
+		fb_pixel_t* paintBoxRel2Buf(const int dx, const int dy, const fb_pixel_t col, fb_pixel_t* buf = NULL, int radius = 0, int type = CORNER_ALL);
+
+		inline void paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf);
+
+		int  limitRadius(const int& dx, const int& dy, int& radius);
+		void setCornerFlags(const int& type);
+		void initQCircle();
+		inline int calcCornersOffset(const int& dy, const int& line, const int& radius, const int& type) { int ofs = 0; calcCorners(&ofs, NULL, NULL, dy, line, radius, type); return ofs; }
+		bool calcCorners(int *ofs, int *ofl, int *ofr, const int& dy, const int& line, const int& radius, const int& type);
 };
 
 #define FH_ERROR_OK 0

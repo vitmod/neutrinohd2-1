@@ -58,6 +58,7 @@
 
 unsigned int HEIGHT_Y;
 unsigned int FULL_HEIGHT;
+unsigned int FULL_WIDTH;
 
 // CMenuItem
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
@@ -541,6 +542,7 @@ void CMenuWidget::paint()
 	full_height = height;
 	
 	FULL_HEIGHT = full_height;
+	FULL_WIDTH = full_width;
 	
 	//
 	if(savescreen) 
@@ -637,7 +639,7 @@ void CMenuWidget::paintItems()
 		} 
 		else 
 		{
-			/* x = -1 is a marker which prevents the item from being painted on setActive changes */
+			// x = -1 is a marker which prevents the item from being painted on setActive changes
 			item->init(-1, 0, 0, 0);
 		}	
 	} 
@@ -906,7 +908,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1069,7 +1071,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 		
 		// paint help icon
 		int icon_w = 0;
@@ -1292,7 +1294,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1410,7 +1412,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1563,7 +1565,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -1862,7 +1864,7 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -2013,7 +2015,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 			
 		// paint help icon
 		int icon_w = 0;

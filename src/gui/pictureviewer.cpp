@@ -692,7 +692,7 @@ void CPictureViewerGui::paintFoot()
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
-	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 
 	if (!playlist.empty())
 	{

@@ -1182,7 +1182,7 @@ void CEpgData::showTimerEventBar(bool _show)
 		return;
 	}
 
-	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 
 	// Button Red: Timer Record & Channelswitch
 	if (recDir != NULL)

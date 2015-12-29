@@ -348,7 +348,7 @@ void CPluginList::paintHead()
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - footheight, COL_MENUCONTENT_PLUS_0);
 	
 	// foot
-	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 	
 	// foot bottons
 	int ButtonWidth = (width - (BORDER_LEFT + BORDER_RIGHT)) / 4;

@@ -173,7 +173,10 @@ void CProgressWindow::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, ypos + hheight, width - BORDER_LEFT - BORDER_RIGHT - ICON_OFFSET, l_caption, COL_MENUHEAD, 0, true); // UTF-8
 		
 	// footer
+	// shadow
 	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+
+	// foot
 	CFrameBuffer::getInstance()->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	// msg
