@@ -164,14 +164,6 @@ class CFrameBuffer
 			COLOR = 2
 		};
 		
-		// gradient mode
-		enum {
-			gradientDark2Light,
-			gradientLight2Dark,
-			gradientDark2Light2Dark,
-			gradientLight2Dark2Light
-		};
-		
 		// 16/32 bits
 		fb_pixel_t realcolor[256];
 
@@ -216,7 +208,7 @@ class CFrameBuffer
 
 		void paintPixel(const int x, const int y, const fb_pixel_t col);
 		
-		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = 0, bool fadeColor = false, int mode = gradientDark2Light);
+		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = 0, bool fadeColor = false);
 
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col) { paintBoxRel(xa, ya, xb - xa, yb - ya, col); }
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col, int radius, int type) { paintBoxRel(xa, ya, xb - xa, yb - ya, col, radius, type); }

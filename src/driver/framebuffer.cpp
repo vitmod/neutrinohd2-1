@@ -563,7 +563,7 @@ void CFrameBuffer::paletteSet(struct fb_cmap *map)
 	}
 }
 
-void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor, int mode)
+void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor)
 {
 	if (!getActive())
 		return;
@@ -574,17 +574,17 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
 	fb_pixel_t *dest0, *dest1;
 	
 	// colorFading
-	uint8_t start_tr = (uint8_t)((col & 0xFF000000) >> 24);
-	uint8_t start_r  = (uint8_t)((col & 0x00FF0000) >> 16);
-	uint8_t start_g  = (uint8_t)((col & 0x0000FF00) >>  8);
-	uint8_t start_b  = (uint8_t) (col & 0x000000FF);
+	uint8_t _tr = (uint8_t)((col & 0xFF000000) >> 24);
+	uint8_t _r  = (uint8_t)((col & 0x00FF0000) >> 16);
+	uint8_t _g  = (uint8_t)((col & 0x0000FF00) >>  8);
+	uint8_t _b  = (uint8_t) (col & 0x000000FF);
 
-	float steps = (float) dy;
+	float steps = (float) (dy - R);
 
-	float trStep = (float)(start_tr) / steps;
-	float rStep = (float)(start_r) / steps;
-	float gStep = (float)(start_g) / steps;
-	float bStep = (float)(start_b) / steps;
+	float trStep = (float)(_tr) / steps;
+	float rStep = (float)(_r) / steps;
+	float gStep = (float)(_g) / steps;
+	float bStep = (float)(_b) / steps;
 	
 	uint8_t tr = 0;
 	uint8_t r = 0;
@@ -641,36 +641,42 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
 
         	while (sx <= sy) 
 		{
-            		rx = R - sx;
-            		ry = R - sy;
-            		wx = rx<<1;
-            		wy = ry<<1;
+			if( (sx > sy) && (type & 2))
+			{
+				paintHLineRel(x, dx, y, col);
+			}
+
+		    	rx = R - sx;
+		    	ry = R - sy;
+		    	wx = rx<<1;
+		    	wy = ry<<1;
 			
-            		dest0 = (fb_pixel_t *)(pos0 + rx*sizeof(fb_pixel_t));
-            		dest1 = (fb_pixel_t *)(pos1 + rx*sizeof(fb_pixel_t));
+		    	dest0 = (fb_pixel_t *)(pos0 + rx*sizeof(fb_pixel_t));
+		    	dest1 = (fb_pixel_t *)(pos1 + rx*sizeof(fb_pixel_t));
 
 			// top1/bottom1
-            		for (int i = 0; i < (dxx - wx); i++) 
+		    	for (int i = 0; i < (dxx - wx); i++) 
 			{
 				if(type & 2)
-                			*(dest0++) = col;	//bottom 1
+		        		*(dest0++) = col;	//bottom 1
 				if(type & 1)
-                			*(dest1++) = col;	// top 1
-            		}
+		        		*(dest1++) = col;	// top 1
+		    	}
 
-            		dest0 = (fb_pixel_t *)(pos2 + ry*sizeof(fb_pixel_t));
-            		dest1 = (fb_pixel_t *)(pos3 + ry*sizeof(fb_pixel_t));
+		    	dest0 = (fb_pixel_t *)(pos2 + ry*sizeof(fb_pixel_t));
+		    	dest1 = (fb_pixel_t *)(pos3 + ry*sizeof(fb_pixel_t));
 
 			// top2/bottom2
-            		for (int i = 0; i < (dxx - wy); i++) 
+		    	for (int i = 0; i < (dxx - wy); i++) 
 			{
 				if(type & 1)
-                			*(dest0++) = col;	// top 2
+		        		*(dest0++) = col;	// top 2
 				if(type & 2)
-                			*(dest1++) = col;	//bottom 2
-            		}
+		        		*(dest1++) = col;	//bottom 2
+		    	}
             		
-            		sx++;
+	            	sx++;
+
             		pos2 -= stride;
             		pos3 += stride;
 			
@@ -680,7 +686,7 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
             		} 
 			else 
 			{
-                		F += ((sx-sy)<<1);
+                		F += ((sx - sy)<<1);
                 		sy--;
                 		pos0 -= stride;
                 		pos1 += stride;
@@ -688,64 +694,56 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
             		
             		if(fadeColor)
 			{
-				//tr = limitChar((int)(start_tr + trStep*(float)count));
-				r  = limitChar((int)(start_r + rStep*(float)sx));
-				g  = limitChar((int)(start_g + gStep*(float)sx));
-				b  = limitChar((int)(start_b + bStep*(float)sx));
-					
-				tr = start_tr;
-				//r = start_r;
-				//g = start_g;
-				//b = start_b;
+				tr = limitChar((int)(_tr + trStep*(float)sx));
+				r  = limitChar((int)(_r + rStep*(float)sx));
+				g  = limitChar((int)(_g + gStep*(float)sx));
+				b  = limitChar((int)(_b + bStep*(float)sx));
 
 				col = ((tr << 24) & 0xFF000000) |
 						((r  << 16) & 0x00FF0000) |
 						((g  <<  8) & 0x0000FF00) |
 						( b         & 0x000000FF);
+
 			}
+
         	}
         	
 		if(type & 1)
         		pos += R*stride;
     	}
+	
+	int start = R;
+	int end = dyy - R;
 
-    	int start = R;
-    	int end = dyy - R;
-
-    	if(!(type & 1))
+	if(!(type & 1))
 		start = 0;
 	
-    	if(!(type & 2))
+	if(!(type & 2))
 		end = dyy + (R ? 1 : 0);
 
-    	for (int count = start; count < end; count++) 
+	for (int count = start; count < end; count++) 
 	{
-        	dest0 = (fb_pixel_t *)pos;
+		dest0 = (fb_pixel_t *)pos;
 		
-        	for (int i = 0; i < dxx; i++)
-            		*(dest0++) = col;
+		for (int i = 0; i < dxx; i++)
+		    	*(dest0++) = col;
 		
-        	pos += stride;	
+		pos += stride;	
 		
 		// fade color
 		if(fadeColor)
 		{
-			//tr = limitChar((int)(start_tr + trStep*(float)count));
-			r  = limitChar((int)(start_r + rStep*(float)count));
-			g  = limitChar((int)(start_g + gStep*(float)count));
-			b  = limitChar((int)(start_b + bStep*(float)count));
-			
-			tr = start_tr;
-			//r = start_r;
-			//g = start_g;
-			//b = start_b;
+			tr = limitChar((int)(_tr + trStep*(float)count));
+			r  = limitChar((int)(_r + rStep*(float)count));
+			g  = limitChar((int)(_g + gStep*(float)count));
+			b  = limitChar((int)(_b + bStep*(float)count));
 
 			col = ((tr << 24) & 0xFF000000) |
 					((r  << 16) & 0x00FF0000) |
 					((g  <<  8) & 0x0000FF00) |
 					( b         & 0x000000FF);
 		}
-    	}
+	}
 }
 
 void CFrameBuffer::paintVLine(int x, int ya, int yb, const fb_pixel_t col)
@@ -1445,7 +1443,7 @@ void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, uns
 	return (void *) fbbuff;
 }
 
-// blit2fb
+// blit2FB
 void CFrameBuffer::blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp, uint32_t yp, bool transp )
 { 
 	int xc = (width > xRes) ? xRes : width;

@@ -985,7 +985,7 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
 		// untere info box lines
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1, true);
+		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1, 0, 0, true);
 	}
 }
 

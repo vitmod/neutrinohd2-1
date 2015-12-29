@@ -829,7 +829,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, CFrameBuffer::gradientDark2Light2Dark); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
 
 	neutrino_locale_t option = NONEXISTANT_LOCALE;
 	const char * l_option = NULL;
@@ -1027,7 +1027,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, CFrameBuffer::gradientDark2Light2Dark); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
 
 	// option
 	const char * l_option;
@@ -1235,7 +1235,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, CFrameBuffer::gradientDark2Light2Dark); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
 
 	// paint icon
 	int icon_w = 0;
@@ -1384,7 +1384,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected?true : false, CFrameBuffer::gradientDark2Light2Dark); //FIXME
+	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected?true : false); //FIXME
 
 	// paint icon
 	int icon_w;
@@ -1608,7 +1608,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, CFrameBuffer::gradientDark2Light2Dark); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
 	
 	// paint icon/direkt-key
 	int icon_w = 0;
@@ -1848,7 +1848,7 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 	}
 
 	// paintItem
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, CFrameBuffer::gradientDark2Light2Dark);
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false);
 
 	int stringstartposName = x + offx + BORDER_RIGHT;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx - (stringstartposName - x), optionName, color, 0, true); // UTF-8
@@ -2034,7 +2034,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, (dx/3)*2, height, bgcolor, 0, 0, selected?true:false, CFrameBuffer::gradientDark2Light2Dark);
+	frameBuffer->paintBoxRel(x, y, (dx/3)*2, height, bgcolor, 0, 0, selected?true:false);
 
 	// paint icon/direkt-key
 	int icon_w = 0;
