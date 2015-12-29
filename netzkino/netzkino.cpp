@@ -564,7 +564,7 @@ void CNetzKinoBrowser::refreshFoot(void)
 	dprintf(DEBUG_INFO, "CNetzKinoBrowser::refreshFoot\n");
 	
 	// footer
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 
 	::paintButtons(m_pcWindow, m_pcFontFoot, g_Locale, m_cBoxFrame.iX + m_cBoxFrameFootRel.iX + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, (m_cBoxFrameFootRel.iWidth - 2*ICON_OFFSET)/4, 4, CNetzKinoBrowserButtons, m_cBoxFrameFootRel.iHeight + 6);
 }

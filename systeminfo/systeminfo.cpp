@@ -150,7 +150,7 @@ void CSysInfoWidget::paintFoot()
 {
 	int ButtonWidth = (width - 28) / 4;
 	
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
 
 	// sysinfo (red)
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width - 4*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
