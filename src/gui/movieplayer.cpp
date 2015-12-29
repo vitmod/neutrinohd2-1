@@ -1744,7 +1744,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 			
-				//showFileInfo();
+				showFileInfo();
 		}
 		else if(msg == CRCInput::RC_home)
 		{
@@ -1901,7 +1901,6 @@ void CMoviePlayerGui::showHelpTS()
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
-/*
 void CMoviePlayerGui::showFileInfo()
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showFileInfo:%s %s %s\n", Title.c_str(), Info1.c_str(), Info2.c_str());
@@ -1931,5 +1930,5 @@ void CMoviePlayerGui::showFileInfo()
 	infoBox->exec();
 	delete infoBox;
 }
-*/
+
 

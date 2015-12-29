@@ -161,11 +161,9 @@ class CMoviePlayerGui : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		
 		// show infos
-		//void showFileInfo(); // needed in infoviewer.cpp
+		void showFileInfo();
 		void addToPlaylist(CFile& file);
 		
-		//int getPercent() {return file_prozent;};
-		//void showMovieInfoBar();
 };
 
 #endif

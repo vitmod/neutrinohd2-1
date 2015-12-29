@@ -893,13 +893,10 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	// red
 	// movie info
 	int icon_w, icon_h;
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
 		
 	// green
 	// audio
@@ -1061,18 +1058,6 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 				if(webtv)
 					webtv->showFileInfoWebTV(webtv->getTunedChannel());
 			}
-			/*
-			else if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)
-			{
-				killTitle();
-				
-				//if(moviePlayerGui)
-				//	moviePlayerGui->showFileInfo();
-				CMoviePlayerGui tmpMoviePlayerGui;
-				
-				tmpMoviePlayerGui.showFileInfo();
-			}
-			*/
 		}
 		else 
 		{
