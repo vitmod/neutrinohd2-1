@@ -2376,8 +2376,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 		usleep(0);
 	
 	// dvbsub thread
-	if(FrontendCount)
-		dvbsub_init();
+	dvbsub_init();
 
 	// audio volume (default)
 	if(audioDecoder)
