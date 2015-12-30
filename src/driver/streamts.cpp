@@ -28,18 +28,42 @@
 
 #include <system/debug.h>
 
+#include <dmx_cs.h>
+
+// zapit includes
+#include <cam.h>
+#include <channel.h>
+#include <frontend_c.h>
+
 
 #define TS_SIZE 	188
 #define IN_SIZE         (TS_SIZE * 362)
 
+/* maximum number of pes pids */
+#define MAXPIDS		64
+
 // tcp packet data size
 #define PACKET_SIZE	7*TS_SIZE
 
-//extern CFrontend * live_fe;
+extern CFrontend * live_fe;
 
 static unsigned char exit_flag = 0;
 static unsigned int writebuf_size = 0;
 static unsigned char writebuf[PACKET_SIZE];
+
+#ifdef SYNC_TS
+static int sync_byte_offset(const unsigned char * buf, const unsigned int len)
+{
+
+	unsigned int i;
+
+	for (i = 0; i < len; i++)
+		if (buf[i] == 0x47)
+			return i;
+
+	return -1;
+}
+#endif
 
 void packet_stdout(int fd, unsigned char * buf, int count, void *)
 {
@@ -284,6 +308,130 @@ void * streamts_file_thread(void *data)
 	return 0;
 }
 
+void * streamts_live_thread(void * data)
+{
+	unsigned char * buf;
+	int pid;
+	int pids[MAXPIDS];
+	char cbuf[512];
+	char *bp;
+	int fd = (int) (long)data;
+	FILE * fp;
+	unsigned char demuxfd_count = 0;
+
+	dprintf(DEBUG_NORMAL, "streamts_live_thread: Starting LIVE STREAM thread, fd %d\n", fd);
+
+	fp = fdopen(fd, "r+");
+	
+	if(fp == NULL) 
+	{
+		perror("fdopen");
+		return 0;
+	}
+
+	writebuf_size = 0;
+
+	cbuf[0] = 0;
+	bp = &cbuf[0];
+
+	// read one line
+	while (bp - &cbuf[0] < (int) sizeof(cbuf)) 
+	{
+		unsigned char c;
+		int res = read(fd, &c, 1);
+		if(res < 0) {
+			perror("read");
+			return 0;
+		}
+		if ((*bp++ = c) == '\n')
+			break;
+	}
+
+	*bp++ = 0;
+	bp = &cbuf[0];
+
+	dprintf(DEBUG_NORMAL, "streamts_live_thread: stream: got %s\n", cbuf);
+
+	// send response to http client
+	if (!strncmp(cbuf, "GET /", 5)) 
+	{
+		fprintf(fp, "HTTP/1.1 200 OK\r\nServer: streamts (%s)\r\n\r\n", "ts" /*&argv[1][1]*/);
+		fflush(fp);
+		bp += 5;
+	} 
+	else 
+	{
+		dprintf(DEBUG_NORMAL, "Received garbage\n");
+		return 0;
+	}
+
+	// parse stdin / url path, start dmx filters
+	do {
+		int res = sscanf(bp, "%x", &pid);
+
+		if(res == 1) 
+		{
+			dprintf(DEBUG_NORMAL, "streamts_live_thread: New pid: 0x%x\n", pid);
+			pids[demuxfd_count++] = pid;
+		}
+	}
+	while ((bp = strchr(bp, ',')) && (bp++) && (demuxfd_count < MAXPIDS));
+
+	if(demuxfd_count == 0) 
+	{
+		dprintf(DEBUG_NORMAL, "streamts_live_thread: No pids!\n");
+		return 0;
+	}
+
+	buf = (unsigned char *) malloc(IN_SIZE);
+	if (buf == NULL) 
+	{
+		perror("malloc");
+		return 0;
+	}
+	
+	cDemux * dmx = new cDemux();
+	
+#if defined (PLATFORM_COOLSTREAM)
+	dmx->Open(DMX_TP_CHANNEL);
+#else	
+	dmx->Open( DMX_TP_CHANNEL, 3 * 3008 * 62, live_fe);	
+#endif	
+	
+	dmx->pesFilter(pids[0]);
+	for(int i = 1; i < demuxfd_count; i++)
+		dmx->addPid(pids[i]);
+
+	ssize_t r;
+
+#ifdef SYNC_TS
+	int offset = 0;
+#endif
+
+	while (!exit_flag) 
+	{
+		r = dmx->Read(buf, IN_SIZE, 100);
+		
+		if(r > 0)
+			packet_stdout(fd, buf, r, NULL);
+	}
+
+	dprintf(DEBUG_NORMAL, "streamts_live_thread: Exiting LIVE STREAM thread, fd %d\n", fd);
+	
+#if !defined (PLATFORM_COOLSTREAM)	
+	for(int i = 1; i < demuxfd_count; i++)
+		dmx->removePid(pids[i]);
+#endif
+
+	dmx->Stop();
+	delete dmx;
+	
+	free(buf);
+	close(fd);
+	
+	return 0;
+}
+
 int streamts_stop;
 
 void streamts_main_thread(void *)
@@ -362,7 +510,7 @@ void streamts_main_thread(void *)
 					tcnt++;
 					exit_flag = 0;
 					
-					pthread_create(&st, NULL, streamts_file_thread, (void *) (long)connfd);
+					pthread_create(&st, NULL, streamts_live_thread, (void *) (long)connfd);
 				} 
 				else 
 				{
