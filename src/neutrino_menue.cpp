@@ -151,6 +151,8 @@
 #include <gui/main_setup.h>
 
 
+extern int FrontendCount;
+
 // Init Main Menu
 void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 {
