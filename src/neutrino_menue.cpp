@@ -151,25 +151,18 @@
 #include <gui/main_setup.h>
 
 
-extern int FrontendCount;
-
 // Init Main Menu
 void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 {
 	int shortcut = 1;
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitMainMenu\n");
+	  
+	// tv modus
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_TVMODE, true, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
 
-#if !defined (USE_OPENGL)  // needed for testing/debugging
-	if(FrontendCount)
-#endif	  
-	{	  
-		// tv modus
-		mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_TVMODE, true, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
-
-		// radio modus
-		mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_RADIOMODE, true, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
-	}
+	// radio modus
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_RADIOMODE, true, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
 	
 	// webtv
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_WEBTVMODE, true, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
