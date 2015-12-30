@@ -1,17 +1,18 @@
-INCLUDES = \
+AM_CPPFLAGS = \
+	-I$(top_srcdir) \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/lib \
 	@AVCODEC_CFLAGS@
 
 if BOXTYPE_COOLSTREAM
-INCLUDES += -I$(top_srcdir)/src/zapit/include \
+AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/lib/libcoolstream
 else
-INCLUDES += -I$(top_srcdir)/lib/libdvbapi
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
-AM_CPPFLAGS = -D__STDC_CONSTANT_MACROS
+AM_CPPFLAGS += -D__STDC_CONSTANT_MACROS
 
 noinst_LIBRARIES = libdvbsub.a
 

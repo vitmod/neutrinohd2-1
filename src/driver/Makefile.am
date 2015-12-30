@@ -1,8 +1,9 @@
 SUBDIRS = pictureviewer audiodec
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
+	-I$(srcdir) \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/lib \
@@ -15,21 +16,21 @@ INCLUDES = \
 	@FREETYPE_CFLAGS@
 
 if BOXTYPE_COOLSTREAM
-INCLUDES += -I$(top_srcdir)/src/zapit/include \
+AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/lib/libcoolstream
 else
-INCLUDES += -I$(top_srcdir)/lib/libdvbapi
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
 if ENABLE_LCD
-INCLUDES += -I$(top_srcdir)/lib/liblcddisplay
+AM_CPPFLAGS += -I$(top_srcdir)/lib/liblcddisplay
 endif
 
 if ENABLE_LIBEPLAYER3
-INCLUDES += -I$(top_srcdir)/lib/libeplayer3/include
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 else
 if ENABLE_GSTREAMER
-INCLUDES += @GST_CFLAGS@
+AM_CPPFLAGS += @GST_CFLAGS@
 endif
 endif
 

@@ -1,8 +1,10 @@
+AUTOMAKE_OPTIONS = subdir-objects
+
 noinst_LIBRARIES = libeplayer3.a
 
 CXXFLAGS = -Wall
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(srcdir)/include \
 	-I$(top_srcdir)/lib/libdvbapi
 
@@ -28,7 +30,7 @@ AM_CFLAGS += \
 	-Wno-sign-compare -Wno-missing-field-initializers
 
 # silence ffmpeg deprecation warnings
-AM_CPPFLAGS = -Dattribute_deprecated=''
+AM_CPPFLAGS += -Dattribute_deprecated=''
 
 LIBEPLAYER3_LIBS = libeplayer3.a -lpthread -lavformat -lavcodec -lavutil -lz -lm -lpng -lass
 

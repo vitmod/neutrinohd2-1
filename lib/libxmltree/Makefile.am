@@ -1,4 +1,7 @@
-INCLUDES = -I$(srcdir)/xmltok
+AM_CPPFLAGS = \
+  	-I$(top_srcdir) \
+	-I$(srcdir) \
+	-I$(srcdir)/xmltok
 
 noinst_LIBRARIES = libtuxbox-xmltree.a
 

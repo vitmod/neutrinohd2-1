@@ -1,4 +1,5 @@
-INCLUDES = \
+AM_CPPFLAGS = \
+	-I$(top_srcdir) \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/system \
@@ -8,10 +9,10 @@ INCLUDES = \
 	-I$(top_srcdir)/lib/libeventserver
 
 if ENABLE_GSTREAMER
-INCLUDES += @GST_CFLAGS@
+AM_CPPFLAGS += @GST_CFLAGS@
 else
 if ENABLE_LIBEPLAYER3
-INCLUDES += -I$(top_srcdir)/lib/libeplayer3/include
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 endif
 

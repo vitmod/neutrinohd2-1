@@ -1,4 +1,4 @@
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/src \
@@ -8,13 +8,13 @@ INCLUDES = \
 	@FREETYPE_CFLAGS@
 
 if BOXTYPE_COOLSTREAM
-INCLUDES += -I$(top_srcdir)/src/zapit/include \
+AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/lib/libcoolstream
 else
-INCLUDES += -I$(top_srcdir)/lib/libdvbapi
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
-AM_CPPFLAGS = -Wno-multichar
+AM_CPPFLAGS += -Wno-multichar
 
 noinst_LIBRARIES = libtuxtxt.a
 

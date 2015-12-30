@@ -1,4 +1,6 @@
-INCLUDES = \
+AM_CPPFLAGS = \
+	-I$(top_srcdir) \
+	-I$(srcdir) \
 	-I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/nhttpd \
@@ -11,6 +13,6 @@ INCLUDES = \
 noinst_LIBRARIES = libyhttpd.a
 
 libyhttpd_a_SOURCES = \
-	ylogging.cpp helper.cpp ylanguage.cpp\
+	ylogging.cpp helper.cpp ylanguage.cpp \
 	ywebserver.cpp yconnection.cpp yrequest.cpp yresponse.cpp yhook.cpp ysocket.cpp
 

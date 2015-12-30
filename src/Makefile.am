@@ -1,6 +1,8 @@
 SUBDIRS = zapit gui daemonc driver system timerd nhttpd sectionsd
 
-INCLUDES = \
+AM_CPPFLAGS = \
+	-I$(top_srcdir) \
+	-I$(srcdir) \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/lib/connection \
@@ -13,14 +15,14 @@ INCLUDES = \
 	@FREETYPE_CFLAGS@
 
 if BOXTYPE_COOLSTREAM
-INCLUDES += -I$(top_srcdir)/src/zapit/include \
+AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/lib/libcoolstream
 else
-INCLUDES += -I$(top_srcdir)/lib/libdvbapi
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
 if ENABLE_LIBEPLAYER3
-INCLUDES += -I$(top_srcdir)/lib/libeplayer3/include
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
 bin_PROGRAMS = neutrino
