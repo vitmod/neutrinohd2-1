@@ -57,7 +57,7 @@ CProxySetup::~CProxySetup()
 
 int CProxySetup::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
-	dprintf(DEBUG_DEBUG, "init proxy menu\n");
+	dprintf(DEBUG_DEBUG, "CProxySetup::exec\n");
 	
 	int   res = menu_return::RETURN_REPAINT;
 
@@ -72,6 +72,8 @@ int CProxySetup::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 /* shows entries for proxy settings */
 int CProxySetup::showProxySetup()
 {
+	dprintf(DEBUG_DEBUG, "CProxySetup::showProxySetup\n");
+
 	//init
 	CMenuWidget * mn = new CMenuWidget(menue_title, menue_icon);
 

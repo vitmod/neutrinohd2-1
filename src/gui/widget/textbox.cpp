@@ -556,8 +556,10 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 	return(result);
 }
 
-void CTextBox::paint (void)
+void CTextBox::paint(void)
 {
+	dprintf(DEBUG_NORMAL, "CTextBox::paint\n");
+
 	if(frameBuffer != NULL) 
 		return;
 	

@@ -51,6 +51,9 @@
 #include <sstream>
 
 #include <gui/pictureviewer.h>
+#include <system/debug.h>
+
+
 extern CPictureViewer * g_PicViewer;
 
 #define COL_MENUCONTENT_P1                 254-8*4+1
@@ -826,8 +829,10 @@ void EpgPlus::free ()
 	}
 }
 
-int EpgPlus::exec (CChannelList * _channelList, int selectedChannelIndex, CBouquetList * _bouquetList)
+int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouquetList * _bouquetList)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::exec:\n");
+
 	this->channelList = _channelList;
 	this->channelListStartIndex = int (selectedChannelIndex / maxNumberOfDisplayableEntries) * maxNumberOfDisplayableEntries;
 	this->bouquetList = _bouquetList;
@@ -1318,6 +1323,8 @@ void EpgPlus::paint()
 
 int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CEPGplusHandler::exec:\n");
+
 	int res = menu_return::RETURN_REPAINT /*EXIT_ALL*/;
 	EpgPlus *e;
 	CChannelList *channelList;
@@ -1328,7 +1335,7 @@ int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/
 	e = new EpgPlus;
 	
 	channelList = CNeutrinoApp::getInstance ()->channelList;
-	e->exec (channelList, channelList->getSelectedChannelIndex(), bouquetList);
+	e->exec(channelList, channelList->getSelectedChannelIndex(), bouquetList);
 	delete e;
 	
 	return res;
@@ -1339,8 +1346,10 @@ EpgPlus::MenuTargetAddReminder::MenuTargetAddReminder(EpgPlus * _epgPlus)
   	this->epgPlus = _epgPlus;
 }
 
-int EpgPlus::MenuTargetAddReminder::exec (CMenuTarget */*parent*/, const std::string &/*actionKey*/)
+int EpgPlus::MenuTargetAddReminder::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::MenuTargetAddReminder::exec:\n");
+
 	TCChannelEventEntries::const_iterator It = this->epgPlus->getSelectedEvent ();
 	
 	if ((It != this->epgPlus->selectedChannelEntry->channelEventEntries.end ())
@@ -1365,8 +1374,10 @@ EpgPlus::MenuTargetAddRecordTimer::MenuTargetAddRecordTimer (EpgPlus * _epgPlus)
   	this->epgPlus = _epgPlus;
 }
 
-int EpgPlus::MenuTargetAddRecordTimer::exec (CMenuTarget */*parent*/, const std::string &/*actionKey*/)
+int EpgPlus::MenuTargetAddRecordTimer::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::MenuTargetAddRecordTimer::exec:\n");
+
 	TCChannelEventEntries::const_iterator It = this->epgPlus->getSelectedEvent ();
 	
 	if ((It != this->epgPlus->selectedChannelEntry->channelEventEntries.end ())
@@ -1390,8 +1401,10 @@ EpgPlus::MenuTargetRefreshEpg::MenuTargetRefreshEpg (EpgPlus * _epgPlus)
   	this->epgPlus = _epgPlus;
 }
 
-int EpgPlus::MenuTargetRefreshEpg::exec (CMenuTarget */*parent*/, const std::string &/*actionKey*/)
+int EpgPlus::MenuTargetRefreshEpg::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::MenuTargetRefreshEpg::exec:\n");
+
 	this->epgPlus->refreshAll = true;
 
 	return menu_return::RETURN_EXIT_ALL;
@@ -1434,8 +1447,10 @@ EpgPlus::MenuOptionChooserSwitchSwapMode::~MenuOptionChooserSwitchSwapMode ()
 	}
 }
 
-int EpgPlus::MenuOptionChooserSwitchSwapMode::exec (CMenuTarget * parent)
+int EpgPlus::MenuOptionChooserSwitchSwapMode::exec(CMenuTarget * parent)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchSwapMode::exec:\n");
+
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	
@@ -1461,8 +1476,10 @@ EpgPlus::MenuOptionChooserSwitchViewMode::~MenuOptionChooserSwitchViewMode ()
   	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = this->oldTimingMenuSettings;
 }
 
-int EpgPlus::MenuOptionChooserSwitchViewMode::exec (CMenuTarget * parent)
+int EpgPlus::MenuOptionChooserSwitchViewMode::exec(CMenuTarget * parent)
 {
+	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchViewMode::exec:\n");
+
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	

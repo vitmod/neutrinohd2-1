@@ -53,6 +53,8 @@
 #include <client/zapitclient.h>
 #include <client/zapittools.h>
 
+#include <system/debug.h>
+
 
 extern CBouquetManager * g_bouquetManager;
 
@@ -125,6 +127,8 @@ void CBEBouquetWidget::paintItem(int pos)
 
 void CBEBouquetWidget::paint()
 {
+	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::paint:\n");
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 
 	for(unsigned int count = 0; count < listmaxshow; count++)
@@ -199,6 +203,8 @@ void CBEBouquetWidget::hide()
 
 int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::exec:\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

@@ -49,6 +49,8 @@
 
 #include <math.h>
 
+#include <system/debug.h>
+
 #if defined(ENABLE_LCD) && (defined(PLATFORM_DREAMBOX) || defined(PLATFORM_GIGABLUE) || defined(PLATFORM_VUPLUS))
 #define BRIGHTNESSFACTOR 2.55 // 0 - 255
 #else
@@ -80,6 +82,8 @@ void CVfdControler::setVfd()
 
 int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CVfdControler::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -269,6 +273,8 @@ void CVfdControler::hide()
 
 void CVfdControler::paint()
 {
+	dprintf(DEBUG_NORMAL, "CVfdControler::paint\n");
+
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
 	// top

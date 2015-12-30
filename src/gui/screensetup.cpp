@@ -268,6 +268,8 @@ inline unsigned int make16color(__u32 rgb)
 
 void CScreenSetup::paint()
 {
+	dprintf(DEBUG_DEBUG, "CScreenSetup::paint\n");
+
 	if (!frameBuffer->getActive())
 		return;
 

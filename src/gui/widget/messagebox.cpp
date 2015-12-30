@@ -42,6 +42,8 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <system/debug.h>
+
 
 CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons) : CHintBoxExt(Caption, Text, Width, Icon)
 {
@@ -251,6 +253,8 @@ void CMessageBox::paintButtons()
 
 int CMessageBox::exec(int timeout)
 {
+	dprintf(DEBUG_NORMAL, "CMessageBox::exec: timeout:%d\n", timeout);
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

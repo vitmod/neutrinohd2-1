@@ -34,6 +34,8 @@
 
 #include <gui/widget/icons.h>
 
+#include <system/debug.h>
+
 
 CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
 {
@@ -114,6 +116,8 @@ void CListBox::setModified(void)
 
 void CListBox::paint()
 {
+	dprintf(DEBUG_DEBUG, "CListBox::paint\n");
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 
 	for(unsigned int count = 0; count < listmaxshow; count++)
@@ -235,6 +239,8 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 
 int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CListBox::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

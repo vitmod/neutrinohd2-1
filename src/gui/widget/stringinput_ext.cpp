@@ -47,6 +47,8 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <system/debug.h>
+
 
 CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
 {
@@ -146,6 +148,8 @@ void CExtendedInput::calculateDialog()
 
 int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 {
+	dprintf(DEBUG_NORMAL, "CExtendedInput::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -317,6 +321,8 @@ void CExtendedInput::hide()
 
 void CExtendedInput::paint()
 {
+	dprintf(DEBUG_NORMAL, "CExtendedInput::paint\n");
+
 	//head
 	//shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);

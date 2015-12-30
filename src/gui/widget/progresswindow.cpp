@@ -38,6 +38,8 @@
 
 #include <gui/color.h>
 
+#include <system/debug.h>
+
 
 CProgressWindow::CProgressWindow()
 {
@@ -147,6 +149,8 @@ void CProgressWindow::hide()
 
 void CProgressWindow::paint()
 {
+	dprintf(DEBUG_NORMAL, "CProgressWindow::paint\n");
+
 	// title
 	int ypos = y;
 	
@@ -193,6 +197,8 @@ void CProgressWindow::paint()
 
 int CProgressWindow::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CProgressWindow::exec\n");
+
 	if(parent)
 		parent->hide();
 	

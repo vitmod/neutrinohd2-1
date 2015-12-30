@@ -39,6 +39,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
 #include <system/settings.h>
+#include <system/debug.h>
 #include <driver/screen_max.h>
 
 /*zapit includes*/
@@ -99,6 +100,8 @@ void CMotorControl::Init(void)
 
 int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CMotorControl::exec:\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	TP_params TP;

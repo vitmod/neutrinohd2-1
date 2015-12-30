@@ -51,6 +51,8 @@
 /*zapit includes*/
 #include <frontend_c.h>
 
+#include <system/debug.h>
+
 
 static const int FSHIFT = 16;              /* nr of bits of precision */
 #define FIXED_1         (1<<FSHIFT)     /* 1.0 as fixed-point */
@@ -101,6 +103,8 @@ CDBoxInfoWidget::CDBoxInfoWidget()
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CDBoxInfoWidget::exec:\n");
+
 	if (parent)
 		parent->hide();
 	
@@ -124,6 +128,8 @@ void CDBoxInfoWidget::hide()
 
 void CDBoxInfoWidget::paint()
 {
+	dprintf(DEBUG_NORMAL, "CDBoxInfoWidget::paint:\n");
+
 	int ypos = y;
 	int i = 0;
 	

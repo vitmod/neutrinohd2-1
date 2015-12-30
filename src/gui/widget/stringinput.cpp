@@ -50,6 +50,8 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <system/debug.h>
+
 
 #define borderwidth 4
 
@@ -299,6 +301,8 @@ void CStringInput::keyPlusPressed()
 
 int CStringInput::exec( CMenuTarget* parent, const std::string & )
 {
+	dprintf(DEBUG_NORMAL, "CStringInput::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int res = menu_return::RETURN_REPAINT;
@@ -467,6 +471,8 @@ const char * CStringInput::getHint1(void)
 
 void CStringInput::paint()
 {
+	dprintf(DEBUG_NORMAL, "CStringInput::paint\n");
+
 	int iconoffset;
 	int icol_w = 28, icol_h = 16;
 
@@ -701,6 +707,8 @@ const struct button_label CStringInputSMSButtons[2] =
 
 void CStringInputSMS::paint()
 {
+	dprintf(DEBUG_NORMAL, "CStringInputSMS::paint\n");
+
 	CStringInput::paint();
 
 	//numeric pad
@@ -726,6 +734,8 @@ void CPINInput::paintChar(int pos)
 //CPINInput
 int CPINInput::exec( CMenuTarget* parent, const std::string & )
 {
+	dprintf(DEBUG_NORMAL, "CPINInput::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -846,6 +856,8 @@ const char * CPLPINInput::getHint1(void)
 
 int CPLPINInput::exec( CMenuTarget* parent, const std::string & )
 {
+	dprintf(DEBUG_NORMAL, "CPLPINInput::exec\n");
+
 	fb_pixel_t * pixbuf = new fb_pixel_t[(width + 2 * borderwidth) * (height + 2 * borderwidth)];
 
 	if (pixbuf != NULL)

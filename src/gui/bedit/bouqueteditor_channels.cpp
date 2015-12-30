@@ -57,6 +57,8 @@
 #include <satconfig.h>
 #include <getservices.h>
 
+#include <system/debug.h>
+
 
 extern tallchans allchans;
 extern CBouquetManager * g_bouquetManager;
@@ -146,6 +148,8 @@ void CBEChannelWidget::paintItem(int pos)
 
 void CBEChannelWidget::paint()
 {
+	dprintf(DEBUG_NORMAL, "CBEChannelWidget::paint:\n");
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 	int lastnum =  liststart + listmaxshow;
 
@@ -287,6 +291,8 @@ void CBEChannelWidget::hide()
 
 int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CBEChannelWidget::exec:\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

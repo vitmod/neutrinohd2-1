@@ -564,6 +564,8 @@ void CInfoBox::scrollPageUp(const int pages)
 //////////////////////////////////////////////////////////////////////
 bool CInfoBox::paint(void)
 {
+	dprintf(DEBUG_DEBUG, "CInfoBox::paint\n");
+
 	if (m_pcWindow != NULL)
 	{
 		return (false);
@@ -619,6 +621,8 @@ void CInfoBox::refresh(void)
 //////////////////////////////////////////////////////////////////////
 int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 {
+	dprintf(DEBUG_NORMAL, "CInfoBox::exec: timeout:%d returnDefaultOnTimeout:%d\n", timeout, returnDefaultOnTimeout);
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int return_button = m_nFootButtons;

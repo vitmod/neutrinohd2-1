@@ -109,6 +109,8 @@ CPictureViewerGui::~CPictureViewerGui()
 
 int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CPictureViewerGui::exec: actionKey:%s\n", actionKey.c_str());
+
 	selected = 0;
 	
 	width = frameBuffer->getScreenWidth(true) - 10; 
@@ -226,6 +228,8 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 
 int CPictureViewerGui::show()
 {
+	dprintf(DEBUG_NORMAL, "CPictureViewerGui::show\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

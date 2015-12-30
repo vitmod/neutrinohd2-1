@@ -86,6 +86,8 @@ int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey
 
 void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mode)
 {
+	dprintf(DEBUG_NORMAL, "CSelectChannelWidget::InitZapitChannelHelper:\n");
+
 	// save channel mode
 	int channelMode = g_settings.channel_mode;
 	int nNewChannel = -1;

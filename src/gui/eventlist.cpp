@@ -60,6 +60,8 @@
 
 #include <algorithm>
 
+#include <system/debug.h>
+
 
 extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
@@ -833,6 +835,8 @@ void  EventList::showFunctionBar(bool show)
 
 int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CEventListHandler::exec:\n");
+
 	int           res = menu_return::RETURN_REPAINT;
 	EventList     *e;
 	CChannelList  *channelList;
@@ -1052,6 +1056,8 @@ int CEventFinderMenu::exec(CMenuTarget * parent, const std::string &actionKey)
 
 int CEventFinderMenu::showMenu(void)
 {
+	dprintf(DEBUG_NORMAL, "CEventFinderMenu::showMenu:\n");
+
 	int res = menu_return::RETURN_REPAINT;
 	*m_event = false;
 	

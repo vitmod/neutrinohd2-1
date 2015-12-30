@@ -41,6 +41,8 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <system/debug.h>
+
 #define borderwidth 4
 
 #define HINTBOX_MAX_HEIGHT 420
@@ -191,6 +193,8 @@ CHintBox::~CHintBox(void)
 
 void CHintBox::paint(void)
 {
+	dprintf(DEBUG_NORMAL, "CHintBox::paint\n");
+
 	if (window != NULL)
 	{
 		/*

@@ -60,6 +60,8 @@
 
 #include <video_cs.h>
 
+#include <system/debug.h>
+
 
 #define PSI_STEP	5
 
@@ -84,6 +86,8 @@ CPSISetup::CPSISetup(const neutrino_locale_t Name, unsigned char *Contrast, unsi
 
 int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_DEBUG, "CPSISetup::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -375,6 +379,8 @@ void CPSISetup::hide()
 
 void CPSISetup::paint()
 {
+	dprintf(DEBUG_DEBUG, "CPSISetup::paint\n");
+
 	//box top
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	

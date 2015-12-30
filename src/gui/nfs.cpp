@@ -106,7 +106,7 @@ const char * nfs_entry_printf_string[4] =
 
 int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 {
-	//printf("exec: %s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CNFSMountGui::exec: actionKey:%s\n", actionKey.c_str());
 	
 	int returnval = menu_return::RETURN_REPAINT;
 	
@@ -329,6 +329,8 @@ int CNFSMountGui::menuEntry(int nr)
 
 int CNFSUmountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 {
+	dprintf(DEBUG_NORMAL, "CNFSUmountGui::exec: actionKey:%s\n", actionKey.c_str());
+
 	int returnval;
 
 	if (actionKey.empty())
@@ -383,6 +385,8 @@ int CNFSUmountGui::menu()
 
 int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 {
+	dprintf(DEBUG_NORMAL, "CNFSSmallMenu::exec: actionKey:%s\n", actionKey.c_str());
+
 	if (actionKey.empty())
 	{
 		CMenuWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);

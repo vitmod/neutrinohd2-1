@@ -399,6 +399,8 @@ bool CFlashUpdate::checkVersion4Update()
 
 int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CFlashUpdate::exec\n");
+
 	if(parent)
 		parent->hide();
 

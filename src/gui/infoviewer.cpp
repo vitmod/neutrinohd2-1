@@ -325,6 +325,8 @@ void CInfoViewer::showRecordIcon(const bool show)
 
 void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition, const t_channel_id new_channel_id, const bool calledFromNumZap, int epgpos)
 {
+	dprintf(DEBUG_NORMAL, "CInfoViewer::showTitle:\n");
+
 	last_curr_id = last_next_id = 0;
 	
 	std::string ChannelName = Channel;
@@ -791,6 +793,8 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 //showMovieInfo
 void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool lshow, bool show_bookmark)
 {
+	dprintf(DEBUG_NORMAL, "CInfoViewer::showMovieInfo:\n");
+
 	m_visible = true;
 	bool show_dot = true;
 	char runningPercent = 0;
@@ -2263,6 +2267,9 @@ void CInfoViewer::showEpgInfo()   //message on event change
 
 int CInfoViewerHandler::exec(CMenuTarget * parent, const std::string &/*actionkey*/)
 {
+	dprintf(DEBUG_NORMAL, "CInfoViewerHandler::exec:\n");
+
+
 	int res = menu_return::RETURN_EXIT_ALL;
 	CChannelList * channelList;
 	CInfoViewer * i;
@@ -2274,7 +2281,7 @@ int CInfoViewerHandler::exec(CMenuTarget * parent, const std::string &/*actionke
 	
 	channelList = CNeutrinoApp::getInstance()->channelList;
 	i->start();
-	i->showTitle (channelList->getActiveChannelNumber(), channelList->getActiveChannelName(), channelList->getActiveSatellitePosition(), channelList->getActiveChannel_ChannelID ());	// UTF-8
+	i->showTitle(channelList->getActiveChannelNumber(), channelList->getActiveChannelName(), channelList->getActiveSatellitePosition(), channelList->getActiveChannel_ChannelID ());	// UTF-8
 	delete i;
 	
 	return res;

@@ -530,6 +530,8 @@ bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 
 bool CFileBrowser::exec(const char * const dirname)
 {
+	dprintf(DEBUG_NORMAL, "CFileBrowser::exec:\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

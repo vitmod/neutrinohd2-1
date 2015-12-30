@@ -114,6 +114,8 @@ void CWebTV::ClearChannels(void)
 
 int CWebTV::exec(bool rezap)
 {
+	dprintf(DEBUG_NORMAL, "CWebTV::exec:\n");
+
 	// load streams channels list
 	if(channels.empty())
 		loadChannels();

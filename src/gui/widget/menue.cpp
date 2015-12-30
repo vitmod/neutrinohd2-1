@@ -164,6 +164,8 @@ bool CMenuWidget::hasItem()
 
 int CMenuWidget::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CMenuWidget::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

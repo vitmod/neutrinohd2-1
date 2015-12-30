@@ -49,6 +49,8 @@ CMediaPlayerMenu::~CMediaPlayerMenu()
 
 void CMediaPlayerMenu::showMenu()
 {
+	dprintf(DEBUG_NORMAL, "CMediaPlayerMenu::showMenu:\n");
+
 	int shortcutMediaPlayer = 1;
 	
 	CMenuWidget MediaPlayer(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);

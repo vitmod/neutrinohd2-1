@@ -44,6 +44,8 @@
 
 #include <iostream>
 
+#include <system/debug.h>
+
 
 #define borderwidth 4
 
@@ -239,6 +241,8 @@ void CHintBoxExt::init(const char * const Caption, const int Width, const char *
 
 void CHintBoxExt::paint(void)
 {
+	dprintf(DEBUG_NORMAL, "CHintBoxExt::paint\n");
+
 	if (m_window != NULL)
 	{
 		/*

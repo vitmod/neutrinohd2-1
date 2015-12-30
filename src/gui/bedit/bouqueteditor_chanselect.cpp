@@ -52,6 +52,8 @@
 #include <satconfig.h>
 #include <getservices.h>
 
+#include <system/debug.h>
+
 
 extern tallchans allchans;
 extern CBouquetManager * g_bouquetManager;
@@ -182,6 +184,8 @@ void CBEChannelSelectWidget::onOkKeyPressed()
 
 int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CBEChannelSelectWidget::exec: actionKey:%s\n", actionKey.c_str());
+
 	// info height
 	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	

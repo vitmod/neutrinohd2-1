@@ -172,6 +172,8 @@ int CAVPIDSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey
 
 void CAVPIDSelectWidget::showAudioDialog(void)
 {
+	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::showAudioDialog\n");
+
 	CMenuWidget * AVPIDSelector = new CMenuWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	
 	CAVPIDChangeExec AVPIDChanger;
@@ -274,3 +276,4 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 	delete AVPIDSelector;
 	AVPIDSelector = NULL;
 }
+

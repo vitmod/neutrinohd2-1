@@ -53,6 +53,8 @@
 #include <gui/widget/progressbar.h>
 #include <gui/pictureviewer.h>
 
+#include <system/debug.h>
+
 
 extern CPictureViewer * g_PicViewer;
 #define PIC_W 		78
@@ -558,6 +560,8 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_t * a_startzeit, bool doLoop )
 {
+	dprintf(DEBUG_NORMAL, "CEpgData::show:\n");
+
 	int res = menu_return::RETURN_REPAINT;
 	static unsigned long long id;
 	static time_t startzeit;
@@ -1216,6 +1220,8 @@ void CEpgData::showTimerEventBar(bool _show)
 
 int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CEPGDataHandler::exec:\n");
+
 	int           res = menu_return::RETURN_REPAINT;
 	CChannelList  *channelList;
 	CEpgData      *e;

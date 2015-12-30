@@ -92,6 +92,8 @@ int CCAMMenuHandler::exec(CMenuTarget * parent, const std::string &actionKey)
 
 int CCAMMenuHandler::doMainMenu()
 {
+	dprintf(DEBUG_NORMAL, "CCAMMenuHandler::doMainMenu\n");
+
 	int ret;
 	char name[255];
 	char str[255];

@@ -99,6 +99,8 @@ const char * cmd_names[] = {
 
 int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_NORMAL, "COPKGManager::exec: actionKey:%s\n", actionKey.c_str());
+
 	int   res = menu_return::RETURN_REPAINT;
 
 	if (parent)
@@ -243,6 +245,8 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 
 int COPKGManager::showMenu()
 {
+	dprintf(DEBUG_NORMAL, "COPKGManager::showMenu\n");
+
 	CMenuWidget * menu = new CMenuWidget("OPKG-Manager", NEUTRINO_ICON_UPDATE);
 	
 	// return

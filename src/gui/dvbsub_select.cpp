@@ -40,6 +40,8 @@
 
 #include <gui/dvbsub_select.h>
 
+#include <system/debug.h>
+
 
 // dvb
 extern int dvbsub_getpid();				// defined in libdvbsub
@@ -49,6 +51,8 @@ extern int tuxtx_subtitle_running(int *pid, int *page, int *running);
 
 int CDVBSubSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::exec:\n");
+
 	int res = menu_return::RETURN_EXIT_ALL;
 
 	if (parent) 
@@ -59,8 +63,10 @@ int CDVBSubSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*ac
 	return res;
 }
 
-int CDVBSubSelectMenuHandler::doMenu ()
+int CDVBSubSelectMenuHandler::doMenu()
 {
+	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::doMenu:\n");
+
 	CMenuWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
 	
 	CSubtitleChangeExec SubtitleChanger;

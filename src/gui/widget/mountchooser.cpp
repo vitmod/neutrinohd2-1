@@ -41,6 +41,8 @@
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
 
+#include <system/debug.h>
+
 
 CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string & Icon, int * chosenIndex, char * chosenLocalDir, const char * const selectedLocalDir, const int mwidth, const int mheight)
 	: CMenuWidget(Name, Icon,mwidth,mheight), index(chosenIndex), localDir(chosenLocalDir)
@@ -90,6 +92,7 @@ CMountChooser::CMountChooser(const char * const Name, const std::string & Icon, 
 
 int CMountChooser::exec(CMenuTarget* parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CMountChooser::exec: actionKey:%s\n", actionKey.c_str());
 
 	const char * key = actionKey.c_str();
 	if (strncmp(key, "MID:",4) == 0)

@@ -48,6 +48,7 @@
 #include <gui/widget/messagebox.h>
 
 #include <system/settings.h>
+#include <system/debug.h>
 
 #include <global.h>
 #include <neutrino.h>
@@ -89,6 +90,8 @@ CScanTs::CScanTs(int num)
 
 int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_DEBUG, "CScanTs::exec: ectionKey: %s\n", actionKey.c_str());
+
 	if(parent)
 		parent->hide();
 	

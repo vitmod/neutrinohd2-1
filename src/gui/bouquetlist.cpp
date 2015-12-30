@@ -169,6 +169,8 @@ void CBouquetList::adjustToChannelID(t_channel_id channel_id)
 /* used in channellist to switch bouquets up/down */
 int CBouquetList::showChannelList( int nBouquet)
 {
+	dprintf(DEBUG_NORMAL, "CBouquetList::showChannelList\n");
+
 	if (nBouquet == -1)
 		nBouquet = selected;
 
@@ -203,13 +205,15 @@ int CBouquetList::activateBouquet( int id, bool bShowChannelList)
 
 int CBouquetList::exec( bool bShowChannelList)
 {
-	/* select bouquet to show */
+	dprintf(DEBUG_NORMAL, "CBouquetList::exec\n");
+
+	// select bouquet to show
 	int res = show(bShowChannelList);
 
 	if(!bShowChannelList)
 		return res;
 	
-	/* if >= 0, call activateBouquet to show channel list */
+	// if >= 0, call activateBouquet to show channel list
 	if ( res > -1) 
 	{
 		return activateBouquet(selected, bShowChannelList);
@@ -320,6 +324,8 @@ int CBouquetList::doMenu()
 /* bShowChannelList default to true, returns new bouquet or -1/-2 */
 int CBouquetList::show(bool bShowChannelList)
 {
+	dprintf(DEBUG_NORMAL, "CBouquetList::show\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int res = -1;
@@ -624,6 +630,8 @@ void CBouquetList::paintHead()
 
 void CBouquetList::paint()
 {
+	dprintf(DEBUG_NORMAL, "CBouquetList::paint\n");
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 	int lastnum =  liststart + listmaxshow;
 	int bsize = Bouquets.size() > 0 ? Bouquets.size() : 1;

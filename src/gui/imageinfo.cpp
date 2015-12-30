@@ -36,6 +36,8 @@
 #include <daemonc/remotecontrol.h>
 
 #include <system/flashtool.h>
+#include <system/debug.h>
+
 #include <video_cs.h>
 
 #include "svn_version.h"
@@ -75,6 +77,8 @@ CImageInfo::~CImageInfo()
 
 int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CImageInfo::exec:\n");
+
 	if (parent)
  		parent->hide();
 

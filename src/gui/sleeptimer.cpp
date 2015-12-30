@@ -52,6 +52,8 @@ extern CRemoteControl * g_RemoteControl; /* neutrino.cpp */
 
 int CSleepTimerWidget::exec(CMenuTarget* parent, const std::string &)
 {
+	dprintf(DEBUG_DEBUG, "CSleepTimerWidget::exec\n");
+
 	int    res = menu_return::RETURN_REPAINT;
 	int    shutdown_min = 0;
 	char   value[16];

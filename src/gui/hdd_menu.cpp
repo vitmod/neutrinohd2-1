@@ -132,6 +132,8 @@ static int check_if_mounted(char * dev)
 
 int CHDDMenuHandler::exec(CMenuTarget * parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDMenuHandler::exec:\n");
+
 	if (parent)
 		parent->hide();
 	
@@ -399,6 +401,8 @@ int CHDDMenuHandler::hddMenu()
 // hdd init
 int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDInit::exec: actionKey:%s\n", actionKey.c_str());
+
 	char cmd[100];
 	CHintBox * hintbox;
 	int res;
@@ -407,8 +411,6 @@ int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 	char src[128];
 	CProgressWindow * progress;
 	bool idone;
-	
-	printf("CHDDInit: key %s\n", actionKey.c_str());
 	
 	sprintf(src, "/dev/%s", actionKey.c_str());
 
@@ -510,6 +512,8 @@ int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 
 int CHDDDestExec::exec(CMenuTarget * /*parent*/, const std::string&)
 {
+	dprintf(DEBUG_NORMAL, "CHDDDestExec::exec:\n");
+
         char cmd[100];
 	char str[256];
 	FILE * f;
@@ -583,6 +587,8 @@ int CHDDDestExec::exec(CMenuTarget * /*parent*/, const std::string&)
 
 int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDFmtExec::exec: actionKey:%s\n", actionKey.c_str());
+
 	if(parent)
 		hide();
 	
@@ -598,8 +604,6 @@ int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 	bool idone;
 
 	sprintf(src, "/dev/%s", actionKey.c_str());
-
-	printf("CHDDFmtExec: actionKey %s\n", actionKey.c_str());
 
 	res = MessageBox(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
 
@@ -765,6 +769,8 @@ int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDChkExec: actionKey %s\n", actionKey.c_str());
+
 	if(parent)
 		hide();
 	
@@ -781,8 +787,6 @@ int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 	int percent = 0, opercent = 0;
 
 	sprintf(src, "/dev/%s", actionKey.c_str());
-
-	dprintf(DEBUG_NORMAL, "CHDDChkExec: actionKey %s\n", actionKey.c_str());
 
 	bool srun = system("killall -9 smbd");
 
@@ -918,6 +922,8 @@ int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDMountMSGExec: %s\n", (char *)actionKey.c_str());
+
 	if(parent)
 		hide();
 	
@@ -929,8 +935,6 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 	sprintf(src, "/dev/%s", actionKey.c_str());
 	sprintf(dst, "/media/%s", actionKey.c_str());
-
-	dprintf(DEBUG_NORMAL, "CHDDMountMSGExec: %s\n", (char *)actionKey.c_str());
 
 	res = check_if_mounted((char *)actionKey.c_str());
 
@@ -1026,6 +1030,8 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 int CHDDuMountMSGExec::exec(CMenuTarget* parent, const std::string& actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CHDDuMountExec: actionKey:%s\n", actionKey.c_str());
+
 	if(parent)
 		hide();
 	
@@ -1036,9 +1042,6 @@ int CHDDuMountMSGExec::exec(CMenuTarget* parent, const std::string& actionKey)
 	const char * dst = NULL;
 
 	sprintf(src, "/dev/%s", actionKey.c_str());
-	//sprintf(dst, "/media/%s", actionKey.c_str());
-
-	dprintf(DEBUG_NORMAL, "CHDDuMountExec: %s\n", src);
 
 	/* umount */
 	if(check_if_mounted(src) == 1)

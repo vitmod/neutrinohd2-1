@@ -228,6 +228,8 @@ CAudioPlayerGui::~CAudioPlayerGui()
 
 int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::exec: actionKey:%s\n", actionKey.c_str());
+
 	CAudioPlayer::getInstance()->init();
 	
 	m_state = CAudioPlayerGui::STOP;
@@ -371,6 +373,8 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 
 int CAudioPlayerGui::show()
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::show\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -1883,6 +1887,8 @@ void CAudioPlayerGui::paintInfo()
 
 void CAudioPlayerGui::paint()
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::paint\n");
+
 	if(isURL)
 		return;
 	

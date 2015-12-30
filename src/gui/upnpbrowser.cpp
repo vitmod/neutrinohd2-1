@@ -95,6 +95,8 @@ CUpnpBrowserGui::~CUpnpBrowserGui()
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::exec:\n");
+
 	CAudioPlayer::getInstance()->init();
 
 	if(parent)
@@ -394,6 +396,8 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 
 void CUpnpBrowserGui::selectDevice()
 {
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::selectDevice:\n");
+
 	bool loop = true;
 	bool changed = true;
 	neutrino_msg_t      msg;

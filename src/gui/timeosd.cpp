@@ -32,6 +32,8 @@
 #include <gui/widget/progressbar.h>
 #include <driver/rcinput.h>
 
+#include <system/debug.h>
+
 
 #define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
 #define TIMEBARH 		38
@@ -52,7 +54,9 @@ CTimeOSD::~CTimeOSD()
 }
 
 void CTimeOSD::show(int /*Position*/)
-{	 
+{
+	dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
+	 
 	// show / update
 	GetDimensions();
 	

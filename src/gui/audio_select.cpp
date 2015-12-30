@@ -91,7 +91,7 @@ const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
 //
 int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
 {
-	dprintf(DEBUG_INFO, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
 
 	unsigned int sel = atoi(actionKey.c_str());
 	
@@ -106,6 +106,8 @@ int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey
 //
 int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::exec:\n");
+
 	int res = menu_return::RETURN_REPAINT;
 
 	if (parent) 
@@ -119,6 +121,8 @@ int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*act
 //
 int CAudioSelectMenuHandler::doMenu()
 {
+	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::doMenu\n");
+
 	CMenuWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	
 	unsigned int count;

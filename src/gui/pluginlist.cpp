@@ -58,6 +58,8 @@
 /*zapit includes*/
 #include <client/zapittools.h>
 
+#include <system/debug.h>
+
 
 extern CPlugins * g_PluginList;    /* neutrino.cpp */
 
@@ -107,6 +109,8 @@ CPluginList::~CPluginList()
 
 int CPluginList::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CPluginList::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -377,6 +381,8 @@ void CPluginList::paintHead()
 
 void CPluginList::paint()
 {
+	dprintf(DEBUG_NORMAL, "CPluginList::paint\n");
+
 	hide();
 	
 	liststart = (selected/listmaxshow)*listmaxshow;

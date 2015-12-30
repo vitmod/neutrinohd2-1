@@ -59,6 +59,8 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <system/debug.h>
+
 
 CAlphaSetup::CAlphaSetup(const neutrino_locale_t Name, unsigned char * Alpha, CChangeObserver * Observer)
 {
@@ -77,6 +79,8 @@ CAlphaSetup::~CAlphaSetup()
 
 int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CAlphaSetup::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -229,6 +233,8 @@ void CAlphaSetup::hide()
 
 void CAlphaSetup::paint()
 {
+	dprintf(DEBUG_NORMAL, "CAlphaSetup::paint\n");
+
 	// head
 	frameBuffer->paintBoxRel(x, y, width,hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
 	

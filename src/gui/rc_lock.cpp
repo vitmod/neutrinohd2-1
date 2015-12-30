@@ -37,11 +37,15 @@
 #include <gui/widget/messagebox.h>
 #include <gui/widget/stringinput.h>
 
+#include <system/debug.h>
+
 
 const std::string CRCLock::NO_USER_INPUT = "noUserInput";
 
 int CRCLock::exec(CMenuTarget* parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_DEBUG, "CRCLock::exec\n");
+
 	if (parent)
 		parent->hide();
 
@@ -58,6 +62,8 @@ int CRCLock::exec(CMenuTarget* parent, const std::string &actionKey)
 
 void CRCLock::lockBox()
 {
+	dprintf(DEBUG_DEBUG, "CRCLock::lockBox\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 

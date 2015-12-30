@@ -117,6 +117,8 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 
 void CZapitSetup::showMenu()
 {
+	dprintf(DEBUG_NORMAL, "CZapitSetup::showMenu:\n");
+
 	//menue init
 	CMenuWidget * zapit = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
 	

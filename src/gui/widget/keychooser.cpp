@@ -43,6 +43,8 @@
 #include <gui/color.h>
 #include <driver/screen_max.h>
 
+#include <system/debug.h>
+
 
 class CKeyValue : public CMenuSeparator
 {
@@ -122,6 +124,8 @@ CKeyChooserItem::CKeyChooserItem(const char * const Name, int * Key)
 
 int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CKeyChooserItem::exec\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
@@ -165,6 +169,8 @@ void CKeyChooserItem::hide()
 
 void CKeyChooserItem::paint()
 {
+	dprintf(DEBUG_DEBUG, "CKeyChooserItem::paint\n");
+
 	int hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	int mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 

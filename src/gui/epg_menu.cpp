@@ -44,14 +44,13 @@
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
 
-//
-//  -- EPG Menue Handler Class
-//  -- to be used for calls from Menue
-//  -- (2004-03-06 rasc)
-// 
+#include <system/debug.h>
+
 
 int CEPGMenuHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CEPGMenuHandler::exec:\n");
+
 	int res = menu_return::RETURN_EXIT_ALL;
 
 	if (parent) 
@@ -64,6 +63,8 @@ int CEPGMenuHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 int CEPGMenuHandler::doMenu()
 {
+	dprintf(DEBUG_NORMAL, "CEPGMenuHandler::doMenu:\n");
+
 	CMenuWidget EPGSelector(LOCALE_EPGMENU_HEAD, NEUTRINO_ICON_FEATURES);
 
 	EPGSelector.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST , true, NULL, new CEventListHandler(), NULL, CRCInput::RC_red   , NEUTRINO_ICON_BUTTON_RED   ), false);

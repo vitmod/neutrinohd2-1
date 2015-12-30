@@ -494,6 +494,8 @@ int CChannelList::doChannelMenu(void)
 
 int CChannelList::exec()
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::exec\n");
+
 	displayNext = 0; // always start with current events
 	
 	int nNewChannel = show();
@@ -509,6 +511,8 @@ int CChannelList::exec()
 /* return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan ?? */ //TODO:add return value for pip
 int CChannelList::show()
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::show\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	bool actzap = 0;
@@ -1927,6 +1931,8 @@ void CChannelList::paintHead()
 
 void CChannelList::paint()
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 	
 	//FIXME do we need to find biggest chan number in list ?

@@ -506,6 +506,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 // url
 void CMoviePlayerGui::PlayFile(void)
 {
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile\n");
+
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	

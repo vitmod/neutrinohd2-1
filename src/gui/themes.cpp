@@ -37,6 +37,7 @@
 #include <neutrino.h>
 #include "widget/menue.h"
 #include <system/setting_helpers.h>
+#include <system/debug.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/messagebox.h>
@@ -62,6 +63,8 @@ CThemes::CThemes()
 
 int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CThemes::exec: actionKey:%s\n", actionKey.c_str());
+
 	int res = menu_return::RETURN_REPAINT;
 
 	if( !actionKey.empty() )
@@ -151,6 +154,8 @@ void CThemes::readThemes(CMenuWidget &themes)
 
 int CThemes::Show()
 {
+	dprintf(DEBUG_NORMAL, "CThemes::Show:\n");
+
 	std::string file_name = "";
 
 	CMenuWidget themes (LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS, width);

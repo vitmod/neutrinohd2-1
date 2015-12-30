@@ -49,6 +49,8 @@
 #include <frontend_c.h>
 #include <satconfig.h>
 
+#include <system/debug.h>
+
 
 extern cVideo * videoDecoder;
 extern cAudio * audioDecoder;
@@ -108,6 +110,8 @@ CStreamInfo2::~CStreamInfo2 ()
 
 int CStreamInfo2::exec()
 {
+	dprintf(DEBUG_NORMAL, "CStreamInfo2::exec\n");
+
 	paint(paint_mode);
 	
 	doSignalStrengthLoop();
@@ -121,6 +125,8 @@ int CStreamInfo2::exec()
 
 int CStreamInfo2::exec(CMenuTarget * parent, const std::string &)
 {
+	dprintf(DEBUG_NORMAL, "CStreamInfo2::exec\n");
+
 	if (parent)
 		parent->hide ();
 

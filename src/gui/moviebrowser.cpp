@@ -817,6 +817,8 @@ bool CMovieBrowser::saveSettings(MB_SETTINGS *settings)
 
 int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CMovieBrowser::exec: actionKey:%s\n", actionKey.c_str());
+
 	int returnval = menu_return::RETURN_REPAINT;
 
 	if(actionKey == "loaddefault")
@@ -944,9 +946,9 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 
 int CMovieBrowser::exec(const char * path)
 {
-	bool res = false;
+	dprintf(DEBUG_NORMAL, "CMovieBrowser::exec:\n");
 
-	dprintf(DEBUG_NORMAL, "[mb] start MovieBrowser\r\n");
+	bool res = false;
 	
 	int timeout = -1;
 	int returnDefaultOnTimeout = true;
@@ -3691,6 +3693,8 @@ void CMovieBrowser::autoFindSerie(void)
 
 int CMovieHelp::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CMovieHelp::exec:\n");
+
 	Helpbox helpbox;
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_RED, "Sortierung ändern");
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_GREEN, "Filterfenster einblenden");
@@ -3718,6 +3722,8 @@ int CMovieHelp::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 ////////////////////////////////////////////////
 int CFileChooser::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
+	dprintf(DEBUG_NORMAL, "CFileChooser::exec:\n");
+
 	if(parent != NULL)
 		parent->hide();
 
@@ -3770,6 +3776,8 @@ CDirMenu::CDirMenu(std::vector<MB_DIR>* dir_list)
 
 int CDirMenu::exec(CMenuTarget* parent, const std::string & actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CDirMenu::exec:\n");
+
 	int returnval = menu_return::RETURN_REPAINT;
 
 	if(actionKey == "")

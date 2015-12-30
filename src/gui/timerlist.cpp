@@ -272,6 +272,8 @@ CTimerList::~CTimerList()
 
 int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 {
+	dprintf(DEBUG_NORMAL, "CTimerList::exec: actionKey:%s\n", actionKey.c_str());
+
 	const char * key = actionKey.c_str();
 	
 	CSelectChannelWidget*  CSelectChannelWidgetHandler;
@@ -458,6 +460,8 @@ void CTimerList::updateEvents(void)
 
 int CTimerList::show()
 {
+	dprintf(DEBUG_NORMAL, "CTimerList::show\n");
+
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
