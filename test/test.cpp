@@ -407,23 +407,23 @@ void CTestMenu::testCProgressBar()
 	timescale->reset();
 	
 	timescale->paint(Box.iX, Box.iY, 10);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 20);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 30);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 40);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 50);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 60);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 70);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 80);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 90);
-	usleep(100000);
+	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 100);
 	
 	delete timescale;
