@@ -1,4 +1,5 @@
 AM_CPPFLAGS =  \
+	-I$(top_srcdir)/../nhd2-exp \
 	-I$(top_srcdir)/../nhd2-exp/src \
 	-I$(top_srcdir)/../nhd2-exp/src/zapit/include/zapit \
 	-I$(top_srcdir)/../nhd2-exp/lib \
