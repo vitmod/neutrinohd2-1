@@ -964,6 +964,7 @@ movieplayer.tshelp11 skip approx. 10 minutes
 movieplayer.tshelp12 goto start
 movieplayer.tshelp13 goto middle
 movieplayer.tshelp14 goto end
+movieplayer.tshelp15 show movie infoviewer
 movieplayer.tshelp2 Select audio track
 movieplayer.tshelp3 Help
 movieplayer.tshelp4 Create bookmark
