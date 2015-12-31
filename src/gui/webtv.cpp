@@ -837,7 +837,7 @@ void CWebTV::paintItem(int pos)
 	}
 	
 	// itembox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor, 0, 0, (curr == selected)? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor, 0, 0, (curr == selected)? true : false, gradientLight2Dark);
 
 	//name and description
 	if(curr < channels.size()) 
@@ -887,7 +887,7 @@ struct button_label CWebTVButtons[NUM_LIST_BUTTONS] =
 void CWebTV::paintHead()
 {
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true); //round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark); //round
 	
 	// head icon
 	int icon_webtv_w, icon_webtv_h;
@@ -923,7 +923,7 @@ void CWebTV::paintFoot()
 	int f_x = x;
 	int f_y = y + (height - buttonHeight);
 	
-	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true); //round
+	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light); //round
 	
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_LEFT, f_y, ButtonWidth, NUM_LIST_BUTTONS, CWebTVButtons, buttonHeight);
 }
@@ -932,7 +932,7 @@ void CWebTV::paintFoot()
 void CWebTV::paintDetails(int index)
 {
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 	
 	if(channels.empty() )
 		return;
@@ -987,7 +987,7 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
 		// untere info box lines
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1, 0, 0, true);
+		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1/*, 0, 0, true*/);
 	}
 }
 
@@ -1035,15 +1035,6 @@ void CWebTV::showFileInfoWebTV(int pos)
 	if(pos > -1)
 	{
 		InfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);
-		/*
-		int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
-		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-					
-		CInfoBox * infoBox = new CInfoBox(channels[pos]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, channels[pos]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-		infoBox->setText(&channels[pos]->description);
-		infoBox->exec();
-		delete infoBox;
-		*/
 	}
 }
 

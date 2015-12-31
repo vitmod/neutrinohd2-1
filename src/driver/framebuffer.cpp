@@ -749,77 +749,37 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 
 //
 
-void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor)
+void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor, int mode)
 {
 	if (!getActive())
 		return;
 
-	#define MASK 0xFFFFFFFF
-	//
-	fb_pixel_t* gradientBuf = NULL;
+#define MASK 0xFFFFFFFF
 
-	if (gradientBuf == NULL) 
-	{
-		gradientBuf = (fb_pixel_t*)malloc(dy*sizeof(fb_pixel_t));
-
-		if (gradientBuf == NULL) 
-		{
-			return;
-		}
-	}
-	memset((void*)gradientBuf, '\0', dy*sizeof(fb_pixel_t));
-
-	uint8_t _tr = (uint8_t)((col & 0xFF000000) >> 24);
-	uint8_t _r  = (uint8_t)((col & 0x00FF0000) >> 16);
-	uint8_t _g  = (uint8_t)((col & 0x0000FF00) >>  8);
-	uint8_t _b  = (uint8_t) (col & 0x000000FF);
-
-	float steps = (float) dy;
-
-	float trStep = (float)(_tr) / steps;
-	float rStep = (float)(_r) / steps;
-	float gStep = (float)(_g) / steps;
-	float bStep = (float)(_b) / steps;
-	
-	uint8_t tr = limitChar(_tr);
-	uint8_t r = limitChar(_r);
-	uint8_t g = limitChar(_g);
-	uint8_t b = limitChar(_b);
-
-	for (int i = 0; i < dy; i++) 
-	{
-		if(fadeColor)
-		{
-			tr = limitChar((int)(_tr + trStep*(float)i));
-			r  = limitChar((int)(_r + rStep*(float)i));
-			g  = limitChar((int)(_g + gStep*(float)i));
-			b  = limitChar((int)(_b + bStep*(float)i));
-		}
-	
-		gradientBuf[i] = ((tr << 24) & 0xFF000000) |
-				((r  << 16) & 0x00FF0000) |
-				((g  <<  8) & 0x0000FF00) |
-				( b         & 0x000000FF);
-	}
-
-	//
-	fb_pixel_t* boxBuf = paintBoxRel2Buf(dx, dy, MASK, NULL, radius, type);
+	// boxBuf
+	fb_pixel_t* boxBuf = paintBoxRel2Buf(dx, dy, fadeColor? MASK : col, NULL, radius, type);
         if (!boxBuf)
                return;
 
-	fb_pixel_t *bp = boxBuf;
-	fb_pixel_t *gra = gradientBuf;
-
-	// vertical
-	for (int pos = 0; pos < dx; pos++) 
+	// gradientBuf
+	if(fadeColor)
 	{
-		for(int count = 0; count < dy; count++) 
+		fb_pixel_t* gradientBuf = gradientOneColor(col, NULL, dy, mode);
+
+		fb_pixel_t *bp = boxBuf;
+		fb_pixel_t *gra = gradientBuf;
+
+		// vertical
+		for (int pos = 0; pos < dx; pos++) 
 		{
-			if (*(bp + pos) == MASK)
-				*(bp + pos) = (fb_pixel_t)(*(gra + count));
-			bp += dx;
+			for(int count = 0; count < dy; count++) 
+			{
+				if (*(bp + pos) == MASK)
+					*(bp + pos) = (fb_pixel_t)(*(gra + count));
+				bp += dx;
+			}
+			bp = boxBuf;
 		}
-		bp = boxBuf;
 	}
 
 	blit2FB(boxBuf, dx, dy, x, y);

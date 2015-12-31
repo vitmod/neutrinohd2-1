@@ -37,6 +37,8 @@
 
 #include <stdint.h>
 
+#include <driver/framebuffer.h>
+
 
 // common
 #define COL_TRANSP0			0x00
@@ -132,5 +134,34 @@ int convertSetupColor2RGB(unsigned char r, unsigned char g, unsigned char b);
 int convertSetupAlpha2Alpha(unsigned char alpha);
 //void fadeColor(unsigned char &r, unsigned char &g, unsigned char &b, int fade, bool protect = true);
 uint8_t limitChar(int c);
+
+typedef struct {
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+} RgbColor;
+
+typedef struct {
+	float h;
+	float s;
+	float v;
+} HsvColor;
+
+uint8_t getBrightnessRGB(fb_pixel_t color);
+
+fb_pixel_t changeBrightnessRGBRel(fb_pixel_t color, int br, bool transp=true);
+fb_pixel_t changeBrightnessRGB(fb_pixel_t color, uint8_t br, bool transp=true);
+
+fb_pixel_t Hsv2SysColor(HsvColor *hsv, uint8_t tr=0xFF);
+uint8_t SysColor2Hsv(fb_pixel_t color, HsvColor *hsv);
+
+void Hsv2Rgb(HsvColor *hsv, RgbColor *rgb);
+void Rgb2Hsv(RgbColor *rgb, HsvColor *hsv);
+
+fb_pixel_t* gradientColorToTransparent(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize, int mode, int intensity=normal);
+
+fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize, int mode, int intensity=normal, uint8_t v_min=0x40, uint8_t v_max=0xE0, uint8_t s=0xC0);
+
+fb_pixel_t* gradientColorToColor(fb_pixel_t start_col, fb_pixel_t end_col, fb_pixel_t *gradientBuf, int bSize, int mode, int intensity=normal);
 
 #endif

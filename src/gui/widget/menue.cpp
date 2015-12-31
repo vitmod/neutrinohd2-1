@@ -457,6 +457,8 @@ void CMenuWidget::hide()
 
 void CMenuWidget::paint()
 {
+	dprintf(DEBUG_NORMAL, "CMenuWidget::paint\n");
+
 	const char * l_name;
 	
 	if(name == NONEXISTANT_LOCALE)
@@ -566,7 +568,7 @@ void CMenuWidget::paint()
 	frameBuffer->paintBoxRel(x, y + height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 	
 	// all height position (needed to paint itemIcon and help text)
 	HEIGHT_Y = y + full_height;
@@ -734,6 +736,8 @@ int CMenuOptionChooser::getOptionValue(void) const
 
 int CMenuOptionChooser::exec(CMenuTarget *parent)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::exec\n");
+
 	bool wantsRepaint = false;
 	int ret = menu_return::RETURN_NONE;
 	
@@ -816,6 +820,8 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 
 int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
@@ -833,7 +839,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, gradientLight2Dark); //FIXME
 
 	neutrino_locale_t option = NONEXISTANT_LOCALE;
 	const char * l_option = NULL;
@@ -910,7 +916,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -988,6 +994,8 @@ CMenuOptionNumberChooser::CMenuOptionNumberChooser(const char * const Name, int 
 
 int CMenuOptionNumberChooser::exec(CMenuTarget *)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionNumberChooser::exec\n");
+
 	if( msg == CRCInput::RC_left ) 
 	{
 		if (((*optionValue) > upper_bound) || ((*optionValue) <= lower_bound))
@@ -1013,6 +1021,8 @@ int CMenuOptionNumberChooser::exec(CMenuTarget *)
 
 int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionNumberChooser::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
@@ -1031,7 +1041,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, gradientLight2Dark); //FIXME
 
 	// option
 	const char * l_option;
@@ -1073,7 +1083,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 		
 		// paint help icon
 		int icon_w = 0;
@@ -1149,6 +1159,8 @@ void CMenuOptionStringChooser::addOption(const char * const value)
 
 int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionStringChooser::exec\n");
+
 	bool wantsRepaint = false;
 	int ret = menu_return::RETURN_NONE;
 
@@ -1223,7 +1235,10 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 
 int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionStringChooser::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 	
@@ -1239,7 +1254,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, gradientLight2Dark); //FIXME
 
 	// paint icon
 	int icon_w = 0;
@@ -1296,7 +1311,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1347,7 +1362,7 @@ void CMenuOptionLanguageChooser::addOption(const char * const value)
 
 int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 {
-	dprintf(DEBUG_NORMAL, "CMenuOptionLanguageChooser::exec: %s\n", g_settings.language);
+	dprintf(DEBUG_DEBUG, "CMenuOptionLanguageChooser::exec:\n");
 	
 	bool wantsRepaint = false;
 
@@ -1376,6 +1391,8 @@ int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 
 int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 {
+	dprintf(DEBUG_DEBUG, "CMenuOptionLanguageChooser::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	
 	uint8_t color = COL_MENUCONTENT;
@@ -1414,7 +1431,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1515,6 +1532,8 @@ int CMenuForwarder::getWidth(void) const
 
 int CMenuForwarder::exec(CMenuTarget* parent)
 {
+	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec\n");
+
 	if(jumpTarget)
 	{
 		return jumpTarget->exec(parent, actionKey);
@@ -1550,7 +1569,10 @@ const char * CMenuForwarder::getName(void)
 
 int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 {
+	dprintf(DEBUG_DEBUG, "CMenuForwarder::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+
 	int height = getHeight();
 	const char * l_text = getName();
 	
@@ -1567,7 +1589,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -1612,7 +1634,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// paint item
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false); //FIXME
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, gradientLight2Dark); //FIXME
 	
 	// paint icon/direkt-key
 	int icon_w = 0;
@@ -1690,8 +1712,11 @@ const char * CMenuSeparator::getString(void)
 
 int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 {
-	int height;
+	dprintf(DEBUG_DEBUG, "CMenuSeparator::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+
+	int height;
 	height = getHeight();
 
 	frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
@@ -1775,6 +1800,8 @@ bool CZapProtection::check()
 
 int CLockedMenuForwarder::exec(CMenuTarget * parent)
 {
+	dprintf(DEBUG_DEBUG, "CLockedMenuForwarder::exec\n");
+
 	Parent = parent;
 	
 	if( (g_settings.parentallock_prompt != PARENTALLOCK_PROMPT_NEVER) || AlwaysAsk )
@@ -1818,6 +1845,8 @@ CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::s
 
 int CMenuSelector::exec(CMenuTarget */*parent*/)
 { 
+	dprintf(DEBUG_DEBUG, "CMenuSelector::exec\n");
+
 	if(returnInt != NULL)
 		*returnInt= returnIntValue;
 		
@@ -1834,6 +1863,8 @@ int CMenuSelector::exec(CMenuTarget */*parent*/)
 
 int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 {
+	dprintf(DEBUG_DEBUG, "CMenuSelector::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
@@ -1852,7 +1883,7 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 	}
 
 	// paintItem
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false);
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor, 0, 0, selected? true : false, gradientLight2Dark);
 
 	int stringstartposName = x + offx + BORDER_RIGHT;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx - (stringstartposName - x), optionName, color, 0, true); // UTF-8
@@ -1866,7 +1897,7 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -1937,6 +1968,8 @@ int CMenuForwarderExtended::getWidth(void) const
 
 int CMenuForwarderExtended::exec(CMenuTarget* parent)
 {
+	dprintf(DEBUG_DEBUG, "CMenuForwarderExtended::exec\n");
+
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
 	else
@@ -1962,7 +1995,10 @@ const char * CMenuForwarderExtended::getHelpText(void)
 
 int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 {
+	dprintf(DEBUG_DEBUG, "CMenuForwarderExtended::paint\n");
+
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+
 	int height = getHeight();
 	const char * l_text = getName();
 	int stringstartposX = x + (offx == 0? 0: offx);	
@@ -2017,7 +2053,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -2077,6 +2113,8 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 
 int CLockedMenuForwarderExtended::exec(CMenuTarget *parent)
 {
+	dprintf(DEBUG_DEBUG, "CLockedMenuForwarderExtended::exec\n");
+
 	Parent = parent;
 	
 	if( (g_settings.parentallock_prompt != PARENTALLOCK_PROMPT_NEVER) || AlwaysAsk )
@@ -2096,6 +2134,8 @@ int CLockedMenuForwarderExtended::exec(CMenuTarget *parent)
 // CMenuSelectorTarget
 int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & actionKey)
 {
+	dprintf(DEBUG_DEBUG, "CMenuSelectorTarget::exec\n");
+
         if (actionKey != "")
                 *m_select = atoi(actionKey.c_str());
         else
@@ -2103,3 +2143,4 @@ int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & action
 	
         return menu_return::RETURN_EXIT;
 }
+

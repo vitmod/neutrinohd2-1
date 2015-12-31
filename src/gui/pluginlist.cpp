@@ -346,13 +346,13 @@ void CPluginList::paintHead()
 	int iw, ih;
 	
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// body
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - footheight, COL_MENUCONTENT_PLUS_0);
 	
 	// foot
-	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 	
 	// foot bottons
 	int ButtonWidth = (width - (BORDER_LEFT + BORDER_RIGHT)) / 4;
