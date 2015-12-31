@@ -64,10 +64,17 @@ int main(int argc,char* argv[])
         return -1;
     }
 
+#if LIBAVFORMAT_VERSION_MAJOR < 54
     if (av_find_stream_info(avContext) < 0) 
     {
         printf("Error av_find_stream_info\n");
     }
+#else
+    if (avformat_find_stream_info(avContext, NULL) < 0) 
+    {
+        printf("Error avformat_find_stream_info\n");
+    }
+#endif
 
     printf("\n***\n");
     dump_metadata();

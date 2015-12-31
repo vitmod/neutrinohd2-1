@@ -935,7 +935,11 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 		* but the file is played back well. so remove this
 		* until other works are done and we can prove this.
 		*/
-		av_close_input_file(avContext);
+#if LIBAVFORMAT_VERSION_MAJOR < 54
+ 		av_close_input_file(avContext);
+#else
+		avformat_close_input(&avContext);
+#endif		
 		releaseMutex(FILENAME, __FUNCTION__,__LINE__);
 		return cERR_CONTAINER_FFMPEG_STREAM;
 #endif
@@ -1442,8 +1446,12 @@ static int container_ffmpeg_stop(Context_t *context)
 
 	if (avContext != NULL) 
 	{
-		av_close_input_file(avContext);
-		avContext = NULL;
+#if LIBAVFORMAT_VERSION_MAJOR < 54
+ 		av_close_input_file(avContext);
+ 		avContext = NULL;
+#else
+		avformat_close_input(&avContext);
+#endif		
 	}
 
 	isContainerRunning = 0;

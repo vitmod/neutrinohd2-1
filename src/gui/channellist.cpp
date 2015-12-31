@@ -1543,7 +1543,7 @@ void CChannelList::quickZap(int key, bool cycle)
 void CChannelList::paintDetails(int index)
 {
 	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true);
 	
 	if (chanlist.empty()) 
 		return;
