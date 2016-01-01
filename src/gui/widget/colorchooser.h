@@ -74,6 +74,5 @@ class CColorChooser : public CMenuTarget
 
 };
 
-
 #endif
 

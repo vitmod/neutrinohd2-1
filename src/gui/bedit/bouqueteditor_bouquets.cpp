@@ -108,7 +108,7 @@ void CBEBouquetWidget::paintItem(int pos)
 	}
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (current == selected)? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 	if(current < Bouquets->size()) 
 	{
@@ -151,7 +151,7 @@ void CBEBouquetWidget::paint()
 
 void CBEBouquetWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() , width, g_Locale->getText(LOCALE_BOUQUETLIST_HEAD), COL_MENUHEAD, 0, true); // UTF-8
 }
@@ -171,7 +171,7 @@ void CBEBouquetWidget::paintFoot()
 	Button[2] = CBEBouquetWidgetButtons[2];
 	Button[3].button = NEUTRINO_ICON_BUTTON_BLUE;
 
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	switch( blueFunction)
 	{

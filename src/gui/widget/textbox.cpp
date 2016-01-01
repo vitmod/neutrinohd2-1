@@ -77,7 +77,7 @@
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox] new\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
 
@@ -98,20 +98,20 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 
 	m_nMode	= _mode;
 
-	/* in case of auto line break, we do no support auto width  yet */
+	// in case of auto line break, we do no support auto width  yet
 	if( !(_mode & NO_AUTO_LINEBREAK))
 	{
-		m_nMode = m_nMode & ~AUTO_WIDTH; /* delete any AUTO_WIDTH*/
+		m_nMode = m_nMode & ~AUTO_WIDTH; // delete any AUTO_WIDTH
 	}
 
-	dprintf(DEBUG_DEBUG, " CTextBox::m_cText: %d, m_nMode %d\t\r\n", m_cText.size(), m_nMode);
+	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_cText: %d, m_nMode %d\t\r\n", m_cText.size(), m_nMode);
 
 	m_textBackgroundColor = textBackgroundColor;
 	m_nFontTextHeight  = m_pcFontText->getHeight();
 	
-	dprintf(DEBUG_DEBUG, " CTextBox::m_nFontTextHeight: %d\t\r\n", m_nFontTextHeight);
+	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_nFontTextHeight: %d\t\r\n", m_nFontTextHeight);
 
-	//Initialise the window frames first
+	// Initialise the window frames first
 	initFramesRel();
 
 	// than refresh text line array 
@@ -120,7 +120,7 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 
 CTextBox::CTextBox(const char * text)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox] new\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
 
@@ -128,7 +128,7 @@ CTextBox::CTextBox(const char * text)
 	if(text != NULL)		
 		m_cText = *text;
 
-	//Initialise the window frames first
+	// Initialise the window frames first
 	initFramesRel();
 
 	// than refresh text line array 
@@ -137,7 +137,7 @@ CTextBox::CTextBox(const char * text)
 
 CTextBox::CTextBox()
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox] new\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
 	initFramesRel();
@@ -147,7 +147,7 @@ CTextBox::CTextBox()
 
 CTextBox::~CTextBox()
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox] del\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::~CTextBox\r\n");
 	
 	m_cLineArray.clear();
 	hide();
@@ -155,7 +155,7 @@ CTextBox::~CTextBox()
 
 void CTextBox::initVar(void)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox]->InitVar\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::InitVar:\r\n");
 	
 	m_cText	= "";
 	m_nMode = SCROLL;
@@ -188,7 +188,7 @@ void CTextBox::initVar(void)
 
 void CTextBox::reSizeMainFrameWidth(int textWidth)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox]->ReSizeMainFrameWidth: %d, current: %d\r\n", textWidth, m_cFrameTextRel.iWidth);
+	dprintf(DEBUG_DEBUG, "CTextBox::ReSizeMainFrameWidth: %d, current: %d\r\n", textWidth, m_cFrameTextRel.iWidth);
 
 	int iNewWindowWidth = textWidth + m_cFrameScrollRel.iWidth + 2*TEXT_BORDER_WIDTH;
 
@@ -199,13 +199,13 @@ void CTextBox::reSizeMainFrameWidth(int textWidth)
 
 	m_cFrame.iWidth	= iNewWindowWidth;
 
-	//Re-Init the children frames due to new main window
+	// Re-Init the children frames due to new main window
 	initFramesRel();
 }
 
 void CTextBox::reSizeMainFrameHeight(int textHeight)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox]->ReSizeMainFrameHeight: %d, current: %d\r\n", textHeight, m_cFrameTextRel.iHeight);
+	dprintf(DEBUG_DEBUG, "CTextBox::ReSizeMainFrameHeight: %d, current: %d\r\n", textHeight, m_cFrameTextRel.iHeight);
 
 	int iNewWindowHeight = textHeight + 2*TEXT_BORDER_WIDTH;
 
@@ -216,13 +216,13 @@ void CTextBox::reSizeMainFrameHeight(int textHeight)
 
 	m_cFrame.iHeight	= iNewWindowHeight;
 
-	//Re-Init the children frames due to new main window
+	// Re-Init the children frames due to new main window
 	initFramesRel();
 }
 
 void CTextBox::initFramesRel(void)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox]->InitFramesRel\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::InitFramesRel:\r\n");
 
 	m_cFrameTextRel.iX = 0;
 	m_cFrameTextRel.iY = 0;
@@ -250,7 +250,7 @@ void CTextBox::initFramesRel(void)
 
 void CTextBox::refreshTextLineArray(void)
 {      
-	dprintf(DEBUG_DEBUG, "[CTextBox]->RefreshLineArray \r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::RefreshLineArray:\r\n");
 	
 	int loop = true;
 	int pos_prev = 0;
@@ -265,7 +265,7 @@ void CTextBox::refreshTextLineArray(void)
 	std::string aktLine = "";
 	std::string aktWord = "";
 
-	/* clear current line vector */
+	// clear current line vector
 	m_cLineArray.clear();
 	m_nNrOfLines = 0;
 
@@ -309,12 +309,12 @@ void CTextBox::refreshTextLineArray(void)
 			aktWordWidth = m_pcFontText->getRenderWidth(aktWord, true);
 			pos_prev = pos + 1;
 			
-			//if(aktWord.find("&quot;") == )
+			// if(aktWord.find("&quot;") == )
 			if(1)
 			{
 				if( aktWidth + aktWordWidth > lineBreakWidth && !(m_nMode & NO_AUTO_LINEBREAK))
 				{
-					/* we need a new line before we can continue */
+					// we need a new line before we can continue
 					m_cLineArray.push_back(aktLine);
 					
 					m_nNrOfLines++;
@@ -362,7 +362,7 @@ void CTextBox::refreshTextLineArray(void)
 			}
 		}
 
-		/* check if we have to recalculate the window frame size, due to auto width and auto height */
+		// check if we have to recalculate the window frame size, due to auto width and auto height
 		if( m_nMode & AUTO_WIDTH)
 		{
 			reSizeMainFrameWidth(maxTextWidth);
@@ -418,15 +418,18 @@ void CTextBox::refreshText(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	//Paint Text Background
+	// Paint Text Background
 	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor);
 
 	if( m_nNrOfLines <= 0) 
 		return;
+
+	dprintf(DEBUG_DEBUG, "CTextBox::refreshText:\r\n");
 	
-	// settumbnail (paint picture only on first page)
+	// setthumbnail (paint picture only on first page)
 	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )
 	{
+		// frameBox
 		if(frameBuffer != NULL) 
 		{
 			frameBuffer->paintVLineRel(lx, ly, th, COL_WHITE);
@@ -435,7 +438,7 @@ void CTextBox::refreshText(void)
 			frameBuffer->paintHLineRel(lx, tw, ly + th, COL_WHITE);
 		}
 		
-		// display screenshot
+		// picture
 		frameBuffer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
 	}
 	
@@ -470,7 +473,7 @@ void CTextBox::scrollPageDown(const int pages)
 	if( m_nNrOfLines <= 0) 
 		return;
 	
-	dprintf(DEBUG_DEBUG, "[CTextBox]->ScrollPageDown \r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::ScrollPageDown:\r\n");
 
 	if(m_nCurrentPage + pages < m_nNrOfPages)
 	{
@@ -493,7 +496,7 @@ void CTextBox::scrollPageUp(const int pages)
 	if( m_nNrOfLines <= 0) 
 		return;
 	
-	dprintf(DEBUG_DEBUG, "[CTextBox]->ScrollPageUp \r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::ScrollPageUp:\r\n");
 
 	if(m_nCurrentPage - pages > 0)
 	{
@@ -513,7 +516,7 @@ void CTextBox::refresh(void)
 	if( frameBuffer == NULL) 
 		return;
 	
-	dprintf(DEBUG_DEBUG, "[CTextBox]->Refresh\r\n");
+	dprintf(DEBUG_DEBUG, "CTextBox::Refresh:\r\n");
 
 	//Paint text
 	refreshScroll();
@@ -522,6 +525,8 @@ void CTextBox::refresh(void)
 
 bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
 {
+	dprintf(DEBUG_DEBUG, "CTextBox::setText:\r\n");
+
 	// thumbnail
 	thumbnail = "";
 	
@@ -546,7 +551,6 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 	if (newText != NULL)
 	{
 		m_cText = *newText;
-		//m_cText = *newText + "\n"; //FIXME test
 		refreshTextLineArray();
 		refresh();
 		
@@ -558,7 +562,7 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 
 void CTextBox::paint(void)
 {
-	dprintf(DEBUG_NORMAL, "CTextBox::paint\n");
+	dprintf(DEBUG_NORMAL, "CTextBox::paint:\n");
 
 	if(frameBuffer != NULL) 
 		return;
@@ -576,3 +580,4 @@ void CTextBox::hide (void)
 
 	frameBuffer = NULL;
 }
+

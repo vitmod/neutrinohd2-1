@@ -1543,7 +1543,7 @@ void CChannelList::quickZap(int key, bool cycle)
 void CChannelList::paintDetails(int index)
 {
 	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
 	
 	if (chanlist.empty()) 
 		return;
@@ -1716,7 +1716,7 @@ void CChannelList::paintItem(int pos)
 	}
 	
 	// itembox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor, 0, 0, (curr == selected)? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 
 	//name and description
 	if(curr < chanlist.size()) 

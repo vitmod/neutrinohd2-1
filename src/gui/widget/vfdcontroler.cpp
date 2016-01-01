@@ -64,7 +64,29 @@ CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Obse
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	observer = Observer;
+	
+	nameStringOption = Name;
+	name = g_Locale->getText(Name);
+
+	width = w_max(MENU_WIDTH, 0);
+	height = h_max(hheight+ mheight*3 + mheight/2, 0);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height)>> 1);
+
+	brightness = CVFD::getInstance()->getBrightness();
+	brightnessstandby = CVFD::getInstance()->getBrightnessStandby();
+}
+
+CVfdControler::CVfdControler(const char* const Name, CChangeObserver* Observer)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	observer = Observer;
+
 	name = Name;
+	nameStringOption = NONEXISTANT_LOCALE;
+
 	width = w_max(MENU_WIDTH, 0);
 	height = h_max(hheight+ mheight*3 + mheight/2, 0);
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
@@ -221,7 +243,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				break;
 
 			case CRCInput::RC_home:
-				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) && (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
+				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) && (MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
 				brightness = brightness_alt;
@@ -259,7 +281,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 	hide();
 
 	if(observer)
-		observer->changeNotify(name, NULL);
+		observer->changeNotify(nameStringOption, NULL);
 
 	return res;
 }
@@ -282,17 +304,17 @@ void CVfdControler::paint()
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
 	
 	// title
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);//round
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);//round
 	
-	// foot
+	// body
 	//shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
-	// foot
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);//round
+	// body
+	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
 	paintSlider(x + BORDER_LEFT, y + hheight + mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, false);

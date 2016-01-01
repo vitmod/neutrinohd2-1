@@ -128,10 +128,10 @@ CDHCPNotifier::CDHCPNotifier( CMenuForwarder* a1, CMenuForwarder* a2, CMenuForwa
 
 bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
 {
-	CNetworkSettings::getInstance()->networkConfig.inet_static = ((*(int*)(data)) == 0);
+	CNetworkSettings::getInstance()->networkConfig->inet_static = ((*(int*)(data)) == 0);
 	
 	for(int x = 0; x < 5; x++)
-		toDisable[x]->setActive(CNetworkSettings::getInstance()->networkConfig.inet_static);
+		toDisable[x]->setActive(CNetworkSettings::getInstance()->networkConfig->inet_static);
 	
 	return true;
 }
@@ -441,30 +441,30 @@ bool CIPChangeNotifier::changeNotify(const neutrino_locale_t locale, void * Data
 		sscanf((char*) Data, "%hhu.%hhu.%hhu.%hhu", &_ip[0], &_ip[1], &_ip[2], &_ip[3]);
 
 		sprintf(ip, "%hhu.%hhu.%hhu.255", _ip[0], _ip[1], _ip[2]);
-		CNetworkSettings::getInstance()->networkConfig.broadcast = ip;
+		CNetworkSettings::getInstance()->networkConfig->broadcast = ip;
 
-		CNetworkSettings::getInstance()->networkConfig.netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
+		CNetworkSettings::getInstance()->networkConfig->netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
 	}
 	else if(locale == LOCALE_NETWORKMENU_SELECT_IF) 
 	{
-		CNetworkSettings::getInstance()->networkConfig.readConfig(g_settings.ifname);
+		CNetworkSettings::getInstance()->networkConfig->readConfig(g_settings.ifname);
 		//readNetworkSettings(); //???
 		
-		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNetworkSettings::getInstance()->networkConfig.inet_static);
+		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNetworkSettings::getInstance()->networkConfig->inet_static);
 
-		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNetworkSettings::getInstance()->networkConfig.inet_static);
+		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNetworkSettings::getInstance()->networkConfig->inet_static);
 
 		int ecnt = sizeof(CNetworkSettings::getInstance()->wlanEnable) / sizeof(CMenuItem*);
 
 		for(int i = 0; i < ecnt; i++)
-			CNetworkSettings::getInstance()->wlanEnable[i]->setActive(CNetworkSettings::getInstance()->networkConfig.wireless);
+			CNetworkSettings::getInstance()->wlanEnable[i]->setActive(CNetworkSettings::getInstance()->networkConfig->wireless);
 
 	}
 	/*
 	else if(locale == LOCALE_NETWORKMENU_DHCP) 
 	{
-		CNetworkSettings::getInstance()->networkConfig.inet_static = (network_dhcp == 0 );
-		int ecnt = sizeof(dhcpDisable) / sizeof(CMenuForwarder*);
+		CNetworkSettings::getInstance()->networkConfig.inet_static = (CNetworkSettings::getInstance()->networkConfig.network_dhcp == 0 );
+		int ecnt = sizeof(CNetworkSettings::getInstance()->networkConfig.dhcpDisable) / sizeof(CMenuForwarder*);
 
 		for(int i = 0; i < ecnt; i++)
 			dhcpDisable[i]->setActive(CNetworkConfig::getInstance()->inet_static);

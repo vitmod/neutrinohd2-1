@@ -77,6 +77,8 @@
 #include <video_cs.h>
 #include <system/debug.h>
 
+#include <system/helpers.h>
+
 
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
 void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next );
@@ -532,20 +534,12 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	}
 		
 	// show date
-	char datestr[11];
+	std::string datestr= getNowTimeStr("%d.%m.%Y");
 			
-	time_t wakeup_time;
-	struct tm *now;
-			
-	time(&wakeup_time);
-	now = localtime(&wakeup_time);
-		
-	strftime(datestr, sizeof(datestr), "%d.%m.%Y", now);
-			
-	dateWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr, true); //UTF-8
+	dateWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr.c_str(), true); //UTF-8
 	dateHeight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();
 			
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxEndX - 5 - dateWidth, BoxStartY + (SAT_INFOBOX_HEIGHT - dateHeight)/2 + dateHeight, dateWidth, datestr, COL_INFOBAR, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxEndX - 5 - dateWidth, BoxStartY + (SAT_INFOBOX_HEIGHT - dateHeight)/2 + dateHeight, dateWidth, datestr.c_str(), COL_INFOBAR, 0, true); // UTF-8
 		
 	// botton bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM);
@@ -854,21 +848,12 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	
 	//
 	// show date/time
-	char datestr[18];
+	std::string datestr = getNowTimeStr("%d.%m.%Y %H:%M");
 			
-	time_t wakeup_time;
-	struct tm *now;
-			
-	time(&wakeup_time);
-	now = localtime(&wakeup_time);
-		
-	//strftime(datestr, sizeof(datestr), "%d.%m.%Y", now);
-	strftime(datestr, 18, "%d.%m.%Y %H:%M", now);
-			
-	int widthtime = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr, true); //UTF-8
+	int widthtime = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr.c_str(), true); //UTF-8
 	int height = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();
 			
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxEndX - 5 - widthtime, BoxStartY + (SAT_INFOBOX_HEIGHT -height)/2 + height, widthtime, datestr, COL_INFOBAR, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxEndX - 5 - widthtime, BoxStartY + (SAT_INFOBOX_HEIGHT -height)/2 + height, widthtime, datestr.c_str(), COL_INFOBAR, 0, true); // UTF-8
 	
 	std::string title = "neutrinoHD2";
 	int widthtitle = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(title.c_str(), true); //UTF-8

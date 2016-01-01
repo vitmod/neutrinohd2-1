@@ -55,7 +55,8 @@ class CVfdControler : public CMenuTarget
 		unsigned char brightness;
 		unsigned char brightnessstandby;
 
-		neutrino_locale_t name;
+		neutrino_locale_t nameStringOption;
+		std::string name;
 
 		CChangeObserver* observer;
 
@@ -66,6 +67,7 @@ class CVfdControler : public CMenuTarget
 	public:
 
 		CVfdControler(const neutrino_locale_t Name, CChangeObserver* Observer = NULL);
+		CVfdControler(const char* const Name, CChangeObserver* Observer = NULL);
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);

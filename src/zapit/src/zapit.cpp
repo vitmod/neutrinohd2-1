@@ -829,7 +829,7 @@ void saveZapitSettings(bool write, bool write_a)
 	// write zapit config
 	if (write) 
 	{
-		dprintf(DEBUG_INFO, "[zapit] saving zapit.conf \n");
+		dprintf(DEBUG_INFO, "[zapit]saveZapitSettings:\n");
 		
 		if (config.getBool("saveLastChannel", true)) 
 		{
@@ -848,7 +848,7 @@ void saveZapitSettings(bool write, bool write_a)
 
 	}
 
-	/* write audio config */
+	// write audio config
         if (write_a) 
 	{
                 // audio map
@@ -3749,7 +3749,7 @@ void setZapitConfig(Zapit_config * Cfg)
 	config.setBool("saveLastChannel", Cfg->saveLastChannel);
 	scanSDT = Cfg->scanSDT;
 	
-	/* save it */
+	// save it
 	saveZapitSettings(true, false);
 }
 
@@ -4068,7 +4068,6 @@ void * sdt_thread(void */*arg*/)
 	return 0;
 }
 
-//#if !defined (USE_OPENGL)
 //#define CHECK_FOR_LOCK
 //#endif
 int zapit_main_thread(void *data)
@@ -4158,7 +4157,7 @@ int zapit_main_thread(void *data)
 			setTVMode();
 		
 		// last channel
-		live_channel_id = (currentMode & RADIO_MODE) ? ZapStart_arg->startchannelradio_id & 0xFFFFFFFFFFFFULL : ZapStart_arg->startchanneltv_id & 0xFFFFFFFFFFFFULL;	// if readed from neutrinoMP
+		live_channel_id = (currentMode & RADIO_MODE) ? ZapStart_arg->startchannelradio_id & 0xFFFFFFFFFFFFULL : ZapStart_arg->startchanneltv_id & 0xFFFFFFFFFFFFULL;
 		lastChannelRadio = ZapStart_arg->startchannelradio_nr;
 		lastChannelTV    = ZapStart_arg->startchanneltv_nr;
 	}
@@ -4276,6 +4275,8 @@ int zapit_main_thread(void *data)
 	}
 
 	//HOUSEKEPPING
+	dprintf(DEBUG_INFO, "zapit: shutdown started\n\n");
+
 	//save audio map
 	if(live_channel)
 		save_channel_pids(live_channel);
@@ -4288,12 +4289,7 @@ int zapit_main_thread(void *data)
 	
 	// stop std thread
 	pthread_cancel(tsdt);
-	
-	zapit_ready = 0;
-	
-	pthread_join (tsdt, NULL);
-	
-	dprintf(DEBUG_INFO, "zapit: shutdown started\n\n");
+	pthread_join(tsdt, NULL);
 
 	if (pmtDemux)
 		delete pmtDemux;
@@ -4307,6 +4303,8 @@ int zapit_main_thread(void *data)
 	//close frontend	
 	for(fe_map_iterator_t it = femap.begin(); it != femap.end(); it++)
 		delete it->second;
+
+	zapit_ready = 0;
 
 	dprintf(DEBUG_INFO, "zapit shutdown complete :-)\n");
 

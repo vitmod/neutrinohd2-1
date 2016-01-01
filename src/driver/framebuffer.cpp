@@ -1794,7 +1794,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 // display image
 bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
 {
-	dprintf(DEBUG_INFO, "CFrameBuffer::DisplayImage %s\n", name.c_str());
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::DisplayImage %s\n", name.c_str());
 	
 	if(!getActive())
 		return false;

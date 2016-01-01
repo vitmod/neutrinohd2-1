@@ -1061,8 +1061,10 @@ void CUpnpBrowserGui::paintDevice()
 
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight -icon_head_h)/2);
+
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_theight + m_title_height + 0, m_width - 45, tmp, COL_MENUHEAD, 0, true); // UTF-8
 	ypos = m_y + m_title_height;
 	if(m_theight > icon_head_h)
@@ -1085,7 +1087,8 @@ void CUpnpBrowserGui::paintDevice()
 	top = m_y + m_height - (m_info_height + m_buttonHeight);
 
 	int ButtonWidth = (m_width - BORDER_LEFT - BORDER_RIGHT) / 4;
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+
 	//m_frameBuffer->paintHLine(m_x, m_x + m_width, top, COL_INFOBAR_SHADOW_PLUS_0);
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 3*ButtonWidth, top, ButtonWidth, 1, &RescanButton, m_buttonHeight);
 
@@ -1290,6 +1293,7 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 		m_frameBuffer->paintBoxRel(m_x, ypos2, 2, m_info_height, col1);
 		m_frameBuffer->paintBoxRel(m_x + m_width - 2, ypos2, 2, m_info_height, col1);
 		m_frameBuffer->paintBoxRel(m_x, ypos2, m_width - 2, 2, col1);
+
 		m_frameBuffer->paintBoxRel(m_x , ypos2 + m_info_height - 2, m_width - 2, 2, col1);
 	}
 }

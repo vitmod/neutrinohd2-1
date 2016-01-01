@@ -635,7 +635,7 @@ void CPictureViewerGui::paintItem(int pos)
 	}
 
 	// itemBox
-	frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (liststart + pos == selected)? true : false);
+	frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 	if(liststart + pos < playlist.size())
 	{
@@ -661,7 +661,7 @@ void CPictureViewerGui::paintHead()
 	std::string strCaption = g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD);
 	
 	//head box
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// head icon
 	//frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);
@@ -696,7 +696,7 @@ void CPictureViewerGui::paintFoot()
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
-	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	if (!playlist.empty())
 	{

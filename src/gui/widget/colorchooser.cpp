@@ -71,6 +71,7 @@ static const neutrino_locale_t colorchooser_names[4] =
 CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
 {
 	observer = Observer;
+
 	nameStringOption = Name;
 	name = g_Locale->getText(Name);
 	
@@ -95,6 +96,7 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
 {
 	observer = Observer;
+
 	name = Name;
 	nameStringOption = NONEXISTANT_LOCALE;
 	
@@ -274,13 +276,17 @@ void CColorChooser::paint()
 	// head
 	//shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP); //round
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true); //round
+
+	// head
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark); //round
 	
 	// head title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
-	// menu box
+	// menu box shadow
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+
+	// menu box
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	// slider

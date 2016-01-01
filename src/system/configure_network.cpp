@@ -36,6 +36,7 @@
 #include <unistd.h>
 
 #include <system/safe_system.h>
+#include <system/debug.h>
 
 
 CNetworkConfig::CNetworkConfig(void)
@@ -54,7 +55,7 @@ CNetworkConfig *CNetworkConfig::getInstance()
 	if(!network_config)
 	{
 		network_config = new CNetworkConfig();
-		printf("[network config] Instance created\n");
+		dprintf(DEBUG_NORMAL, "CNetworkConfig::getInstance: Instance created\n");
 	}
 	return network_config;
 }
@@ -65,6 +66,8 @@ CNetworkConfig::~CNetworkConfig()
 
 void CNetworkConfig::readConfig(std::string iname)
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::readConfig: %s\n", iname.c_str());
+
 	ifname = iname;
 	inet_static = getInetAttributes(ifname, automatic_start, address, netmask, broadcast, gateway);
 
@@ -74,6 +77,8 @@ void CNetworkConfig::readConfig(std::string iname)
 
 void CNetworkConfig::init_vars(void)
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::init_vars\n");
+
 	char mask[16];
 	char _broadcast[16];
 	char router[16];
@@ -115,7 +120,7 @@ void CNetworkConfig::init_vars(void)
 	if(wireless)
 		readWpaConfig();
 
-	printf("CNetworkConfig: %s loaded, wireless %s\n", ifname.c_str(), wireless ? "yes" : "no");
+	dprintf(DEBUG_NORMAL, "CNetworkConfig: %s loaded, wireless %s\n", ifname.c_str(), wireless ? "yes" : "no");
 }
 
 void CNetworkConfig::copy_to_orig(void)
@@ -164,6 +169,8 @@ bool CNetworkConfig::modified_from_orig(void)
 
 void CNetworkConfig::commitConfig(void)
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::commitConfig\n");
+
 	if (modified_from_orig())
 	{
 		if(orig_hostname != hostname)
@@ -196,6 +203,8 @@ void CNetworkConfig::commitConfig(void)
 
 void CNetworkConfig::startNetwork(void)
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::startNetwork\n");
+
 	std::string cmd = "/sbin/ifup " + ifname;
 
 	safe_system(cmd.c_str());
@@ -208,6 +217,8 @@ void CNetworkConfig::startNetwork(void)
 
 void CNetworkConfig::stopNetwork(void)
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::stopNetwork\n");
+
 	std::string cmd = "/sbin/ifdown " + ifname;
 
 	safe_system(cmd.c_str());
@@ -215,6 +226,8 @@ void CNetworkConfig::stopNetwork(void)
 
 void CNetworkConfig::readWpaConfig()
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::readWpaConfig\n");
+
 	std::ifstream F("/etc/network/if-pre-up.d/wlan");
 	ssid = "";
 	key = "";
@@ -244,6 +257,8 @@ void CNetworkConfig::readWpaConfig()
 
 void CNetworkConfig::saveWpaConfig()
 {
+	dprintf(DEBUG_NORMAL, "CNetworkConfig::saveWpaConfig\n");
+
 	std::ofstream F("/etc/network/if-pre-up.d/wlan");
 	
 	if(F.is_open()) 

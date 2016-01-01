@@ -70,12 +70,12 @@ class CBox
 	private:
 
 	public:
-		/* Constructor */
+		// Constructor
 		inline CBox(){;};
 		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
 		inline ~CBox(){;};
-		/* Functions */
-		/* Variables */
+		// Functions
+		// Variables
 		int iX;
 		int iY;
 		int iWidth;
@@ -85,7 +85,7 @@ class CBox
 class CTextBox  
 {
 	private:
-		/* Functions */
+		// Functions
 		void refreshTextLineArray(void);
 		void initVar(void);
 		void initFramesRel(void);
@@ -94,7 +94,7 @@ class CTextBox
 		void reSizeMainFrameWidth(int maxTextWidth);
 		void reSizeMainFrameHeight(int maxTextHeight);
 
-		/* Variables */
+		// Variables
 		std::string m_cText;
 		std::vector<std::string> m_cLineArray;
 
@@ -129,7 +129,7 @@ class CTextBox
 		int tw; 
 		int th;
 	public:
-		/* Constructor */
+		// Constructor
 		CTextBox();
 		CTextBox(const char * text);
 		CTextBox(const char * text, 
@@ -140,7 +140,7 @@ class CTextBox
 
 		virtual ~CTextBox();
 
-		/* Functions */
+		// Functions
 		void    refresh(void);
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);				
@@ -158,7 +158,7 @@ class CTextBox
 		void hide (void);
 
 
-		/* Variables */
+		// Variables
 		typedef enum mode_
 		{
 			AUTO_WIDTH	= 0x01,

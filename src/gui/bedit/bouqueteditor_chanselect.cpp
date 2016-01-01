@@ -129,7 +129,7 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 	}
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, _selected? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 	//
 	int icon_w, icon_h;
@@ -223,9 +223,10 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 void CBEChannelSelectWidget::paintFoot()
 {
 	int ButtonWidth = width / 3;
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - 3*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_foot_h)/2);
+
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 3*ButtonWidth + icon_foot_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, g_Locale->getText(LOCALE_BOUQUETEDITOR_SWITCH), COL_INFOBAR, 0, true); // UTF-8
 
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_foot_h)/2);
@@ -236,7 +237,7 @@ void CBEChannelSelectWidget::paintFoot()
 void CBEChannelSelectWidget::paintDetails(int index)
 {
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
 	
 	if(Channels.empty())
 		return;

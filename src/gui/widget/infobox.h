@@ -63,7 +63,7 @@
 class CInfoBox  
 {
 	public:
-		/* enum definition */
+		// enum definition
 		enum result_
 		{
 			mbrYes    = 0,
@@ -94,7 +94,7 @@ class CInfoBox
 		}mode;
 
 	private:
-		/* Functions */
+		// Functions
 		void initVar(void);
 		void initFramesRel(void);
 		void refreshFoot(void);
@@ -102,7 +102,7 @@ class CInfoBox
 		void refreshText(void);
 		void refreshBorder(void);
 
-		/* Variables */
+		// Variables
 		std::string m_cIcon;
 		std::string m_cTitle;
 
@@ -127,8 +127,8 @@ class CInfoBox
 		CFrameBuffer * m_pcWindow;
 
 		result_	m_nResult;
+
 	public:
-		/* Constructor */
 		virtual ~CInfoBox();
 		CInfoBox();
 		CInfoBox(const char * text);
@@ -142,7 +142,7 @@ class CInfoBox
 				   int return_button = mbCancel, 
 				   const result_ default_result = mbrCancel);
 
-		/* Functions */
+		// Functions
 		bool    paint(void);
 		bool    hide(void);
 		int     exec(int timeout = -1, int returnDefaultOnTimeout = false);

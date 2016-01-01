@@ -303,6 +303,7 @@ void CInfoBox::refreshFoot(void)
 	if(!(m_nMode & FOOT)) 
 		return;
 
+	// foot
 	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX + m_cBoxFrame.iX, 
 								m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
 								m_cBoxFrameFootRel.iWidth, 
@@ -465,24 +466,6 @@ void CInfoBox::refreshBorder(void)
 {
 	if(!(m_nMode & BORDER && m_nWindowFrameBorderWidth > 0))
 		return;
-
-	/*
-	//draw bottom shadow
-	m_pcWindow->paintBoxRel(m_nWindowFrameBorderWidth + m_cBoxFrame.iX, 
-					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth + m_cBoxFrame.iY, 
-					m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth, 
-					m_nWindowFrameBorderWidth, 
-					COL_INFOBAR_SHADOW_PLUS_0, 
-					RADIUS_MID, CORNER_BOTTOM);
-
-	//draw top shadow
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth+m_cBoxFrame.iX, 
-					m_nWindowFrameBorderWidth + m_cBoxFrame.iY, 
-					m_nWindowFrameBorderWidth, 
-					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth, 
-					COL_INFOBAR_SHADOW_PLUS_0,
-					RADIUS_MID, CORNER_TOP);
-	*/
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -732,7 +715,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 		
 		if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 		{
-			/* window might changed in size ...*/
+			// window might changed in size
 			m_cBoxFrameText = m_pcTextBox->getWindowsPos();
 
 			m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth + m_nWindowFrameBorderWidth;
@@ -750,7 +733,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	}
 	
 	return(_result);
-};
+}
 
 //////////////////////////////////////////////////////////////////////
 // Function Name:	SetText	

@@ -35,6 +35,7 @@
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
+#include <system/helpers.h>
 
 
 CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
@@ -139,30 +140,26 @@ void CListBox::paint()
 void CListBox::paintHead()
 {
 	// headBox
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);//round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);//round
 	
 	// paint time/date
 	int timestr_len = 0;
 	if(PaintDate)
 	{
-		char timestr[18];
+		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
 		
-		time_t now = time(NULL);
-		struct tm * tm = localtime(&now);
-		
-		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
+		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
 			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
 	}
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
 }
 
 void CListBox::paintFoot()
 {
 	int ButtonWidth = width / 4;
 	
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);//round
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);//round
 
 	// button red
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width- 4*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
@@ -231,7 +228,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 	}
 
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor, 0, 0, _selected? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
 	
 	// item 
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
@@ -377,7 +374,7 @@ void CListBox::paintDetails(int index)
 		return;
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
 }
 
 void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
@@ -423,7 +420,7 @@ void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
 		// untere info box
-		frameBuffer->paintBoxRel(x, ypos2, width, InfoHeight, col1, true);
+		frameBuffer->paintBoxRel(x, ypos2, width, InfoHeight, col1);
 	}
 }
 

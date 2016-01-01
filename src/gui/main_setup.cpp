@@ -687,6 +687,8 @@ static int my_filter(const struct dirent * dent)
 
 CNetworkSettings::CNetworkSettings()
 {
+	networkConfig = CNetworkConfig::getInstance();
+
 	// init IP changer
 	MyIPChanger = new CIPChangeNotifier;
 }
@@ -706,6 +708,7 @@ CNetworkSettings *CNetworkSettings::getInstance()
 
 CNetworkSettings::~CNetworkSettings()
 {
+	delete networkConfig;
 }
 
 int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -719,6 +722,9 @@ int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	
 	if(actionKey == "savesettings")
 	{
+		networkConfig->automatic_start = (network_automatic_start == 1);
+		networkConfig->commitConfig();
+
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		
 		return ret;
@@ -728,10 +734,10 @@ int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_NETWORKMENU_SETUPNOW)); // UTF-8
 		hintBox->paint();
 		
-		networkConfig.automatic_start = (network_automatic_start == 1);
-		networkConfig.stopNetwork();
-		networkConfig.commitConfig();
-		networkConfig.startNetwork();
+		networkConfig->automatic_start = (network_automatic_start == 1);
+		networkConfig->stopNetwork();
+		networkConfig->commitConfig();
+		networkConfig->startNetwork();
 		
 		hintBox->hide();
 		delete hintBox;
@@ -742,7 +748,8 @@ int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "networktest") 
 	{
 		dprintf(DEBUG_INFO, "CNeutrinoApp::exec: doing network test...\n");
-		testNetworkSettings(networkConfig.address.c_str(), networkConfig.netmask.c_str(), networkConfig.broadcast.c_str(), networkConfig.gateway.c_str(), networkConfig.nameserver.c_str(), networkConfig.inet_static);
+
+		testNetworkSettings(networkConfig->address.c_str(), networkConfig->netmask.c_str(), networkConfig->broadcast.c_str(), networkConfig->gateway.c_str(), networkConfig->nameserver.c_str(), networkConfig->inet_static);
 		
 		return ret;
 	}
@@ -789,22 +796,26 @@ void CNetworkSettings::showMenu()
 	if(!found)
 		strcpy(g_settings.ifname, "eth0");
 	
-	networkConfig.readConfig(g_settings.ifname);
+	networkConfig->readConfig(g_settings.ifname);
 
-	network_hostname	= networkConfig.hostname;
-	mac_addr		= networkConfig.mac_addr;
-	network_ssid		= networkConfig.ssid;
-	network_key		= networkConfig.key;
-	network_encryption	= (networkConfig.encryption == "WPA") ? 0 : 1;
+	network_hostname = networkConfig->hostname;
+	mac_addr = networkConfig->mac_addr;
+	network_ssid = networkConfig->ssid;
+	network_key = networkConfig->key;
+	network_encryption = (networkConfig->encryption == "WPA") ? 0 : 1;
 	
 	//eth id
 	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr);
 	
-	CIPInput * networkSettings_NetworkIP  = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig.address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
-	CIPInput * networkSettings_NetMask    = new CIPInput(LOCALE_NETWORKMENU_NETMASK, networkConfig.netmask, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
-	CIPInput * networkSettings_Broadcast  = new CIPInput(LOCALE_NETWORKMENU_BROADCAST, networkConfig.broadcast, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
-	CIPInput * networkSettings_Gateway    = new CIPInput(LOCALE_NETWORKMENU_GATEWAY, networkConfig.gateway, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
-	CIPInput * networkSettings_NameServer = new CIPInput(LOCALE_NETWORKMENU_NAMESERVER, networkConfig.nameserver, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+	CIPInput * networkSettings_NetworkIP  = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
+
+	CIPInput * networkSettings_NetMask    = new CIPInput(LOCALE_NETWORKMENU_NETMASK, networkConfig->netmask, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+
+	CIPInput * networkSettings_Broadcast  = new CIPInput(LOCALE_NETWORKMENU_BROADCAST, networkConfig->broadcast, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+
+	CIPInput * networkSettings_Gateway    = new CIPInput(LOCALE_NETWORKMENU_GATEWAY, networkConfig->gateway, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+
+	CIPInput * networkSettings_NameServer = new CIPInput(LOCALE_NETWORKMENU_NAMESERVER, networkConfig->nameserver, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	
 	//hostname
 	CStringInputSMS * networkSettings_Hostname = new CStringInputSMS(LOCALE_NETWORKMENU_HOSTNAME, &network_hostname);
@@ -815,11 +826,11 @@ void CNetworkSettings::showMenu()
         CStringInput * networkSettings_NtpRefresh = new CStringInput(LOCALE_NETWORKMENU_NTPREFRESH, &g_settings.network_ntprefresh, 3, LOCALE_NETWORKMENU_NTPREFRESH_HINT1, LOCALE_NETWORKMENU_NTPREFRESH_HINT2 , "0123456789 ", sectionsdConfigNotifier);
 
 	CMenuForwarder * m0 = new CMenuForwarder(LOCALE_NETWORKMENU_SETUPNOW, true, NULL, this, "network", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN);
-	CMenuForwarder * m1 = new CMenuForwarder(LOCALE_NETWORKMENU_IPADDRESS, networkConfig.inet_static, networkConfig.address, networkSettings_NetworkIP );
-	CMenuForwarder * m2 = new CMenuForwarder(LOCALE_NETWORKMENU_NETMASK, networkConfig.inet_static, networkConfig.netmask, networkSettings_NetMask   );
-	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_NETWORKMENU_BROADCAST, networkConfig.inet_static, networkConfig.broadcast, networkSettings_Broadcast );
-	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_NETWORKMENU_GATEWAY, networkConfig.inet_static, networkConfig.gateway, networkSettings_Gateway   );
-	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_NETWORKMENU_NAMESERVER, networkConfig.inet_static, networkConfig.nameserver, networkSettings_NameServer);
+	CMenuForwarder * m1 = new CMenuForwarder(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->inet_static, networkConfig->address, networkSettings_NetworkIP );
+	CMenuForwarder * m2 = new CMenuForwarder(LOCALE_NETWORKMENU_NETMASK, networkConfig->inet_static, networkConfig->netmask, networkSettings_NetMask   );
+	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_NETWORKMENU_BROADCAST, networkConfig->inet_static, networkConfig->broadcast, networkSettings_Broadcast );
+	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_NETWORKMENU_GATEWAY, networkConfig->inet_static, networkConfig->gateway, networkSettings_Gateway   );
+	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_NETWORKMENU_NAMESERVER, networkConfig->inet_static, networkConfig->nameserver, networkSettings_NameServer);
         CMenuForwarder * m6 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPSERVER, true, g_settings.network_ntpserver, networkSettings_NtpServer );
         CMenuForwarder * m7 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPREFRESH, true, g_settings.network_ntprefresh, networkSettings_NtpRefresh );
 	
@@ -827,7 +838,8 @@ void CNetworkSettings::showMenu()
 
 	CDHCPNotifier * dhcpNotifier = new CDHCPNotifier(m1, m2, m3, m4, m5);
 
-	network_automatic_start = networkConfig.automatic_start ? 1 : 0;
+	// setup network on startup
+	network_automatic_start = networkConfig->automatic_start ? 1 : 0;
 	CMenuOptionChooser * oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_SETUPONSTARTUP, &network_automatic_start, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 
 	// intros
@@ -837,12 +849,17 @@ void CNetworkSettings::showMenu()
 	// save settings
 	networkSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	networkSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-
+	
+	// setup network on start
 	networkSettings.addItem( oj );
+
+	// test network now
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NETWORKMENU_TEST, true, NULL, this, "networktest"));
+
+	// show active network settings
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NETWORKMENU_SHOW, true, NULL, this, "networkshow", CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL));
 	
-	// setup on start
+	// setup network now
 	networkSettings.addItem( m0 );
 	
 	// mac id
@@ -857,18 +874,29 @@ void CNetworkSettings::showMenu()
 
 	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-	network_dhcp = networkConfig.inet_static ? 0 : 1;
+	// dhcp on/off
+	network_dhcp = networkConfig->inet_static ? 0 : 1;
 	oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_DHCP, &network_dhcp, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, dhcpNotifier);
 	networkSettings.addItem(oj);
-	networkSettings.addItem( m8);	//hostname
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
+	// hostname
+	networkSettings.addItem( m8);
+
+	// ip
+	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	networkSettings.addItem( m1);
+
+	// netmask
 	networkSettings.addItem( m2);
+
+	// broadcast
 	networkSettings.addItem( m3);
 
+	// default gateway
 	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	networkSettings.addItem( m4);
+
+	// nameserver
 	networkSettings.addItem( m5);
 	
 	//
@@ -876,16 +904,19 @@ void CNetworkSettings::showMenu()
 	{
 		//ssid
 		CStringInputSMS * networkSettings_ssid = new CStringInputSMS(LOCALE_NETWORKMENU_SSID, &network_ssid);
-		CMenuForwarder * m9 = new CMenuForwarder(LOCALE_NETWORKMENU_SSID, networkConfig.wireless, network_ssid , networkSettings_ssid );
+		CMenuForwarder * m9 = new CMenuForwarder(LOCALE_NETWORKMENU_SSID, networkConfig->wireless, network_ssid , networkSettings_ssid );
 		//key
 		CStringInputSMS *networkSettings_key = new CStringInputSMS(LOCALE_NETWORKMENU_PASSWORD, &network_key);
-		CMenuForwarder *m10 = new CMenuForwarder(LOCALE_NETWORKMENU_PASSWORD, networkConfig.wireless, network_key , networkSettings_key );
+		CMenuForwarder *m10 = new CMenuForwarder(LOCALE_NETWORKMENU_PASSWORD, networkConfig->wireless, network_key , networkSettings_key );
 
 		wlanEnable[0] = m9;
 		wlanEnable[1] = m10;
+		
+		// ssid
+		networkSettings.addItem( m9);
 
-		networkSettings.addItem( m9);	//ssid
-		networkSettings.addItem( m10);	//key
+		// key
+		networkSettings.addItem( m10);
 
 		//encryption
 		CMenuOptionChooser * m11 = new CMenuOptionChooser(LOCALE_NETWORKMENU_WLAN_SECURITY, &network_encryption, OPTIONS_WLAN_SECURITY_OPTIONS, OPTIONS_WLAN_SECURITY_OPTION_COUNT, true);
@@ -904,6 +935,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	networkSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER_SEP, true, NULL, new CProxySetup(LOCALE_FLASHUPDATE_PROXYSERVER_SEP), NULL, CRCInput::RC_nokey, NULL));
 
+	// mount manager
 	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_NETWORKMENU_MOUNT));
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, new CNFSMountGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NFS_UMOUNT, true, NULL, new CNFSUmountGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));

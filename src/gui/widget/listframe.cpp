@@ -467,9 +467,9 @@ void CListFrame::refreshLine(int line)
 		color = LIST_FONT_COLOR_SELECTED;
 
 		if(m_nNrOfPages > 1)
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, 0, 0, true);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
 		else
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, 0, 0, true);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
 	}
 	else
 	{

@@ -591,7 +591,7 @@ void CBouquetList::paintItem(int pos)
 	}
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (npos == (int) selected)? true : false);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 	if(npos < (int) Bouquets.size()) 
 	{

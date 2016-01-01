@@ -871,7 +871,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.lastChannelMode = configfile.getInt32("lastChannelMode", 1);		//TV mode
 	g_settings.StartChannelTV = configfile.getString("startchanneltv","");
 	g_settings.StartChannelRadio = configfile.getString("startchannelradio","");
-	g_settings.startchanneltv_id =  configfile.getInt64("startchanneltv_id", 0) & 0xFFFFFFFFFFFFULL; // in case readed from neutrinoMP
+	g_settings.startchanneltv_id =  configfile.getInt64("startchanneltv_id", 0) & 0xFFFFFFFFFFFFULL; 
 	g_settings.startchannelradio_id =  configfile.getInt64("startchannelradio_id", 0);
 	g_settings.startchanneltv_nr =  configfile.getInt32("startchanneltv_nr", 0);
 	g_settings.startchannelradio_nr =  configfile.getInt32("startchannelradio_nr", 0);
@@ -4126,8 +4126,8 @@ void CNeutrinoApp::ExitRun(int retcode)
 		}
 
 		// network down
-		CNetworkSettings::getInstance()->networkConfig.automatic_start = (CNetworkSettings::getInstance()->network_automatic_start == 1);
-		CNetworkSettings::getInstance()->networkConfig.commitConfig();
+		CNetworkSettings::getInstance()->networkConfig->automatic_start = (CNetworkSettings::getInstance()->network_automatic_start == 1);
+		CNetworkSettings::getInstance()->networkConfig->commitConfig();
 		
 		// save neutrino.conf
 		saveSetup(NEUTRINO_SETTINGS_FILE);
@@ -5001,9 +5001,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT)); // UTF-8
 		hintBox->paint();
-
-		CNetworkSettings::getInstance()->networkConfig.automatic_start = (CNetworkSettings::getInstance()->network_automatic_start == 1);
-		CNetworkSettings::getInstance()->networkConfig.commitConfig();
 		
 		saveSetup(NEUTRINO_SETTINGS_FILE);
 
@@ -5011,17 +5008,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		zapitCfg.saveLastChannel = g_settings.uselastchannel;
 		setZapitConfig(&zapitCfg);
-
-		hintBox->hide();
-		delete hintBox;
-		hintBox = NULL;
-	}
-	else if(actionKey == "reloadplugins") 
-	{
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_GETPLUGINS_HINT));
-		hintBox->paint();
-
-		g_PluginList->loadPlugins();
 
 		hintBox->hide();
 		delete hintBox;

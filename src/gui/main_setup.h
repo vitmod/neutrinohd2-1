@@ -98,7 +98,7 @@ class CNetworkSettings : public CMenuTarget, CChangeObserver
 		CNetworkSettings();
 		~CNetworkSettings();
 		
-		CNetworkConfig networkConfig;
+		CNetworkConfig *networkConfig;
 		CMenuItem * wlanEnable[3];
 		
 		int network_dhcp;

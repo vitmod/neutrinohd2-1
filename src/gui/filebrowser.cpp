@@ -939,7 +939,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 		colwidth1 = width - 35 - colwidth2 - colwidth3 - 10;
 
-		frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor, 0, 0, (liststart + pos == selected)? true : false);
+		frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 		if ( actual_file->Name.length() > 0 )
 		{
@@ -1041,7 +1041,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 void CFileBrowser::paintHead()
 {
 	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// icon
 	int icon_w, icon_h;
@@ -1074,7 +1074,7 @@ void CFileBrowser::paintFoot()
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	if (!(filelist.empty()))
 	{

@@ -73,7 +73,7 @@ class CKeyChooserItem : public CMenuTarget
 		int height;
 
 		std::string name;
-		int *             key;
+		int* key;
 
 		void paint();
 

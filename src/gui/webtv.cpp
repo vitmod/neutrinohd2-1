@@ -59,17 +59,17 @@
 #include <system/debug.h>
 #include <system/helpers.h>
 
-/* libdvbapi */
+// libdvbapi
 #include <playback_cs.h>
 #include <video_cs.h>
 #include <audio_cs.h>
 
+// curl
 #include <curl/curl.h>
 #include <curl/easy.h>
 
 
 extern cPlayback *playback;
-extern CPictureViewer * g_PicViewer;
 
 CWebTV::CWebTV()
 {
@@ -837,7 +837,7 @@ void CWebTV::paintItem(int pos)
 	}
 	
 	// itembox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor, 0, 0, (curr == selected)? true : false, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 
 	//name and description
 	if(curr < channels.size()) 
@@ -902,12 +902,7 @@ void CWebTV::paintHead()
 	
 	// paint time/date
 	int timestr_len = 0;
-	char timestr[18];
-	
-	time_t now = time(NULL);
-	struct tm *tm = localtime(&now);
-	
-	strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
+	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");
 	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
 	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_LEFT - BORDER_RIGHT - icon_help_w - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len, timestr, COL_MENUHEAD, 0, true); //utf-8
