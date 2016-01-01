@@ -408,7 +408,11 @@ bool cDemux::pesFilter(const unsigned short Pid, const dmx_input_t Input)
 			break;
 		
 		case DMX_TP_CHANNEL:
-			pes.output   = DMX_OUT_TSDEMUX_TAP;     /* to demux */	/* Output multiplexed into a new TS  */	
+#if HAVE_DVB_API_VERSION >= 5
+			pes.output   = DMX_OUT_TSDEMUX_TAP;     /* to demux */	/* Output multiplexed into a new TS  */
+#else
+			pes.output   = DMX_OUT_TS_TAP; 
+#endif	
 			pes.pes_type = DMX_PES_OTHER;
 			break;
 			
