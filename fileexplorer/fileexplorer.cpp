@@ -76,29 +76,6 @@ BROWSER:
 				tmpPictureViewerGui.addToPlaylist(pic);
 				tmpPictureViewerGui.exec(NULL, "urlplayback");
 			}
-			else if(file->getType() == CFile::FILE_TEXT || file->getType() == CFile::FILE_XML)
-			{
-				std::string buffer;
-				buffer.clear();
-				
-				char buf[256];
-				FILE* pFile;
-				pFile = fopen(file->Name.c_str(), "r");
-				if(pFile != NULL)
-				{
-					fgets(buf, sizeof(buf), pFile);
-				}
-				fclose(pFile);
-
-				buffer = buf;
-				int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
-				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-					
-				CInfoBox * infoBox = new CInfoBox(file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-				infoBox->setText(&buffer);
-				infoBox->exec();
-				delete infoBox;
-			}
 			else if(file->getType() == CFile::FILE_VIDEO)
 			{
 				CMoviePlayerGui tmpMoviePlayerGui;
@@ -113,6 +90,28 @@ BROWSER:
 				CAudiofileExt audiofile(file->Name, file->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
 				tmpAudioPlayerGui.exec(NULL, "urlplayback");
+			}
+			else
+			{
+				std::string buffer;
+				buffer.clear();
+				
+				char buf[6000];
+				bool result = true;
+
+				int fd = open(file->Name.c_str(), O_RDONLY);
+				int bytes = read(fd, buf, 6000 - 1);
+				close(fd);
+				buf[bytes] = 0;
+				buffer = buf;
+
+				int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
+				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+					
+				CInfoBox * infoBox = new CInfoBox(file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+				infoBox->setText(&buffer);
+				infoBox->exec();
+				delete infoBox;
 			}
 		}
 
