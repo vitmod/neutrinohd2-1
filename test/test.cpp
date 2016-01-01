@@ -91,6 +91,8 @@ class CTestMenu : CMenuTarget
 		void testUmountGUI();
 		void testMountSmallMenu();
 		void testVFDController();
+		void testColorChooser();
+		void testKeyChooser();
 		
 		//
 		void testFrameBox();
@@ -208,7 +210,7 @@ void CTestMenu::testCInfoBox()
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "infobox.cpp", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 	
 	infoBox->exec();
 	infoBox->hide();
@@ -217,7 +219,7 @@ void CTestMenu::testCInfoBox()
 
 void CTestMenu::testCInfoBoxShowMsg()
 {
-	InfoBox("InfoBox", "infobox.cpp", CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
+	InfoBox("CInfoBox", "testing CInfobox", CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
 }
 
 void CTestMenu::testCInfoBoxInfoBox()
@@ -227,7 +229,7 @@ void CTestMenu::testCInfoBoxInfoBox()
 	// prepare print buffer  
 	buffer = "CInfoBox";
 	buffer += "\n";
-	buffer += "CInfoBoxInfoBox";
+	buffer += "testing CInfoBox";
 	buffer += "\n";
 
 	// thumbnail
@@ -243,7 +245,7 @@ void CTestMenu::testCInfoBoxInfoBox()
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBoxInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP, CInfoBox::mbCancel, CInfoBox::mbrCancel);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP, CInfoBox::mbCancel, CInfoBox::mbrCancel);
 	infoBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
 	infoBox->exec();
 	delete infoBox;
@@ -251,7 +253,7 @@ void CTestMenu::testCInfoBoxInfoBox()
 
 void CTestMenu::testCMessageBox()
 {
-	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
+	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox");
 	
 	messageBox->exec();
 	messageBox->hide();
@@ -260,17 +262,17 @@ void CTestMenu::testCMessageBox()
 
 void CTestMenu::testCMessageBoxInfoMsg()
 {
-	MessageBox(LOCALE_MESSAGEBOX_INFO, "InfoMessage", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+	MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 }
 
 void CTestMenu::testCMessageBoxErrorMsg()
 {
-	MessageBox(LOCALE_MESSAGEBOX_ERROR, "ErrorMessage", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+	MessageBox(LOCALE_MESSAGEBOX_ERROR, "testing CMessageBox", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
 void CTestMenu::testCHintBox()
 {
-	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
+	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 	
 	hintBox->paint();
 	sleep(3);
@@ -280,14 +282,14 @@ void CTestMenu::testCHintBox()
 
 void CTestMenu::testCHintBoxInfo()
 {
-	HintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
+	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 }
 
 void CTestMenu::testCHelpBox()
 {
 	Helpbox * helpBox = new Helpbox();
 	
-	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "helpBox");
+	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "testing CHelpBox");
 	helpBox->addLine("HELPBOX");
 	helpBox->addLine("");
 	helpBox->addPagebreak();
@@ -307,7 +309,7 @@ void CTestMenu::testCTextBox()
 	
 	CTextBox * textBox = new CTextBox(" ", NULL, CTextBox::SCROLL, &Box);
 	
-	std::string text = "neutrinoHD2 is cool :-)";
+	std::string text = "testing CTextBox";
 		
 	int pich = 246;	//FIXME
 	int picw = 162; 	//FIXME
@@ -930,6 +932,10 @@ void CTestMenu::testStartPlugin()
 
 void CTestMenu::testShowActuellEPG()
 {
+	std::string title = "testShowActuellEPG:";
+	std::string buffer = "EPG Information: ";
+
+	// get EPG
 	CEPGData epgData;
 	event_id_t epgid = 0;
 			
@@ -942,13 +948,11 @@ void CTestMenu::testShowActuellEPG()
 				
 		if(sectionsd_getEPGidShort(epgid, &epgdata)) 
 		{
-			//InfoBox
-			std::string title;
-			title = g_Zapit->getChannelName(live_channel_id);
+			title += g_Zapit->getChannelName(live_channel_id);
 			title += ":";
 			title += epgdata.title;
-			std::string buffer;
-			buffer = epgdata.info1;
+
+			buffer += epgdata.info1;
 			buffer += "\n";
 			buffer += epgdata.info2;
 			
@@ -956,8 +960,11 @@ void CTestMenu::testShowActuellEPG()
 			
 		}
 	}
-	else
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, "No EPG found!", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+
+	title += getNowTimeStr("%d.%m.%Y %H:%M");
+	//
+	
+	InfoBox(title.c_str(), buffer.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);	//
 }
 
 void CTestMenu::testChannelSelectWidget()
@@ -1071,6 +1078,24 @@ void CTestMenu::testVFDController()
 	vfdControllerHandler->exec(NULL, "");
 	delete vfdControllerHandler;
 	vfdControllerHandler = NULL;
+}
+
+void CTestMenu::testColorChooser()
+{
+	CColorChooser * colorChooserHandler = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Head_red, &g_settings.menu_Head_green, &g_settings.menu_Head_blue, &g_settings.menu_Head_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
+
+	colorChooserHandler->exec(NULL, "");
+	delete colorChooserHandler;
+	colorChooserHandler = NULL;
+}
+
+void CTestMenu::testKeyChooser()
+{
+	CKeyChooserItem * keyChooser = new CKeyChooserItem("testing CKeyChooser", &g_settings.mb_truncate)/*CKeyChooser(&g_settings.mb_truncate, "testing CKeyChooser")*/;
+
+	keyChooser->exec(NULL, "");
+	delete keyChooser;
+	keyChooser = NULL;
 }
 
 void CTestMenu::testFrameBox()
@@ -1825,6 +1850,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testVFDController();
 	}
+	else if(actionKey == "colorchooser")
+	{
+		testColorChooser();
+	}
+	else if(actionKey == "keychooser")
+	{
+		testKeyChooser();
+	}
 	else if(actionKey == "framebox")
 	{
 		testFrameBox();
@@ -1899,6 +1932,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
+	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
+	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("FrameBoxMediaPortal", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("FrameBoxNeutrinoMenu", true, NULL, this, "frameboxneutrinomenu"));

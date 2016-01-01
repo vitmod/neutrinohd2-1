@@ -569,7 +569,7 @@ void CYTBrowser::refreshTitle(void)
 	//
 
 	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, true);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// movie icon
 	int icon_w, icon_h;
@@ -612,7 +612,7 @@ void CYTBrowser::refreshFoot(void)
 	dprintf(DEBUG_INFO, "CYTBrowser::refreshFoot\n");
 	
 	// footer
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	::paintButtons(m_pcWindow, m_pcFontFoot, g_Locale, m_cBoxFrame.iX + m_cBoxFrameFootRel.iX + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, (m_cBoxFrameFootRel.iWidth - 2*ICON_OFFSET)/4, 4, CYTBrowserButtons, m_cBoxFrameFootRel.iHeight + 6);
 }

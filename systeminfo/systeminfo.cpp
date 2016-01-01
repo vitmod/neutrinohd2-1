@@ -124,7 +124,7 @@ void CSysInfoWidget::paintHead()
 {
 	char buf[100];
 
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// icon
 	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
@@ -150,7 +150,7 @@ void CSysInfoWidget::paintFoot()
 {
 	int ButtonWidth = (width - 28) / 4;
 	
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	// sysinfo (red)
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width - 4*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
