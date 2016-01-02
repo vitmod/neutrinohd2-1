@@ -1091,7 +1091,7 @@ void CTestMenu::testColorChooser()
 
 void CTestMenu::testKeyChooser()
 {
-	CKeyChooserItem * keyChooser = new CKeyChooserItem("testing CKeyChooser", &g_settings.mb_truncate)/*CKeyChooser(&g_settings.mb_truncate, "testing CKeyChooser")*/;
+	CKeyChooserItem * keyChooser = new CKeyChooserItem("testing CKeyChooser", &g_settings.mb_truncate);
 
 	keyChooser->exec(NULL, "");
 	delete keyChooser;
