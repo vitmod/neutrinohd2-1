@@ -184,7 +184,7 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_TIMERLIST_NAME, true, Timerlist, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
 	
 	// features
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_INFOVIEWER_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
 
 	//sleep timer
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER ));
@@ -244,7 +244,7 @@ REPAINT:
 	}
 	else if(i == 4 && j == 0)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_INFOVIEWER_FEATURES), COL_MENUHEAD);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_FEATURES), COL_MENUHEAD);
 	}
 	else if(i == 5 && j == 0)
 	{
@@ -729,7 +729,6 @@ bool CNeutrinoApp::showUserMenu(int button)
         CKeyHelper keyhelper;
         neutrino_msg_t key = CRCInput::RC_nokey;
         const char * icon = NULL;
-	//int dummy;
 
         int menu_items = 0;
         int menu_prev = -1;
@@ -746,7 +745,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 #endif		
 	};
 
-        /* define classes */
+        // define classes
         CPauseSectionsdNotifier * tmpPauseSectionsdNotifier     = NULL;
         CAudioSelectMenuHandler * tmpAudioSelectMenuHandler     = NULL;
         CMenuWidget * tmpNVODSelector                           = NULL;
@@ -776,7 +775,7 @@ bool CNeutrinoApp::showUserMenu(int button)
         else if( button == SNeutrinoSettings::BUTTON_BLUE) 
 	{
                 if( txt.empty() )
-                        txt = g_Locale->getText(LOCALE_INFOVIEWER_FEATURES);
+                        txt = g_Locale->getText(LOCALE_MAINMENU_FEATURES);
         }
 
         CMenuWidget * menu = new CMenuWidget(txt.c_str() , NEUTRINO_ICON_FEATURES);
@@ -787,10 +786,10 @@ bool CNeutrinoApp::showUserMenu(int button)
 	menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	menu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
-        /* go through any postition number */
+        // go through any postition number
         for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 
 	{
-                /* now compare pos with the position of any item. Add this item if position is the same */
+                // now compare pos with the position of any item. Add this item if position is the same
                 switch(g_settings.usermenu[button][pos]) 
 		{
 			case SNeutrinoSettings::ITEM_NONE:
@@ -945,7 +944,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu_item++;
 					menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
 					keyhelper.get(&key, &icon, CRCInput::RC_blue);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon);
+					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon);
 					menu->addItem(menu_item, false);
                                 }
                                 break;
@@ -972,7 +971,7 @@ bool CNeutrinoApp::showUserMenu(int button)
         if(menu_items > 1 ) 
 	{
 		menu->setSelected(selected[button]);
-                menu->exec(NULL,"");
+                menu->exec(NULL, "");
 		selected[button] = menu->getSelected();
 	}
         else if (menu_item != NULL)

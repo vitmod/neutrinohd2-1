@@ -622,7 +622,7 @@ infoviewer.noepg EPG not available
 infoviewer.notavailable Channel not available
 infoviewer.now now
 infoviewer.selecttime Timeselection
-infoviewer.features Features
+infoviewer.plugins Plugins
 infoviewer.subchan_disp_pos Subchannel display
 infoviewer.subservice Subservices
 infoviewer.waittime Waiting for time...
@@ -699,6 +699,7 @@ lcdmenu.ledcolor_purple Purple
 mainmenu.audioplayer Audioplayer
 mainmenu.inetradio Internet Radio
 mainmenu.clearsectionsd Clear EPG Cache
+mainmenu.features Features
 mainmenu.games Games
 mainmenu.head Main Menu
 mainmenu.movieplayer Movieplayer

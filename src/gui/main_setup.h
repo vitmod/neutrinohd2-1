@@ -28,7 +28,6 @@
 #define __main_setup__
 
 #include <gui/widget/menue.h>
-#include <system/setting_helpers.h>
 
 #include <string>
 

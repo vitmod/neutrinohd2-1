@@ -622,7 +622,7 @@ infoviewer.noepg Keine EPG-Information verfügbar
 infoviewer.notavailable Kanal (zur Zeit) nicht verfügbar.
 infoviewer.now jetzt
 infoviewer.selecttime Startzeiten
-infoviewer.features Features
+infoviewer.plugins Plugins
 infoviewer.subchan_disp_pos Unterkanalanzeige
 infoviewer.subservice Bildregie
 infoviewer.waittime Warte auf Uhrzeit...
@@ -699,6 +699,7 @@ lcdmenu.ledcolor_purple Lila
 mainmenu.audioplayer Audioplayer
 mainmenu.inetradio Internetradio
 mainmenu.clearsectionsd Lösche EPG Cache
+mainmenu.features Erweiterungen
 mainmenu.games Spiele
 mainmenu.head Hauptmenü
 mainmenu.movieplayer Movieplayer

@@ -40,6 +40,8 @@
 #include <string>
 #include <vector>
 
+#include <gui/plugins.h>
+
 
 class CPluginList : public CMenuTarget
 {
@@ -101,7 +103,7 @@ class CPluginList : public CMenuTarget
 
 	public:
 	
-		CPluginList(const neutrino_locale_t Name, const uint listtype);
+		CPluginList(const neutrino_locale_t Name, const uint listtype = CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT);
 		virtual ~CPluginList();
 
 		void hide();

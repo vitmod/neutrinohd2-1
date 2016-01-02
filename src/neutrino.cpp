@@ -3074,8 +3074,10 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 			else if( msg == CRCInput::RC_blue ) 
 			{
 				StopSubtitles();
+
 				// features
 				showUserMenu(SNeutrinoSettings::BUTTON_BLUE);
+
 				StartSubtitles();
 			}
 #if defined (ENABLE_FUNCTIONKEYS)			
