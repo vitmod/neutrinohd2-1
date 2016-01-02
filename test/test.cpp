@@ -97,6 +97,9 @@ class CTestMenu : CMenuTarget
 		//
 		void testFrameBox();
 		void testFrameBoxNeutrinoMenu();
+
+		//
+		void testPluginsList();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -1353,7 +1356,7 @@ REPAINT:
 	}
 	else if(i == 4 && j == 0)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_INFOVIEWER_FEATURES), COL_MENUHEAD);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_FEATURES), COL_MENUHEAD);
 	}
 	else if(i == 5 && j == 0)
 	{
@@ -1631,6 +1634,14 @@ REPAINT:
 	CFrameBuffer::getInstance()->blit();
 }
 
+void CTestMenu::testPluginsList()
+{
+	CPluginList * pluginList = new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS);
+	pluginList->exec(NULL, "");
+	delete pluginList;
+	pluginList = NULL;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1866,6 +1877,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testFrameBoxNeutrinoMenu();
 	}
+	else if(actionKey == "pluginslist")
+	{
+		testPluginsList();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1937,6 +1952,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("FrameBoxMediaPortal", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("FrameBoxNeutrinoMenu", true, NULL, this, "frameboxneutrinomenu"));
+	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
