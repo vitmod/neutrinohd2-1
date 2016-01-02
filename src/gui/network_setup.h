@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	$id: main_setup.h 2015.12.22 21:25:28 mohousch $
+	$id: network_setup.h 2016.01.02 20:19:28 mohousch $
 	
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	and some other guys
@@ -24,26 +24,43 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */ 
 
-#ifndef __main_setup__
-#define __main_setup__
+#ifndef __network_setup__
+#define __network_setup__
 
 #include <gui/widget/menue.h>
+#include <system/configure_network.h>
 #include <system/setting_helpers.h>
 
 #include <string>
 
 
-// main settings
-class CMainSetup : public CMenuTarget
+class CNetworkSettings : public CMenuTarget, CChangeObserver
 {
 	private:
+		CIPChangeNotifier* MyIPChanger;
+		
 		void showMenu();
 		
 	public:
-		CMainSetup();
-		~CMainSetup();
+		CNetworkSettings();
+		~CNetworkSettings();
+		
+		CNetworkConfig *networkConfig;
+		CMenuItem * wlanEnable[3];
+		
+		int network_dhcp;
+		int network_automatic_start;
+		
+		std::string network_hostname;
+		std::string mac_addr;
+		
+		std::string network_ssid;
+		std::string network_key;
+		int network_encryption;
+		
+		static CNetworkSettings* getInstance();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-#endif //__main_setup__
+#endif //__network_setup__

@@ -127,6 +127,18 @@
 #include <gui/mediaplayer.h>
 #include <gui/service_setup.h>
 #include <gui/main_setup.h>
+#include <gui/audio_setup.h>
+#include <gui/video_setup.h>
+#include <gui/parentallock_setup.h>
+#include <gui/network_setup.h>
+#include <gui/movieplayer_setup.h>
+#include <gui/osd_setup.h>
+#include <gui/audioplayer_setup.h>
+#include <gui/pictureviewer_setup.h>
+#include <gui/lcd_setup.h>
+#include <gui/rc_setup.h>
+#include <gui/recording_setup.h>
+#include <gui/misc_setup.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>
@@ -2318,17 +2330,15 @@ int CNeutrinoApp::run(int argc, char **argv)
 	initialize_iso639_map();
 
 	// check locale language
-	bool display_language_selection;
+	bool show_startwizard = false;
 	CLocaleManager::loadLocale_ret_t loadLocale_ret = g_Locale->loadLocale(g_settings.language);
 
 	if (loadLocale_ret == CLocaleManager::NO_SUCH_LOCALE)
 	{
 		strcpy(g_settings.language, "english");
 		loadLocale_ret = g_Locale->loadLocale(g_settings.language);
-		display_language_selection = true;
+		show_startwizard = true;
 	}
-	else
-		display_language_selection = false;
 
 	// setup fonts
 	SetupFonts();
@@ -2340,7 +2350,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	colorSetupNotifier = new CColorSetupNotifier;
 	colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 
-	// init vfd/lcd display (this starts time thread)
+	// init vfd/lcd display
 #if ENABLE_LCD
 	CVFD::getInstance()->init(font.filename, font.name);
 #else	
@@ -2354,7 +2364,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	CVFD::getInstance()->ShowText( (char *)"NHD2");	
 	
 	// zapit	
-	//zapit start parameters
 	Z_start_arg ZapStart_arg;
 	
 	ZapStart_arg.lastchannelmode = g_settings.lastChannelMode;
@@ -2653,7 +2662,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 			miscSettings.exec(NULL, "");
 		}
 		
-		// at least
 		// service settings
 		if(ret != menu_return::RETURN_EXIT_ALL)
 		{

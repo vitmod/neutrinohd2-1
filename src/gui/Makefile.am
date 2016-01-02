@@ -72,6 +72,18 @@ libneutrino_gui_a_SOURCES = \
 	proxyserver_setup.cpp \
 	themes.cpp \
 	service_setup.cpp \
+	video_setup.cpp \
+	audio_setup.cpp \
+	parentallock_setup.cpp \
+	network_setup.cpp \
+	movieplayer_setup.cpp \
+	osd_setup.cpp \
+	audioplayer_setup.cpp \
+	pictureviewer_setup.cpp \
+	lcd_setup.cpp \
+	rc_setup.cpp \
+	recording_setup.cpp \
+	misc_setup.cpp \
 	main_setup.cpp
 
 libneutrino_gui2_a_SOURCES = \

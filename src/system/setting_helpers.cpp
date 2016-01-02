@@ -55,7 +55,7 @@
 #include <gui/widget/hintbox.h>
 
 #include <gui/plugins.h>
-#include <gui/main_setup.h>
+#include <gui/network_setup.h>
 
 #include <daemonc/remotecontrol.h>
 #include <xmlinterface.h>

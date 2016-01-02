@@ -50,6 +50,7 @@ neutrino_LDADD = \
 	nhttpd/tuxboxapi/libnhttpd_tuxboxapi.a \
 	nhttpd/yhttpd_mods/libyhttpdmods.a \
 	nhttpd/yhttpd_core/libyhttpd.a \
+	gui/video_setup.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \

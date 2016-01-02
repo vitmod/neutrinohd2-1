@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	$id: main_setup.h 2015.12.22 21:25:28 mohousch $
+	$id: rc_setup.h 2016.01.02 21:31:28 mohousch $
 	
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	and some other guys
@@ -24,26 +24,39 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */ 
 
-#ifndef __main_setup__
-#define __main_setup__
+#ifndef __rc_setup__
+#define __rc_setup__
 
 #include <gui/widget/menue.h>
-#include <system/setting_helpers.h>
 
 #include <string>
 
 
-// main settings
-class CMainSetup : public CMenuTarget
+class CRemoteControlSettings : public CMenuTarget, CChangeObserver
+{
+	private:
+		void showMenu();
+		
+		CKeySetupNotifier       	*keySetupNotifier;
+		
+	public:
+		CRemoteControlSettings();
+		~CRemoteControlSettings();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+// keys binding settings
+class CKeysBindingSettings : public CMenuTarget
 {
 	private:
 		void showMenu();
 		
 	public:
-		CMainSetup();
-		~CMainSetup();
+		CKeysBindingSettings();
+		~CKeysBindingSettings();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-#endif //__main_setup__
+#endif //__rc_setup__

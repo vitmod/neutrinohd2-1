@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	$id: main_setup.h 2015.12.22 21:25:28 mohousch $
+	$id: recording_setup.h 2016.01.02 21:42:28 mohousch $
 	
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	and some other guys
@@ -24,26 +24,26 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */ 
 
-#ifndef __main_setup__
-#define __main_setup__
+#ifndef __recording_setup__
+#define __recording_setup__
 
 #include <gui/widget/menue.h>
-#include <system/setting_helpers.h>
 
 #include <string>
 
 
-// main settings
-class CMainSetup : public CMenuTarget
+class CRecordingSettings : public CMenuTarget, CChangeObserver
 {
 	private:
 		void showMenu();
 		
+		bool changeNotify(const neutrino_locale_t OptionName, void *);
+		
 	public:
-		CMainSetup();
-		~CMainSetup();
+		CRecordingSettings();
+		~CRecordingSettings();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-#endif //__main_setup__
+#endif // __recording_setup__
