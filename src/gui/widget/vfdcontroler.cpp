@@ -69,7 +69,7 @@ CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Obse
 	name = g_Locale->getText(Name);
 
 	width = w_max(MENU_WIDTH, 0);
-	height = h_max(hheight+ mheight*3 + mheight/2, 0);
+	height = h_max(hheight+ mheight*4 + mheight/2, 0);
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height)>> 1);
 
@@ -151,12 +151,13 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 						
 					case 1:
 						paintSlider(x + BORDER_LEFT, y+ hheight+ mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, true);
+
 						CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
-						//CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 						break;
 						
 					case 2:
-						frameBuffer->paintBoxRel(x, y + hheight + mheight*2 + mheight/2, width, mheight, COL_MENUCONTENTSELECTED_PLUS_0, RADIUS_MID, CORNER_BOTH);
+						frameBuffer->paintBoxRel(x, y + hheight + mheight*2 + mheight/2, width, mheight, COL_MENUCONTENTSELECTED_PLUS_0);
+
 						g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight*3 + mheight/2, width, g_Locale->getText(LOCALE_OPTIONS_DEFAULT), COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 						break;
 				}
@@ -167,21 +168,23 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 			if (selected > 0) 
 			{
 				paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, false);
+
 				paintSlider(x + BORDER_LEFT, y + hheight + mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, false);
 				selected--;
 				switch (selected) 
 				{
 					case 0:
 						paintSlider(x + BORDER_LEFT, y+ hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
+
 						CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 						break;
 						
 					case 1:
 						paintSlider(x + BORDER_LEFT, y + hheight + mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, true);
-						CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
-						//CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
-						frameBuffer->paintBoxRel(x, y + hheight + mheight*2 + mheight/2, width, mheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+						CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
+
+						frameBuffer->paintBoxRel(x, y + hheight + mheight*2 + mheight/2, width, mheight, COL_MENUCONTENT_PLUS_0);
 
 						g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight*3 + mheight/2, width, g_Locale->getText(LOCALE_OPTIONS_DEFAULT), COL_MENUCONTENT, 0, true); // UTF-8
 						break;

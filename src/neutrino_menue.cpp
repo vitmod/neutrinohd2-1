@@ -201,6 +201,8 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 
 void CNeutrinoApp::smartMenu()
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::smartMenu\n");
+
 	int i = 0;
 	int j = 0;
 REPAINT:  
