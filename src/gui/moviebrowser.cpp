@@ -2636,38 +2636,36 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 				}
 				else if(show_mode == MB_SHOW_FILES)
 				{
-					// dirty way to use filter ;-)
-					int ext_pos = 0;
-					ext_pos = flist[i].getFileName().rfind('.');
-					
-					if( ext_pos > 0)
-					{
-						std::string extension;
-						extension = flist[i].getFileName().substr(ext_pos + 1, flist[i].getFileName().length() - ext_pos);
-						
-						if( 
-						    (strcasecmp("mpg", extension.c_str()) == 0) ||
-						    (strcasecmp("mpeg", extension.c_str()) == 0) ||
-						    (strcasecmp("divx", extension.c_str()) == 0) ||	    
-						    (strcasecmp("avi", extension.c_str()) == 0) ||
-						    (strcasecmp("mkv", extension.c_str()) == 0) ||
-						    (strcasecmp("asf", extension.c_str()) == 0) ||
-						    (strcasecmp("aiff", extension.c_str()) == 0) ||
-						    (strcasecmp("m2p", extension.c_str()) == 0) ||
-						    (strcasecmp("mpv", extension.c_str()) == 0) ||
-						    (strcasecmp("m2ts", extension.c_str()) == 0) ||
-						    (strcasecmp("vob", extension.c_str()) == 0) ||
-						    (strcasecmp("mp4", extension.c_str()) == 0) ||
-						    (strcasecmp("mov", extension.c_str()) == 0) ||
-						    (strcasecmp("flv", extension.c_str()) == 0) ||    
-						    (strcasecmp("dat", extension.c_str()) == 0) ||
-						    (strcasecmp("trp", extension.c_str()) == 0) ||
-						    (strcasecmp("vdr", extension.c_str()) == 0) ||
-						    (strcasecmp("mts", extension.c_str()) == 0) ||
-						    (strcasecmp("wmv", extension.c_str()) == 0)
-						    )
-							  test = 0;
-					}
+					// use filter
+					CFileFilter fileFilter;
+	
+					fileFilter.addFilter("mpg");
+					fileFilter.addFilter("mpeg");
+					fileFilter.addFilter("divx");
+					fileFilter.addFilter("avi");
+					fileFilter.addFilter("mkv");
+					fileFilter.addFilter("asf");
+					fileFilter.addFilter("aiff");
+					fileFilter.addFilter("m2p");
+					fileFilter.addFilter("mpv");
+					fileFilter.addFilter("m2ts");
+					fileFilter.addFilter("vob");
+					fileFilter.addFilter("mp4");
+					fileFilter.addFilter("mov");	
+					fileFilter.addFilter("flv");	
+					fileFilter.addFilter("dat");
+					fileFilter.addFilter("trp");
+					fileFilter.addFilter("vdr");
+					fileFilter.addFilter("mts");
+					fileFilter.addFilter("wmv");
+					fileFilter.addFilter("wav");
+					fileFilter.addFilter("flac");
+					fileFilter.addFilter("mp3");
+					fileFilter.addFilter("wma");
+					fileFilter.addFilter("ogg");
+
+					if(fileFilter.matchFilter(flist[i].Name))
+						 test = 0;
 				}
 				
 				if( test == -1)

@@ -401,7 +401,7 @@ CFile * CFileBrowser::getSelectedFile()
 
 void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 {
-	dprintf(DEBUG_INFO, "CFileBrowser::readDir %s\n", filename.c_str());
+	dprintf(DEBUG_INFO, "CFileBrowser::ChangeDir %s\n", filename.c_str());
 
 	std::string newpath;
 	
@@ -498,7 +498,7 @@ bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
 	if (n < 0)
 	{
-		perror(("Filebrowser scandir: "+dirname).c_str());
+		perror(("Filebrowser scandir: " + dirname).c_str());
 		return false;
 	}
 	
@@ -507,8 +507,10 @@ bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 		CFile file;
 		if(strcmp(namelist[i]->d_name, ".") != 0)
 		{
+			// name
 			file.Name = dirname + namelist[i]->d_name;
 
+			// stat
 			if(my_stat((file.Name).c_str(),&statbuf) != 0)
 				perror("stat error");
 			else
@@ -601,7 +603,7 @@ bool CFileBrowser::exec(const char * const dirname)
 		else if ((msg == CRCInput::RC_green) || (msg == CRCInput::RC_page_up) )
 		{
 			if ((int(selected)-int(listmaxshow))<0)
-				selected=filelist.size()-1;
+				selected = filelist.size()-1;
 			else
 				selected -= listmaxshow;
 			liststart = (selected/listmaxshow)*listmaxshow;

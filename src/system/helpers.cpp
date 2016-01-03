@@ -40,12 +40,31 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #include <system/helpers.h>
 #include <system/debug.h>
 #include <system/settings.h>
 
 #include <global.h>
+
+
+#if defined (__USE_FILE_OFFSET64) || defined (_DARWIN_USE_64_BIT_INODE)
+typedef struct dirent64 dirent_struct;
+#define my_alphasort alphasort64
+#define my_scandir scandir64
+typedef struct stat64 stat_struct;
+#define my_stat stat64
+#define my_lstat lstat64
+#else
+typedef struct dirent dirent_struct;
+#define my_alphasort alphasort
+#define my_scandir scandir
+typedef struct stat stat_struct;
+#define my_stat stat
+#define my_lstat lstat
+#error not using 64 bit file offsets
+#endif
 
 
 off_t file_size(const char *filename)
@@ -956,6 +975,67 @@ bool CFileHelpers::removeDir(const char *Dir)
 	rmdir(Dir);
 
 	errno = 0;
+	return true;
+}
+
+bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFilter * fileFilter)
+{
+	dprintf(DEBUG_NORMAL, "CFileHelpers::readDir %s\n", dirname.c_str());
+	
+	stat_struct statbuf;
+	dirent_struct **namelist;
+	int n;
+
+	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
+	if (n < 0)
+	{
+		perror(("CFileHelpers scandir: " + dirname).c_str());
+		return false;
+	}
+	
+	for(int i = 0; i < n;i++)
+	{
+		CFile file;
+		if(strcmp(namelist[i]->d_name, ".") != 0)
+		{
+			// name
+			file.Name = dirname + namelist[i]->d_name;
+
+			// stat
+			if(my_stat((file.Name).c_str(),&statbuf) != 0)
+				perror("stat error");
+			else
+			{
+				file.Mode = statbuf.st_mode;
+				file.Size = statbuf.st_size;
+				file.Time = statbuf.st_mtime;
+
+				// skip dirs
+				if(S_ISDIR(file.Mode))
+				{
+					continue;
+				}
+
+				// skip not matched filter
+				if(fileFilter != NULL )
+				{
+					if(!fileFilter->matchFilter(file.Name))
+					{
+						continue;
+					}
+				}
+				//
+				
+				flist->push_back(file);
+
+				dprintf(DEBUG_NORMAL, "CFileHelpers::add file %s\n", file.Name.c_str());
+			}
+		}
+		free(namelist[i]);
+	}
+
+	free(namelist);
+
 	return true;
 }
 

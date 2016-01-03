@@ -36,6 +36,10 @@
 #include <string>
 #include <map>
 
+#include <driver/file.h>
+//#include <gui/filebrowser.h>
+
+
 int my_system(const char * cmd);
 int my_system(int argc, const char *arg, ...); /* argc is number of arguments including command */
 
@@ -97,6 +101,7 @@ class CFileHelpers
 		bool copyDir(const char *Src, const char *Dst, bool backupMode = false);
 		bool createDir(const char *Dir, mode_t mode);
 		bool removeDir(const char *Dir);
+		bool readDir(const std::string& dirname, CFileList* flist, CFileFilter* fileFilter = NULL);
 };
 
 #endif
