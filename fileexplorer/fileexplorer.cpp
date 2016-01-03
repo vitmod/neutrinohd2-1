@@ -79,6 +79,18 @@ BROWSER:
 			else if(file->getType() == CFile::FILE_VIDEO)
 			{
 				CMoviePlayerGui tmpMoviePlayerGui;
+
+				// fill file info
+				file->Title = file->getFileName();
+				file->Info1 = file->getFileName();	// IMDB
+				//file.Info2 = files->getFileName(); 	// IMDB
+
+				std::string fname = "";
+				fname = file->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file->Thumbnail = fname.c_str();
 					
 				tmpMoviePlayerGui.addToPlaylist(*file);
 				tmpMoviePlayerGui.exec(NULL, "urlplayback");

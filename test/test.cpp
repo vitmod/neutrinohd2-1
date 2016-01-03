@@ -602,15 +602,12 @@ BROWSER:
 			file->Info1 = file->getFileName();   // IMDB
 			//file->Info2 = file->getFileName(); // IMDB
 
-			if(file->Thumbnail.empty())
-			{
-				std::string fname = "";
-				fname = file->Name;
-				changeFileNameExt(fname, ".jpg");
+			std::string fname = "";
+			fname = file->Name;
+			changeFileNameExt(fname, ".jpg");
 						
-				if(!access(fname.c_str(), F_OK) )
-					file->Thumbnail = fname.c_str();
-			}
+			if(!access(fname.c_str(), F_OK) )
+				file->Thumbnail = fname.c_str();
 					
 			tmpMoviePlayerGui.addToPlaylist(*file);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -800,15 +797,12 @@ BROWSER:
 			file.Info1 = files->getFileName();	// IMDB
 			//file.Info2 = files->getFileName(); 	// IMDB
 
-			if(files->Thumbnail.empty())
-			{
-				std::string fname = "";
-				fname = files->Name;
-				changeFileNameExt(fname, ".jpg");
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
 						
-				if(!access(fname.c_str(), F_OK) )
-					file.Thumbnail = fname.c_str();
-			}
+			if(!access(fname.c_str(), F_OK) )
+				file.Thumbnail = fname.c_str();
 					
 			tmpMoviePlayerGui.addToPlaylist(file);
 		}
@@ -1703,15 +1697,7 @@ BROWSER:
 			file->Title = p_movie_info->epgTitle;
 			file->Info1 = p_movie_info->epgInfo1;
 			file->Info2 = p_movie_info->epgInfo2;
-			//file->Thumbnail = p_movie_info->tfile;
-			// grab for thumbnail
-			
-			std::string fname = "";
-			fname = file->Name;
-			changeFileNameExt(fname, ".jpg");
-						
-			if(!access(fname.c_str(), F_OK) )
-				file->Thumbnail = fname.c_str();
+			file->Thumbnail = p_movie_info->tfile;
 					
 			tmpMoviePlayerGui.addToPlaylist(*file);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -1833,15 +1819,12 @@ void CTestMenu::testPlayMovieDir()
 			file.Info1 = files->getFileName();	// IMDB
 			//file.Info2 = files->getFileName(); 	// IMDB
 
-			if(files->Thumbnail.empty())
-			{
-				std::string fname = "";
-				fname = files->Name;
-				changeFileNameExt(fname, ".jpg");
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
 						
-				if(!access(fname.c_str(), F_OK) )
-					file.Thumbnail = fname.c_str();
-			}
+			if(!access(fname.c_str(), F_OK) )
+				file.Thumbnail = fname.c_str();
 	
 			tmpMoviePlayerGui.addToPlaylist(file);
 		}
