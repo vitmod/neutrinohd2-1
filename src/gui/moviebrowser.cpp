@@ -2607,7 +2607,7 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 		}
 	}
 	
-	// !!!!!! no return statement within the body after here !!!!
+	// warning: no return statement within the body after here !!!!
 	recursive_counter++;
 
 	CFileList flist;
@@ -2636,7 +2636,7 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 				}
 				else if(show_mode == MB_SHOW_FILES)
 				{
-					// dirty way to use filter ;-8
+					// dirty way to use filter ;-)
 					int ext_pos = 0;
 					ext_pos = flist[i].getFileName().rfind('.');
 					
@@ -2686,13 +2686,14 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					if(show_mode == MB_SHOW_FILES)
 					{
 						movieInfo.epgTitle = flist[i].getFileName();
-						movieInfo.epgInfo1 = flist[i].getFileName();
-						movieInfo.epgInfo2 = flist[i].getFileName(); //IMDB???
+						movieInfo.epgInfo1 = flist[i].getFileName();   // IMDB 
+						//movieInfo.epgInfo2 = flist[i].getFileName(); // IMDB???
+
 					}
 					
 					//TEST: remove me (serieName)
 					if(movieInfo.serieName.empty())
-						movieInfo.serieName = movieInfo.epgTitle;
+						movieInfo.serieName = flist[i].getFileName();
 					
 					//
 					movieInfo.file.Mode = flist[i].Mode;
@@ -2711,7 +2712,7 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					
 					//thumbnail
 					std::string fname = "";
-					fname = movieInfo.file.Name;
+					fname = flist[i].Name;
 					changeFileNameExt(fname, ".jpg");
 					
 					if(!access(fname.c_str(), F_OK) )

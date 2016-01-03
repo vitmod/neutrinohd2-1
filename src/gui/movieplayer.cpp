@@ -523,31 +523,24 @@ void CMoviePlayerGui::PlayFile(void)
 			if(filelist[0].Url.empty())
 			{
 				filename = filelist[0].Name.c_str();
-				sel_filename = filelist[0].getFileName();
-							
-				Title = sel_filename;
-				Info1 = sel_filename;
-				Info2 = sel_filename;
 				
-				// thumbnail
-				if(Thumbnail.empty())
-				{
-					std::string fname = "";
-					fname = filename;
-					changeFileNameExt(fname, ".jpg");
-						
-					if(!access(fname.c_str(), F_OK) )
-						Thumbnail = fname.c_str();
-				}
-			}
-			else
-			{
-				filename = filelist[0].Url.c_str();
-				sel_filename = filelist[0].Name.c_str();	
 				Title = filelist[0].Title;
 				Info1 = filelist[0].Info1;
 				Info2 = filelist[0].Info2;
 				Thumbnail = filelist[0].Thumbnail;
+
+				sel_filename = filelist[0].Name.c_str();
+			}
+			else
+			{
+				filename = filelist[0].Url.c_str();
+	
+				Title = filelist[0].Title;
+				Info1 = filelist[0].Info1;
+				Info2 = filelist[0].Info2;
+				Thumbnail = filelist[0].Thumbnail;
+
+				sel_filename = filelist[0].Name.c_str();
 			}
 
 			update_lcd = true;
@@ -607,20 +600,15 @@ void CMoviePlayerGui::PlayFile(void)
 			if(selected + 1 < filelist.size()) 
 			{
 				selected++;
+
 				filename = filelist[selected].Name.c_str();
-				sel_filename = filelist[selected].getFileName();
 				
-				Title = sel_filename;
-				Info1 = sel_filename;
-				Info2 = sel_filename;
-				//thumbnail
-				Thumbnail = "";
-				std::string fname = "";
-				fname = filelist[selected].Name;
-				changeFileNameExt(fname, ".jpg");
-					
-				if(!access(fname.c_str(), F_OK) )
-					Thumbnail = fname.c_str();
+				Title = filelist[selected].Title;
+				Info1 = filelist[selected].Info1;
+				Info2 = filelist[selected].Info2;
+				Thumbnail = filelist[selected].Thumbnail;
+
+				sel_filename = filelist[selected].getFileName();
  
 				update_lcd = true;
 				start_play = true;
@@ -630,17 +618,10 @@ void CMoviePlayerGui::PlayFile(void)
 				filename = filename;
 				sel_filename = sel_filename;
 				
-				Title = sel_filename;
-				Info1 = sel_filename;
-				Info2 = sel_filename;
-				//thumbnail
-				Thumbnail = "";
-				std::string fname = "";
-				fname = filename;
-				changeFileNameExt(fname, ".jpg");
-					
-				if(!access(fname.c_str(), F_OK) )
-					Thumbnail = fname.c_str();
+				Title = Title;
+				Info1 = Info1;
+				Info2 = Info2;
+				Thumbnail = Thumbnail;
  
 				update_lcd = true;
 				start_play = true;
@@ -870,6 +851,7 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					// get the current path and file name
 					Path_local = moviebrowser->getCurrentDir();
+
 					CFile * file;
 
 					if ((file = moviebrowser->getSelectedFile()) != NULL) 
@@ -895,9 +877,6 @@ void CMoviePlayerGui::PlayFile(void)
 						{
 							g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
 							g_currentac3 = p_movie_info->audioPids[0].atype;
-
-							//if(g_currentac3)
-							//	ac3state = CInfoViewer::AC3_ACTIVE;
 						}
 
 						for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
@@ -909,11 +888,11 @@ void CMoviePlayerGui::PlayFile(void)
 							{
 								g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
 								g_currentac3 = p_movie_info->audioPids[i].atype;
-
-								//if(g_currentac3)
-								//	ac3state = CInfoViewer::AC3_AVAILABLE;
 							}
 						}
+
+						// get the start position for the movie					
+						startposition = 1000 * moviebrowser->getCurrentStartPos();						
 
 						g_vpid = p_movie_info->epgVideoPid;
 						g_vtype = p_movie_info->VideoType;
@@ -923,11 +902,8 @@ void CMoviePlayerGui::PlayFile(void)
 						Info2 = p_movie_info->epgInfo2;
 						Thumbnail = p_movie_info->tfile;
 						
-						dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: file %s apid 0x%X atype %d vpid 0x%X vtype %d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype);
+						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: file:%s apid:0x%X atype:%d vpid:0x%X vtype:%d startposition:%d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype, startposition/1000);
 						
-						// get the start position for the movie					
-						startposition = 1000 * moviebrowser->getCurrentStartPos();						
-
 						update_lcd = true;
 						start_play = true;
 						was_file = true;
@@ -945,39 +921,61 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (filebrowser->exec(Path_local.c_str()) == true) 
 				{
+					CFileList _filelist;
+
 					Path_local = filebrowser->getCurrentDir();
 					
 					if (g_settings.movieplayer_allow_multiselect) 
 					{
-						if(!filelist.empty())
-							filelist.clear();
+						if(!_filelist.empty())
+							_filelist.clear();
 						
-						filelist = filebrowser->getSelectedFiles();
+						_filelist = filebrowser->getSelectedFiles();
 
 						m_multiselect = true;
 					} 
 					else 
 					{
 						CFile *file = filebrowser->getSelectedFile();
-						filelist.clear();
-						filelist.push_back(*file);
+						_filelist.clear();
+						_filelist.push_back(*file);
 					}
+
+					// fill our filelist (more infos)
+					CFile file;
+					CFileList::const_iterator files = _filelist.begin();
+					for(; files != _filelist.end(); files++)
+					{
+						file.Name = files->Name;
+
+						// fill file info
+						file.Title = files->getFileName();
+						file.Info1 = files->getFileName();   // IMDB
+						//file.Info2 = files->getFileName(); // IMDB
+
+						if(files->Thumbnail.empty())
+						{
+							std::string fname = "";
+							fname = files->Name;
+							changeFileNameExt(fname, ".jpg");
+						
+							if(!access(fname.c_str(), F_OK) )
+								file.Thumbnail = fname.c_str();
+						}
+					
+						addToPlaylist(file);
+					}
+					//
 
 					if(!filelist.empty())
 					{
 						filename = filelist[selected].Name.c_str();
 						sel_filename = filelist[selected].getFileName();
 						
-						Title = sel_filename;
-						Info1 = sel_filename;
-						Info2 = sel_filename;
-						Thumbnail = "";
-						std::string fname = "";
-						fname = filelist[selected].Name;
-						changeFileNameExt(fname, ".jpg");
-					
-						if(!access(fname.c_str(), F_OK) )
-							Thumbnail = fname.c_str();
+						Title = filelist[selected].getFileName();
+						Info1 = filelist[selected].getFileName();
+						Info2 = filelist[selected].getFileName();
+						Thumbnail = filelist[selected].Thumbnail;
 
 						update_lcd = true;
 						start_play = true;
@@ -1074,7 +1072,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif						
 						startposition = (duration - position);
 
-						printf("CMoviePlayerGui::PlayFile: waiting for data, position %d duration %d (%d)\n", position, duration, towait);
+						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: waiting for data, position %d duration %d (%d)\n", position, duration, towait);
 						
 						if(startposition > towait*1000)
 							break;
@@ -1761,20 +1759,15 @@ void CMoviePlayerGui::PlayFile(void)
 			if(!filelist.empty() && selected > 0 && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected--;
+
 				filename = filelist[selected].Name.c_str();
-				sel_filename = filelist[selected].getFileName();
 				
-				Title = sel_filename;
-				Info1 = sel_filename = sel_filename;
-				Info2 = sel_filename;
-				//thumbnail
-				Thumbnail = "";
-				std::string fname = "";
-				fname = filelist[selected].Name;
-				changeFileNameExt(fname, ".jpg");
-						
-				if(!access(fname.c_str(), F_OK) )
-					Thumbnail = fname.c_str();
+				Title = filelist[selected].Title;
+				Info1 = filelist[selected].Info1;
+				Info2 = filelist[selected].Info2;
+				Thumbnail = filelist[selected].Thumbnail;
+
+				sel_filename = filelist[selected].getFileName();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1785,20 +1778,15 @@ void CMoviePlayerGui::PlayFile(void)
 			if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected++;
+
 				filename = filelist[selected].Name.c_str();
-				sel_filename = filelist[selected].getFileName();
 				
-				Title = sel_filename;
-				Info1 = sel_filename = sel_filename;
-				Info2 = sel_filename;
-				//thumbnail
-				Thumbnail = "";
-				std::string fname = "";
-				fname = filelist[selected].Name;
-				changeFileNameExt(fname, ".jpg");
-						
-				if(!access(fname.c_str(), F_OK) )
-					Thumbnail = fname.c_str();
+				Title = filelist[selected].Title;
+				Info1 = filelist[selected].Info1;
+				Info2 = filelist[selected].Info2;
+				Thumbnail = filelist[selected].Thumbnail;
+
+				sel_filename = filelist[selected].getFileName();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1927,7 +1915,8 @@ void CMoviePlayerGui::showFileInfo()
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+
 	infoBox->setText(&buffer, Thumbnail, lx, ly, picw, pich);
 	infoBox->exec();
 	delete infoBox;
