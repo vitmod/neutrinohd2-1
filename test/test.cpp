@@ -60,7 +60,7 @@ class CTestMenu : CMenuTarget
 		//
 		void testAudioPlayer();
 		void testInternetRadio();
-		void testTSMovieBrowser();
+		void testRecordBrowser();
 		void testMovieBrowser();
 		void testFilePlayBack();
 		void testPictureViewer();
@@ -100,6 +100,8 @@ class CTestMenu : CMenuTarget
 
 		//
 		void testPluginsList();
+		void testURIMovieBrowser();
+		void testURIRecordBrowser();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -505,7 +507,7 @@ void CTestMenu::testInternetRadio()
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
-void CTestMenu::testTSMovieBrowser()
+void CTestMenu::testRecordBrowser()
 {
 	//moviePlayerGui->exec(NULL, "tsmoviebrowser");
 	CMoviePlayerGui tmpMoviePlayerGui;
@@ -545,7 +547,8 @@ void CTestMenu::testPlayMovieURL()
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-		
+	
+	CMoviePlayerGui tmpMoviePlayerGui;	
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
@@ -593,7 +596,20 @@ BROWSER:
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
-			CMoviePlayerGui tmpMoviePlayerGui;
+			// fill file info
+			file->Title = file->getFileName();
+			file->Info1 = file->getFileName();   // IMDB
+			//file->Info2 = file->getFileName(); // IMDB
+
+			if(file->Thumbnail.empty())
+			{
+				std::string fname = "";
+				fname = file->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file->Thumbnail = fname.c_str();
+			}
 					
 			tmpMoviePlayerGui.addToPlaylist(*file);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -777,6 +793,21 @@ BROWSER:
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
 			file.Name = files->Name;
+
+			// fill file info
+			file.Title = files->getFileName();
+			file.Info1 = files->getFileName();	// IMDB
+			//file.Info2 = files->getFileName(); 	// IMDB
+
+			if(files->Thumbnail.empty())
+			{
+				std::string fname = "";
+				fname = files->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file.Thumbnail = fname.c_str();
+			}
 					
 			tmpMoviePlayerGui.addToPlaylist(file);
 		}
@@ -1642,6 +1673,104 @@ void CTestMenu::testPluginsList()
 	pluginList = NULL;
 }
 
+void CTestMenu::testURIMovieBrowser()
+{
+	CMoviePlayerGui tmpMoviePlayerGui;
+			
+	CMovieBrowser * moviebrowser;
+	std::string Path_local = g_settings.network_nfs_moviedir;
+	
+	moviebrowser = new CMovieBrowser();
+	MI_MOVIE_INFO * p_movie_info;
+
+	moviebrowser->setMode(MB_SHOW_FILES);
+	
+BROWSER:	
+	if (moviebrowser->exec(Path_local.c_str())) 
+	{
+		// get the current path and file name
+		Path_local = moviebrowser->getCurrentDir();
+
+		// get the current file name
+		CFile * file;
+
+		if ((file = moviebrowser->getSelectedFile()) != NULL) 
+		{
+			// movieinfos
+			p_movie_info = moviebrowser->getCurrentMovieInfo();
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1;
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+						
+	delete moviebrowser;
+}
+
+void CTestMenu::testURIRecordBrowser()
+{
+	CMoviePlayerGui tmpMoviePlayerGui;
+			
+	CMovieBrowser * moviebrowser;
+	std::string Path_local = g_settings.network_nfs_moviedir;
+	
+	moviebrowser = new CMovieBrowser();
+	MI_MOVIE_INFO * p_movie_info;
+
+	moviebrowser->setMode(MB_SHOW_RECORDS);
+	
+BROWSER:	
+	if (moviebrowser->exec(Path_local.c_str())) 
+	{
+		// get the current path and file name
+		Path_local = moviebrowser->getCurrentDir();
+
+		// get the current file name
+		CFile * file;
+
+		if ((file = moviebrowser->getSelectedFile()) != NULL) 
+		{
+			// movieinfos
+			p_movie_info = moviebrowser->getCurrentMovieInfo();
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1;
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+						
+	delete moviebrowser;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1759,7 +1888,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "tsmoviebrowser")
 	{
-		testTSMovieBrowser();
+		testRecordBrowser();
 	}
 	else if(actionKey == "moviebrowser")
 	{
@@ -1881,6 +2010,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testPluginsList();
 	}
+	else if(actionKey == "urimoviebrowser")
+	{
+		testURIMovieBrowser();
+	}
+	else if(actionKey == "urirecordbrowser")
+	{
+		testURIRecordBrowser();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1953,6 +2090,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("FrameBoxMediaPortal", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("FrameBoxNeutrinoMenu", true, NULL, this, "frameboxneutrinomenu"));
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
+	mainMenu->addItem(new CMenuForwarder("URIMovieBrowser", true, NULL, this, "urimoviebrowser"));
+	mainMenu->addItem(new CMenuForwarder("URIRecordBrowser", true, NULL, this, "urirecordbrowser"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
