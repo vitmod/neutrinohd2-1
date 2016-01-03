@@ -102,6 +102,7 @@ class CTestMenu : CMenuTarget
 		void testPluginsList();
 		void testURIMovieBrowser();
 		void testURIRecordBrowser();
+		void testPlayMovieDir();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -1771,6 +1772,76 @@ BROWSER:
 	delete moviebrowser;
 }
 
+void CTestMenu::testPlayMovieDir()
+{
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+	//
+
+	CMoviePlayerGui tmpMoviePlayerGui;
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+	Path_local += "/";
+
+	CFileList filelist;
+
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		CFile file;
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			file.Name = files->Name;
+
+			// fill file info
+			file.Title = files->getFileName();
+			file.Info1 = files->getFileName();	// IMDB
+			//file.Info2 = files->getFileName(); 	// IMDB
+
+			if(files->Thumbnail.empty())
+			{
+				std::string fname = "";
+				fname = files->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file.Thumbnail = fname.c_str();
+			}
+	
+			tmpMoviePlayerGui.addToPlaylist(file);
+		}
+		
+		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+	}
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -2018,6 +2089,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testURIRecordBrowser();
 	}
+	else if(actionKey == "playmoviedir")
+	{
+		testPlayMovieDir();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -2092,6 +2167,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 	mainMenu->addItem(new CMenuForwarder("URIMovieBrowser", true, NULL, this, "urimoviebrowser"));
 	mainMenu->addItem(new CMenuForwarder("URIRecordBrowser", true, NULL, this, "urirecordbrowser"));
+	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
