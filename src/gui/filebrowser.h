@@ -56,62 +56,6 @@
 #include <vector>
 
 
-/**
- * Converts input of numeric keys to SMS style char input.
- */
-class SMSKeyInput
-{
-	// time since last input
-	timeval m_oldKeyTime;
-
-	// last key input
-	unsigned char m_oldKey;
-
-	// keypresses within this period are taken as a sequence
-	int m_timeout;
-	public:
-		SMSKeyInput();
-
-		/**
-		* Returns the SMS char calculated with respect to the new input.
-		* @param msg the current RC input
-		* @return the calculated SMS char
-		*/
-		unsigned char handleMsg(const neutrino_msg_t msg);
-
-		/**
-		* Resets the key history which is needed for proper calculation
-		* of the SMS char by #handleMsg(neutrino_msg_t)
-		*/
-		void resetOldKey();
-
-		/**
-		* @return the last key calculated by #handleMsg(neutrino_msg_t)
-		*/
-		unsigned char getOldKey() const;
-		
-		/**
-		* Returns time of last key push.
-		* resolution: usecs
-		*/
-		const timeval* getOldKeyTime() const;
-
-		/**
-		* Returns time of last key push.
-		* resolution: seconds
-		*/
-		time_t getOldKeyTimeSec() const;
-
-		int getTimeout() const;
-
-		/**
-		* Sets the timeout.
-		* @param timeout keypresses within this period are taken as a
-		* sequence. unit: msecs
-		*/
-		void setTimeout(int timeout);
-};
-
 #define FILEBROWSER_NUMBER_OF_SORT_VARIANTS 5
 
 class CFileBrowser

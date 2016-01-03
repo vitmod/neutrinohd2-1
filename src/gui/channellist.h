@@ -95,6 +95,8 @@ class CChannelList
 		bool vlist; 				// "virtual" list, not bouquet
 		bool displayNext;
 
+		SMSKeyInput c_SMSKeyInput;
+
 		void paintDetails(int index);
 		void clearItem2DetailsLine ();
 		void paintItem2DetailsLine (int pos, int ch_index);

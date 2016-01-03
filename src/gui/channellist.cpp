@@ -75,8 +75,7 @@
 
 
 extern CBouquetList * bouquetList;      		// neutrino.cpp
-extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp
-extern SMSKeyInput * c_SMSKeyInput;			// defined in neutrino
+extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp			// defined in neutrino
 extern CBouquetList   * TVbouquetList;
 extern CBouquetList   * TVsatList;
 extern CBouquetList   * TVfavList;
@@ -801,11 +800,11 @@ int CChannelList::show()
 			{
 				uint32_t i;
 				unsigned char smsKey = 0;
-				c_SMSKeyInput->setTimeout(CHANNEL_SMSKEY_TIMEOUT);
+				c_SMSKeyInput.setTimeout(CHANNEL_SMSKEY_TIMEOUT);
 
 				do {
-					smsKey = c_SMSKeyInput->handleMsg(msg);
-					//printf("SMS new key: %c\n", smsKey);
+					smsKey = c_SMSKeyInput.handleMsg(msg);
+					dprintf(DEBUG_INFO, "SMS new key: %c\n", smsKey);
 					g_RCInput->getMsg_ms(&msg, &data, CHANNEL_SMSKEY_TIMEOUT - 100);
 				} while ((msg >= CRCInput::RC_1) && (msg <= CRCInput::RC_9));
 
@@ -816,7 +815,6 @@ int CChannelList::show()
 						char firstCharOfTitle = chanlist[i]->name.c_str()[0];
 						if(tolower(firstCharOfTitle) == smsKey) 
 						{
-							//printf("SMS chan found was= %d selected= %d i= %d %s\n", was_sms, selected, i, chanlist[i]->channel->name.c_str());
 							break;
 						}
 					}
@@ -828,7 +826,6 @@ int CChannelList::show()
 							char firstCharOfTitle = chanlist[i]->name.c_str()[0];
 							if(tolower(firstCharOfTitle) == smsKey) 
 							{
-								//printf("SMS chan found was= %d selected= %d i= %d %s\n", was_sms, selected, i, chanlist[i]->channel->name.c_str());
 								break;
 							}
 						}
@@ -851,7 +848,7 @@ int CChannelList::show()
 							paintItem(selected - liststart);
 						}
 					}
-					c_SMSKeyInput->resetOldKey();
+					c_SMSKeyInput.resetOldKey();
 				}
 			}
 		}

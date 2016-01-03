@@ -258,6 +258,8 @@ bool CMovieInfo::encodeMovieInfoXml(std::string * extMessage, MI_MOVIE_INFO * mo
 
 bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 {
+	dprintf(DEBUG_NORMAL, "CMovieInfo::saveMovieInfo\n");
+
 	bool result = true;
 	std::string text;
 	CFile file_xml;
@@ -300,6 +302,8 @@ bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 
 bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 {
+	dprintf(DEBUG_NORMAL, "CMovieInfo::loadMovieInfo\n");
+
 	bool result = true;
 	CFile file_xml;
 
@@ -1064,3 +1068,4 @@ void CMovieInfo::copy(MI_MOVIE_INFO * src, MI_MOVIE_INFO * dst)
 		dst->audioPids.push_back(audio_pids);
 	}
 }
+

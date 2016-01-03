@@ -525,7 +525,7 @@ void CTextBox::refresh(void)
 
 bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
 {
-	dprintf(DEBUG_DEBUG, "CTextBox::setText:\r\n");
+	dprintf(DEBUG_INFO, "CTextBox::setText:\r\n");
 
 	// thumbnail
 	thumbnail = "";
@@ -548,6 +548,7 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 		
 	bool result = false;
 	
+	//fixme: if newText is empty thumbnail will not be painted
 	if (newText != NULL)
 	{
 		m_cText = *newText;

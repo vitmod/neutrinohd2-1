@@ -286,7 +286,6 @@ CBouquetList   		* RADIOallList;
 
 CPlugins       		* g_PluginList;
 CRemoteControl 		* g_RemoteControl;
-SMSKeyInput 		* c_SMSKeyInput;	//defined in filebrowser and used in ChanneList
 CPictureViewer 		* g_PicViewer;
 #if defined (ENABLE_CI)
 CCAMMenuHandler 	* g_CamHandler;
@@ -2490,9 +2489,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	setupRecordingDevice();
 
 	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: menue setup\n");
-
-	// SMS key input
-	c_SMSKeyInput = new SMSKeyInput();	//filebrowser.cpp
 	
 	// HDD mount devices
 	//assuming that mdev/fstab has mounted devices
