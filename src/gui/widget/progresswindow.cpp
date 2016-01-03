@@ -94,7 +94,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 
 	sprintf(strProg, "%d%%", global_progress);
 
-	if(global_progress != 0)
+	//if(global_progress != 0)
 	{
 		if (global_progress > 100)
 			global_progress = 100;
