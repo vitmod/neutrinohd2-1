@@ -933,8 +933,10 @@ void CYTBrowser::loadMovies(void)
 
 	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
+
 	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 	loadYTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+
 	loadBox.hide();
 
 	refreshBrowserList();	

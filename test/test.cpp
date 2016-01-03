@@ -1703,7 +1703,15 @@ BROWSER:
 			file->Title = p_movie_info->epgTitle;
 			file->Info1 = p_movie_info->epgInfo1;
 			file->Info2 = p_movie_info->epgInfo2;
-			file->Thumbnail = p_movie_info->tfile;
+			//file->Thumbnail = p_movie_info->tfile;
+			// grab for thumbnail
+			
+			std::string fname = "";
+			fname = file->Name;
+			changeFileNameExt(fname, ".jpg");
+						
+			if(!access(fname.c_str(), F_OK) )
+				file->Thumbnail = fname.c_str();
 					
 			tmpMoviePlayerGui.addToPlaylist(*file);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
