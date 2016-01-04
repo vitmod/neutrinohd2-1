@@ -66,6 +66,8 @@ class CNetworkSettings : public CMenuTarget, CChangeObserver
 		int network_encryption;
 		
 		static CNetworkSettings* getInstance();
+
+		void readNetworkSettings(std::string iname);
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };

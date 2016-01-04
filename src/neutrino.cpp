@@ -2514,6 +2514,9 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	InitMainMenu(mainMenu);
 
+	// init network settings
+	CNetworkSettings::getInstance()->readNetworkSettings(g_settings.ifname);
+
 	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: registering as event client\n");
 	
 	sleep(1);

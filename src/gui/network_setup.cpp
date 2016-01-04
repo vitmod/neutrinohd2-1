@@ -109,6 +109,21 @@ CNetworkSettings::~CNetworkSettings()
 	//delete networkConfig;
 }
 
+void CNetworkSettings::readNetworkSettings(std::string iname)
+{
+	networkConfig->readConfig(iname);
+
+	network_automatic_start = networkConfig->automatic_start ? 1 : 0;
+	network_dhcp = networkConfig->inet_static ? 0 : 1;
+	network_hostname = networkConfig->hostname;
+	mac_addr = networkConfig->mac_addr;
+
+	//
+	network_ssid = networkConfig->ssid;
+	network_key = networkConfig->key;
+	network_encryption = (networkConfig->encryption == "WPA") ? 0 : 1;
+}
+
 int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CNetworkSettings::exec: actionKey: %s\n", actionKey.c_str());
@@ -194,13 +209,8 @@ void CNetworkSettings::showMenu()
 	if(!found)
 		strcpy(g_settings.ifname, "eth0");
 	
-	networkConfig->readConfig(g_settings.ifname);
-
-	network_hostname = networkConfig->hostname;
-	mac_addr = networkConfig->mac_addr;
-	network_ssid = networkConfig->ssid;
-	network_key = networkConfig->key;
-	network_encryption = (networkConfig->encryption == "WPA") ? 0 : 1;
+	// read network settings
+	readNetworkSettings(g_settings.ifname);
 
 	// init IP changer
 	MyIPChanger = new CIPChangeNotifier;
@@ -208,13 +218,13 @@ void CNetworkSettings::showMenu()
 	//eth id
 	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr);
 	
-	CIPInput * networkSettings_NetworkIP  = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
+	CIPInput * networkSettings_NetworkIP = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
 
-	CIPInput * networkSettings_NetMask    = new CIPInput(LOCALE_NETWORKMENU_NETMASK, networkConfig->netmask, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+	CIPInput * networkSettings_NetMask = new CIPInput(LOCALE_NETWORKMENU_NETMASK, networkConfig->netmask, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 
-	CIPInput * networkSettings_Broadcast  = new CIPInput(LOCALE_NETWORKMENU_BROADCAST, networkConfig->broadcast, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+	CIPInput * networkSettings_Broadcast = new CIPInput(LOCALE_NETWORKMENU_BROADCAST, networkConfig->broadcast, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 
-	CIPInput * networkSettings_Gateway    = new CIPInput(LOCALE_NETWORKMENU_GATEWAY, networkConfig->gateway, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
+	CIPInput * networkSettings_Gateway = new CIPInput(LOCALE_NETWORKMENU_GATEWAY, networkConfig->gateway, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 
 	CIPInput * networkSettings_NameServer = new CIPInput(LOCALE_NETWORKMENU_NAMESERVER, networkConfig->nameserver, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	
@@ -240,7 +250,7 @@ void CNetworkSettings::showMenu()
 	CDHCPNotifier * dhcpNotifier = new CDHCPNotifier(m1, m2, m3, m4, m5);
 
 	// setup network on startup
-	network_automatic_start = networkConfig->automatic_start ? 1 : 0;
+	//network_automatic_start = networkConfig->automatic_start ? 1 : 0;
 	CMenuOptionChooser * oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_SETUPONSTARTUP, &network_automatic_start, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 
 	// intros
@@ -276,7 +286,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// dhcp on/off
-	network_dhcp = networkConfig->inet_static ? 0 : 1;
+	//network_dhcp = networkConfig->inet_static ? 0 : 1;
 	oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_DHCP, &network_dhcp, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, dhcpNotifier);
 	networkSettings.addItem(oj);
 
