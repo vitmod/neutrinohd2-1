@@ -35,9 +35,12 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include <libnet.h>
+
 #include <gui/widget/hintbox.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
+#include <gui/widget/messagebox.h>
 
 #include <gui/network_setup.h>
 
@@ -48,6 +51,8 @@
 #include <system/debug.h>
 #include <system/setting_helpers.h>
 #include <system/helpers.h>
+
+extern "C" int pinghost( const char *hostname );
 
 
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -84,9 +89,6 @@ static int my_filter(const struct dirent * dent)
 CNetworkSettings::CNetworkSettings()
 {
 	networkConfig = CNetworkConfig::getInstance();
-
-	// init IP changer
-	MyIPChanger = new CIPChangeNotifier;
 }
 
 CNetworkSettings *CNetworkSettings::getInstance()
@@ -199,6 +201,9 @@ void CNetworkSettings::showMenu()
 	network_ssid = networkConfig->ssid;
 	network_key = networkConfig->key;
 	network_encryption = (networkConfig->encryption == "WPA") ? 0 : 1;
+
+	// init IP changer
+	MyIPChanger = new CIPChangeNotifier;
 	
 	//eth id
 	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr);
@@ -338,6 +343,187 @@ void CNetworkSettings::showMenu()
 	
 	networkSettings.exec(NULL, "");
 	networkSettings.hide();
+
+	delete MyIPChanger;
+	delete dhcpNotifier;
+	delete sectionsdConfigNotifier;
 }
+
+// IP notifier
+bool CIPChangeNotifier::changeNotify(const neutrino_locale_t locale, void * Data)
+{
+	if(locale == LOCALE_NETWORKMENU_IPADDRESS) 
+	{
+		char ip[16];
+		unsigned char _ip[4];
+		sscanf((char*) Data, "%hhu.%hhu.%hhu.%hhu", &_ip[0], &_ip[1], &_ip[2], &_ip[3]);
+
+		sprintf(ip, "%hhu.%hhu.%hhu.255", _ip[0], _ip[1], _ip[2]);
+		CNetworkSettings::getInstance()->networkConfig->broadcast = ip;
+
+		CNetworkSettings::getInstance()->networkConfig->netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
+	}
+	else if(locale == LOCALE_NETWORKMENU_SELECT_IF) 
+	{
+		CNetworkSettings::getInstance()->networkConfig->readConfig(g_settings.ifname);
+		//readNetworkSettings(); //???
+		
+		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNetworkSettings::getInstance()->networkConfig->inet_static);
+
+		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNetworkSettings::getInstance()->networkConfig->inet_static);
+
+		int ecnt = sizeof(CNetworkSettings::getInstance()->wlanEnable) / sizeof(CMenuItem*);
+
+		for(int i = 0; i < ecnt; i++)
+			CNetworkSettings::getInstance()->wlanEnable[i]->setActive(CNetworkSettings::getInstance()->networkConfig->wireless);
+
+	}
+	/*
+	else if(locale == LOCALE_NETWORKMENU_DHCP) 
+	{
+		CNetworkSettings::getInstance()->networkConfig.inet_static = (CNetworkSettings::getInstance()->networkConfig.network_dhcp == 0 );
+		int ecnt = sizeof(CNetworkSettings::getInstance()->networkConfig.dhcpDisable) / sizeof(CMenuForwarder*);
+
+		for(int i = 0; i < ecnt; i++)
+			dhcpDisable[i]->setActive(CNetworkConfig::getInstance()->inet_static);
+	}
+	*/
+
+	return true;
+}
+
+// dhcp notifier
+CDHCPNotifier::CDHCPNotifier( CMenuForwarder* a1, CMenuForwarder* a2, CMenuForwarder* a3, CMenuForwarder* a4, CMenuForwarder* a5)
+{
+	toDisable[0] = a1;
+	toDisable[1] = a2;
+	toDisable[2] = a3;
+	toDisable[3] = a4;
+	toDisable[4] = a5;
+}
+
+
+bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
+{
+	CNetworkSettings::getInstance()->networkConfig->inet_static = ((*(int*)(data)) == 0);
+	
+	for(int x = 0; x < 5; x++)
+		toDisable[x]->setActive(CNetworkSettings::getInstance()->networkConfig->inet_static);
+	
+	return true;
+}
+
+//
+const char * mypinghost(const char * const host)
+{
+	int retvalue = pinghost(host);
+	switch (retvalue)
+	{
+		case 1: return (g_Locale->getText(LOCALE_PING_OK));
+		case 0: return (g_Locale->getText(LOCALE_PING_UNREACHABLE));
+		case -1: return (g_Locale->getText(LOCALE_PING_PROTOCOL));
+		case -2: return (g_Locale->getText(LOCALE_PING_SOCKET));
+	}
+	return "";
+}
+
+void testNetworkSettings(const char* ip, const char* netmask, const char* broadcast, const char* gateway, const char* nameserver, bool ip_static)
+{
+	char our_ip[16];
+	char our_mask[16];
+	char our_broadcast[16];
+	char our_gateway[16];
+	char our_nameserver[16];
+	std::string text;
+
+	if (ip_static) 
+	{
+		strcpy(our_ip,ip);
+		strcpy(our_mask,netmask);
+		strcpy(our_broadcast,broadcast);
+		strcpy(our_gateway,gateway);
+		strcpy(our_nameserver,nameserver);
+	}
+	else 
+	{
+		netGetIP((char *) "eth0",our_ip,our_mask,our_broadcast);
+		netGetDefaultRoute(our_gateway);
+		netGetNameserver(our_nameserver);
+	}
+
+	dprintf(DEBUG_NORMAL, "testNw IP       : %s\n", our_ip);
+	dprintf(DEBUG_NORMAL, "testNw Netmask  : %s\n", our_mask);
+	dprintf(DEBUG_NORMAL, "testNw Broadcast: %s\n", our_broadcast);
+	dprintf(DEBUG_NORMAL, "testNw Gateway: %s\n", our_gateway);
+	dprintf(DEBUG_NORMAL, "testNw Nameserver: %s\n", our_nameserver);
+
+	text = our_ip;
+	text += ": ";
+	text += mypinghost(our_ip);
+	text += '\n';
+	text += g_Locale->getText(LOCALE_NETWORKMENU_GATEWAY);
+	text += ": ";
+	text += our_gateway;
+	text += ' ';
+	text += mypinghost(our_gateway);
+	text += '\n';
+	text += g_Locale->getText(LOCALE_NETWORKMENU_NAMESERVER);
+	text += ": ";
+	text += our_nameserver;
+	text += ' ';
+	text += mypinghost(our_nameserver);
+	text += "\nwww.google.de: ";
+	text += mypinghost("173.194.35.152");
+
+	MessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+}
+
+void showCurrentNetworkSettings()
+{
+	char ip[16];
+	char mask[16];
+	char broadcast[16];
+	char router[16];
+	char nameserver[16];
+	std::string mac;
+	std::string text;
+
+	//netGetIP((char *) "eth0",ip,mask,broadcast);
+	netGetIP(g_settings.ifname, ip, mask, broadcast);
+	
+	if (ip[0] == 0) {
+		text = "Network inactive\n";
+	}
+	else {
+		netGetNameserver(nameserver);
+		netGetDefaultRoute(router);
+		//netGetMacAddr(g_settings.ifname, (unsigned char *)mac.c_str());
+		
+		//text = "Box: " + mac + "\n    ";
+		
+		text  = g_Locale->getText(LOCALE_NETWORKMENU_IPADDRESS );
+		text += ": ";
+		text += ip;
+		text += '\n';
+		text += g_Locale->getText(LOCALE_NETWORKMENU_NETMASK   );
+		text += ": ";
+		text += mask;
+		text += '\n';
+		text += g_Locale->getText(LOCALE_NETWORKMENU_BROADCAST );
+		text += ": ";
+		text += broadcast;
+		text += '\n';
+		text += g_Locale->getText(LOCALE_NETWORKMENU_NAMESERVER);
+		text += ": ";
+		text += nameserver;
+		text += '\n';
+		text += g_Locale->getText(LOCALE_NETWORKMENU_GATEWAY   );
+		text += ": ";
+		text += router;
+	}
+	
+	MessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+}
+
 
 

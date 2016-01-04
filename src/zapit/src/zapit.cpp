@@ -1032,7 +1032,7 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 		if (cit == nvodchannels.end()) 
 		{
 			dprintf(DEBUG_INFO, "%s channel_id (%llx) not found\n", __FUNCTION__, channel_id);
-			return false;
+			return NULL;
 		}
 	} 
 	else 

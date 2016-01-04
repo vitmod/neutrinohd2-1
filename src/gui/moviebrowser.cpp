@@ -2672,15 +2672,20 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					movieInfo.file.Name = flist[i].Name;
 					
 					// load movie infos
-					if(show_mode != MB_SHOW_FILES)
-						m_movieInfo.loadMovieInfo(&movieInfo);
+					m_movieInfo.loadMovieInfo(&movieInfo);
 					
 					// refill structure
 					if(show_mode == MB_SHOW_FILES)
 					{
-						movieInfo.epgTitle = flist[i].getFileName();
-						movieInfo.epgInfo1 = flist[i].getFileName();   // IMDB 
-						movieInfo.epgInfo2 = flist[i].getFileName(); // IMDB???
+						// refill if empty
+						if(movieInfo.epgTitle.empty())
+							movieInfo.epgTitle = flist[i].getFileName();
+						
+						if(movieInfo.epgInfo1.empty())
+							movieInfo.epgInfo1 = flist[i].getFileName();   	// IMDB 
+
+						if(movieInfo.epgInfo2.empty())
+							movieInfo.epgInfo2 = flist[i].getFileName(); 	// IMDB???
 
 					}
 					

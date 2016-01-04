@@ -41,9 +41,11 @@
 #include <system/helpers.h>
 
 #include <audio_cs.h>
+#include <video_cs.h>
 
 
-extern CAudioSetupNotifier	* audioSetupNotifier;
+extern cVideo 		* videoDecoder;		//libcoolstream (video_cs.cpp)
+extern cAudio 		* audioDecoder;		//libcoolstream (audio_cs.cpp)
 
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
@@ -104,10 +106,25 @@ const CMenuOptionChooser::keyval AUDIODELAY_OPTIONS[AUDIODELAY_OPTION_COUNT] =
 
 CAudioSettings::CAudioSettings()
 {
+	audioSetupNotifier = new CAudioSetupNotifier;
+}
+
+CAudioSettings *CAudioSettings::getInstance()
+{
+	static CAudioSettings *audioSettings = NULL;
+
+	if(!audioSettings)
+	{
+		audioSettings = new CAudioSettings();
+		dprintf(DEBUG_NORMAL, "CAudioSettings::getInstance: Instance created\n");
+	}
+	
+	return audioSettings;
 }
 
 CAudioSettings::~CAudioSettings()
 {
+	delete audioSetupNotifier;
 }
 
 int CAudioSettings::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -222,5 +239,96 @@ void CAudioSettings::showMenu()
 	
 	audioSettings.exec(NULL, "");
 	audioSettings.hide();
+
+	delete subLangSelectNotifier;
+	delete autoAudioNotifier;
 }
+
+bool CAudioSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
+{
+	dprintf(DEBUG_NORMAL, "CAudioSetupNotifier::changeNotify\n");
+
+	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_ANALOGOUT)) 
+	{
+		//g_Zapit->setAudioMode(g_settings.audio_AnalogMode);
+		if(audioDecoder) 
+				audioDecoder->setChannel(g_settings.audio_AnalogMode);
+	} 
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_HDMI_DD)) 
+	{
+		if(audioDecoder)
+			audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
+	}
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AVSYNC)) 
+	{
+#if defined (PLATFORM_COOLSTREAM)
+		videoDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+		audioDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+		videoDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+		audioDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+		pcrDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+#else
+		if(videoDecoder)
+			videoDecoder->SetSyncMode(g_settings.avsync);			
+		
+		if(audioDecoder)
+			audioDecoder->SetSyncMode(g_settings.avsync);
+#endif			
+	}
+#if !defined (PLATFORM_COOLSTREAM)	
+	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AC3_DELAY) )
+	{
+		if(audioDecoder)
+			audioDecoder->setHwAC3Delay(g_settings.ac3_delay);
+	}
+	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_PCM_DELAY) )
+	{
+		if(audioDecoder)
+			audioDecoder->setHwPCMDelay(g_settings.pcm_delay);
+	}
+#endif	
+
+	return true;
+}
+
+CAutoAudioNotifier::CAutoAudioNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3, CMenuItem * item4)
+{
+	toDisable[0] = item1;
+	toDisable[1] = item2;
+	toDisable[2] = item3;
+	toDisable[3] = item4;
+}
+
+bool CAutoAudioNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	// only ac3
+	toDisable[0]->setActive(g_settings.auto_lang);
+	toDisable[1]->setActive(g_settings.auto_lang);
+	toDisable[2]->setActive(g_settings.auto_lang);
+	toDisable[3]->setActive(g_settings.auto_lang);
+	
+	return true;
+}
+
+// sublang select notifier
+CSubLangSelectNotifier::CSubLangSelectNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3)
+{
+	toDisable[0] = item1;
+	toDisable[1] = item2;
+	toDisable[2] = item3;
+}
+
+bool CSubLangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	// only ac3
+	toDisable[0]->setActive(g_settings.auto_subs);
+	toDisable[1]->setActive(g_settings.auto_subs);
+	toDisable[2]->setActive(g_settings.auto_subs);
+	
+	return true;
+}
+
+
+
+
 

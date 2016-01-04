@@ -141,7 +141,7 @@ class CListFrame
 		void 	scrollLineDown(const int lines);
 		void 	scrollLineUp(const int lines);
 		bool	setLines(LF_LINES* lines);
-		bool	setTitle(char* title = "", const std::string& icon = NULL);
+		bool	setTitle(const char* title = "", const std::string& icon = NULL);
 		bool    setSelectedLine(int selection);
 		void	hide(void);
 		void	paint(void);

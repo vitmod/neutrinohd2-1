@@ -49,8 +49,8 @@
 
 #include <global.h>
 #include <neutrino.h>
-#include <gui/widget/stringinput.h>
 
+#include <gui/widget/stringinput.h>
 #include <gui/widget/messagebox.h>
 #include <gui/widget/hintbox.h>
 
@@ -113,28 +113,6 @@ extern int tuxtx_main(int pid, int page, int source);
 extern CFrontend * live_fe;
 extern t_channel_id live_channel_id;
 
-extern "C" int pinghost( const char *hostname );
-
-// dhcp notifier
-CDHCPNotifier::CDHCPNotifier( CMenuForwarder* a1, CMenuForwarder* a2, CMenuForwarder* a3, CMenuForwarder* a4, CMenuForwarder* a5)
-{
-	toDisable[0] = a1;
-	toDisable[1] = a2;
-	toDisable[2] = a3;
-	toDisable[3] = a4;
-	toDisable[4] = a5;
-}
-
-
-bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
-{
-	CNetworkSettings::getInstance()->networkConfig->inet_static = ((*(int*)(data)) == 0);
-	
-	for(int x = 0; x < 5; x++)
-		toDisable[x]->setActive(CNetworkSettings::getInstance()->networkConfig->inet_static);
-	
-	return true;
-}
 
 // onoff notifier needed by moviebrowser
 COnOffNotifier::COnOffNotifier( CMenuItem* a1,CMenuItem* a2,CMenuItem* a3,CMenuItem* a4,CMenuItem* a5)
@@ -310,168 +288,11 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	return false;
 }
 
-// video setup notifier
-extern int prev_video_Mode;
-
-bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
-{
-	dprintf(DEBUG_NORMAL, "CVideoSetupNotifier::changeNotify\n");
-	
-	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
-
-	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_ANALOG_MODE))	/* video analoue mode */
-	{
-		if(videoDecoder)
-#if defined (PLATFORM_COOLSTREAM)
-			videoDecoder->SetVideoMode((analog_mode_t) g_settings.analog_mode);
-#else			
-			videoDecoder->SetAnalogMode(g_settings.analog_mode);
-#endif			
-	}
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEORATIO) || ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEOFORMAT ))	/* format aspect-ratio */
-	{
-		if(videoDecoder)
-			videoDecoder->setAspectRatio(g_settings.video_Ratio, g_settings.video_Format);
-	}
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEOMODE))	/* mode */
-	{
-		if(videoDecoder)
-			videoDecoder->SetVideoSystem(g_settings.video_Mode);
-		
-		// clear screen
-		frameBuffer->paintBackground();
-#ifdef FB_BLIT
-		frameBuffer->blit();
-#endif		
-
-		if(prev_video_Mode != g_settings.video_Mode) 
-		{
-			if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_INFO) != CMessageBox::mbrYes) 
-			{
-				g_settings.video_Mode = prev_video_Mode;
-				if(videoDecoder)
-					videoDecoder->SetVideoSystem(g_settings.video_Mode);	//no-> return to prev mode
-			} 
-			else
-			{
-				prev_video_Mode = g_settings.video_Mode;
-			}
-		}
-	}
-#if !defined (PLATFORM_COOLSTREAM)	
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_HDMI_COLOR_SPACE)) 
-	{
-		if(videoDecoder)
-			videoDecoder->SetSpaceColour(g_settings.hdmi_color_space);
-	}
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_WSS)) 
-	{
-		if(videoDecoder)
-			videoDecoder->SetWideScreen(g_settings.wss_mode);
-	}
-#endif	
-
-	return true;
-}
-
-// audio setup notifier
-bool CAudioSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
-{
-	dprintf(DEBUG_NORMAL, "CAudioSetupNotifier::changeNotify\n");
-
-	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_ANALOGOUT)) 
-	{
-		g_Zapit->setAudioMode(g_settings.audio_AnalogMode);
-	} 
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_HDMI_DD)) 
-	{
-		if(audioDecoder)
-			audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
-	}
-	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AVSYNC)) 
-	{
-#if defined (PLATFORM_COOLSTREAM)
-		videoDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
-		audioDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
-		videoDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
-		audioDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
-		pcrDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
-#else
-		if(videoDecoder)
-			videoDecoder->SetSyncMode(g_settings.avsync);			
-		
-		if(audioDecoder)
-			audioDecoder->SetSyncMode(g_settings.avsync);
-#endif		
-		
-		//videoDemux->SetSyncMode(g_settings.avsync);
-		//audioDemux->SetSyncMode(g_settings.avsync);
-		//pcrDemux->SetSyncMode((g_settings.avsync);		
-	}
-#if !defined (PLATFORM_COOLSTREAM)	
-	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AC3_DELAY) )
-	{
-		if(audioDecoder)
-			audioDecoder->setHwAC3Delay(g_settings.ac3_delay);
-	}
-	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_PCM_DELAY) )
-	{
-		if(audioDecoder)
-			audioDecoder->setHwPCMDelay(g_settings.pcm_delay);
-	}
-#endif	
-
-	return true;
-}
-
 bool CKeySetupNotifier::changeNotify(const neutrino_locale_t, void *)
 {
 	g_RCInput->setRepeat(atoi(g_settings.repeat_blocker), atoi(g_settings.repeat_genericblocker));
 
 	return false;
-}
-
-// IP notifier
-bool CIPChangeNotifier::changeNotify(const neutrino_locale_t locale, void * Data)
-{
-	if(locale == LOCALE_NETWORKMENU_IPADDRESS) 
-	{
-		char ip[16];
-		unsigned char _ip[4];
-		sscanf((char*) Data, "%hhu.%hhu.%hhu.%hhu", &_ip[0], &_ip[1], &_ip[2], &_ip[3]);
-
-		sprintf(ip, "%hhu.%hhu.%hhu.255", _ip[0], _ip[1], _ip[2]);
-		CNetworkSettings::getInstance()->networkConfig->broadcast = ip;
-
-		CNetworkSettings::getInstance()->networkConfig->netmask = (_ip[0] == 10) ? "255.0.0.0" : "255.255.255.0";
-	}
-	else if(locale == LOCALE_NETWORKMENU_SELECT_IF) 
-	{
-		CNetworkSettings::getInstance()->networkConfig->readConfig(g_settings.ifname);
-		//readNetworkSettings(); //???
-		
-		dprintf(DEBUG_NORMAL, "CNetworkSetup::changeNotify: using %s, static %d\n", g_settings.ifname, CNetworkSettings::getInstance()->networkConfig->inet_static);
-
-		changeNotify(LOCALE_NETWORKMENU_DHCP, &CNetworkSettings::getInstance()->networkConfig->inet_static);
-
-		int ecnt = sizeof(CNetworkSettings::getInstance()->wlanEnable) / sizeof(CMenuItem*);
-
-		for(int i = 0; i < ecnt; i++)
-			CNetworkSettings::getInstance()->wlanEnable[i]->setActive(CNetworkSettings::getInstance()->networkConfig->wireless);
-
-	}
-	/*
-	else if(locale == LOCALE_NETWORKMENU_DHCP) 
-	{
-		CNetworkSettings::getInstance()->networkConfig.inet_static = (CNetworkSettings::getInstance()->networkConfig.network_dhcp == 0 );
-		int ecnt = sizeof(CNetworkSettings::getInstance()->networkConfig.dhcpDisable) / sizeof(CMenuForwarder*);
-
-		for(int i = 0; i < ecnt; i++)
-			dhcpDisable[i]->setActive(CNetworkConfig::getInstance()->inet_static);
-	}
-	*/
-
-	return true;
 }
 
 // timing settings notifier
@@ -811,26 +632,6 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 	return true;
 }
 
-// auto audio select notifier
-CAutoAudioNotifier::CAutoAudioNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3, CMenuItem * item4)
-{
-	toDisable[0] = item1;
-	toDisable[1] = item2;
-	toDisable[2] = item3;
-	toDisable[3] = item4;
-}
-
-bool CAutoAudioNotifier::changeNotify(const neutrino_locale_t, void *)
-{
-	// only ac3
-	toDisable[0]->setActive(g_settings.auto_lang);
-	toDisable[1]->setActive(g_settings.auto_lang);
-	toDisable[2]->setActive(g_settings.auto_lang);
-	toDisable[3]->setActive(g_settings.auto_lang);
-	
-	return true;
-}
-
 void sectionsd_set_languages(const std::vector<std::string>& newLanguages);
 
 bool CEPGlangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
@@ -868,142 +669,5 @@ bool CEPGlangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
 	return true;
 }
 
-// sublang select notifier
-CSubLangSelectNotifier::CSubLangSelectNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3)
-{
-	toDisable[0] = item1;
-	toDisable[1] = item2;
-	toDisable[2] = item3;
-}
 
-bool CSubLangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
-{
-	// only ac3
-	toDisable[0]->setActive(g_settings.auto_subs);
-	toDisable[1]->setActive(g_settings.auto_subs);
-	toDisable[2]->setActive(g_settings.auto_subs);
-	
-	return true;
-}
-
-// volume conf
-bool CAudioSetupNotifierVolPercent::changeNotify(const neutrino_locale_t OptionName __attribute__((unused)), void *data)
-{
-	int percent = *(int *) data;
-	
-	g_Zapit->setVolumePercent(percent, live_channel_id, g_RemoteControl->current_PIDs.PIDs.selected_apid);
-	
-	return true;
-}
-
-const char * mypinghost(const char * const host)
-{
-	int retvalue = pinghost(host);
-	switch (retvalue)
-	{
-		case 1: return (g_Locale->getText(LOCALE_PING_OK));
-		case 0: return (g_Locale->getText(LOCALE_PING_UNREACHABLE));
-		case -1: return (g_Locale->getText(LOCALE_PING_PROTOCOL));
-		case -2: return (g_Locale->getText(LOCALE_PING_SOCKET));
-	}
-	return "";
-}
-
-void testNetworkSettings(const char* ip, const char* netmask, const char* broadcast, const char* gateway, const char* nameserver, bool ip_static)
-{
-	char our_ip[16];
-	char our_mask[16];
-	char our_broadcast[16];
-	char our_gateway[16];
-	char our_nameserver[16];
-	std::string text;
-
-	if (ip_static) 
-	{
-		strcpy(our_ip,ip);
-		strcpy(our_mask,netmask);
-		strcpy(our_broadcast,broadcast);
-		strcpy(our_gateway,gateway);
-		strcpy(our_nameserver,nameserver);
-	}
-	else 
-	{
-		netGetIP((char *) "eth0",our_ip,our_mask,our_broadcast);
-		netGetDefaultRoute(our_gateway);
-		netGetNameserver(our_nameserver);
-	}
-
-	dprintf(DEBUG_NORMAL, "testNw IP       : %s\n", our_ip);
-	dprintf(DEBUG_NORMAL, "testNw Netmask  : %s\n", our_mask);
-	dprintf(DEBUG_NORMAL, "testNw Broadcast: %s\n", our_broadcast);
-	dprintf(DEBUG_NORMAL, "testNw Gateway: %s\n", our_gateway);
-	dprintf(DEBUG_NORMAL, "testNw Nameserver: %s\n", our_nameserver);
-
-	text = our_ip;
-	text += ": ";
-	text += mypinghost(our_ip);
-	text += '\n';
-	text += g_Locale->getText(LOCALE_NETWORKMENU_GATEWAY);
-	text += ": ";
-	text += our_gateway;
-	text += ' ';
-	text += mypinghost(our_gateway);
-	text += '\n';
-	text += g_Locale->getText(LOCALE_NETWORKMENU_NAMESERVER);
-	text += ": ";
-	text += our_nameserver;
-	text += ' ';
-	text += mypinghost(our_nameserver);
-	text += "\nwww.google.de: ";
-	text += mypinghost("173.194.35.152");
-
-	MessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
-}
-
-void showCurrentNetworkSettings()
-{
-	char ip[16];
-	char mask[16];
-	char broadcast[16];
-	char router[16];
-	char nameserver[16];
-	std::string mac;
-	std::string text;
-
-	//netGetIP((char *) "eth0",ip,mask,broadcast);
-	netGetIP(g_settings.ifname, ip, mask, broadcast);
-	
-	if (ip[0] == 0) {
-		text = "Network inactive\n";
-	}
-	else {
-		netGetNameserver(nameserver);
-		netGetDefaultRoute(router);
-		//netGetMacAddr(g_settings.ifname, (unsigned char *)mac.c_str());
-		
-		//text = "Box: " + mac + "\n    ";
-		
-		text  = g_Locale->getText(LOCALE_NETWORKMENU_IPADDRESS );
-		text += ": ";
-		text += ip;
-		text += '\n';
-		text += g_Locale->getText(LOCALE_NETWORKMENU_NETMASK   );
-		text += ": ";
-		text += mask;
-		text += '\n';
-		text += g_Locale->getText(LOCALE_NETWORKMENU_BROADCAST );
-		text += ": ";
-		text += broadcast;
-		text += '\n';
-		text += g_Locale->getText(LOCALE_NETWORKMENU_NAMESERVER);
-		text += ": ";
-		text += nameserver;
-		text += '\n';
-		text += g_Locale->getText(LOCALE_NETWORKMENU_GATEWAY   );
-		text += ": ";
-		text += router;
-	}
-	
-	MessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
-}
 

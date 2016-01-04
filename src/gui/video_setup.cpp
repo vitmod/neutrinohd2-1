@@ -33,6 +33,8 @@
 
 #include <stdio.h> 
 
+#include <gui/widget/messagebox.h>
+
 #include <gui/video_setup.h>
 
 #include <system/debug.h>
@@ -42,7 +44,7 @@
 #include <video_cs.h>
 
 
-extern CVideoSetupNotifier	* videoSetupNotifier;
+extern cVideo * videoDecoder;		//libcoolstream (video_cs.cpp)
 
 //Video Settings
 //hdmi color space
@@ -311,10 +313,25 @@ const CMenuOptionChooser::keyval VIDEOMENU_WSS_OPTIONS[VIDEOMENU_WSS_OPTION_COUN
 
 CVideoSettings::CVideoSettings()
 {
+	videoSetupNotifier = new CVideoSetupNotifier;
+}
+
+CVideoSettings *CVideoSettings::getInstance()
+{
+	static CVideoSettings *videoSettings = NULL;
+
+	if(!videoSettings)
+	{
+		videoSettings = new CVideoSettings();
+		dprintf(DEBUG_NORMAL, "CVideoSettings::getInstance: Instance created\n");
+	}
+	
+	return videoSettings;
 }
 
 CVideoSettings::~CVideoSettings()
 {
+	delete videoSetupNotifier;
 }
 
 int CVideoSettings::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -377,4 +394,70 @@ void CVideoSettings::showMenu()
 	videoSettings.exec(NULL, "");
 	videoSettings.hide();
 }
+
+// video setup notifier
+extern int prev_video_Mode;
+
+bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
+{
+	dprintf(DEBUG_NORMAL, "CVideoSetupNotifier::changeNotify\n");
+	
+	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
+
+	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_ANALOG_MODE))	/* video analoue mode */
+	{
+		if(videoDecoder)
+#if defined (PLATFORM_COOLSTREAM)
+			videoDecoder->SetVideoMode((analog_mode_t) g_settings.analog_mode);
+#else			
+			videoDecoder->SetAnalogMode(g_settings.analog_mode);
+#endif			
+	}
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEORATIO) || ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEOFORMAT ))	// format aspect-ratio
+	{
+		if(videoDecoder)
+			videoDecoder->setAspectRatio(g_settings.video_Ratio, g_settings.video_Format);
+	}
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_VIDEOMODE))	// mode
+	{
+		if(videoDecoder)
+			videoDecoder->SetVideoSystem(g_settings.video_Mode);
+		
+		// clear screen
+		frameBuffer->paintBackground();
+#ifdef FB_BLIT
+		frameBuffer->blit();
+#endif		
+
+		if(prev_video_Mode != g_settings.video_Mode) 
+		{
+			if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_INFO) != CMessageBox::mbrYes) 
+			{
+				g_settings.video_Mode = prev_video_Mode;
+				if(videoDecoder)
+					videoDecoder->SetVideoSystem(g_settings.video_Mode);	//no-> return to prev mode
+			} 
+			else
+			{
+				prev_video_Mode = g_settings.video_Mode;
+			}
+		}
+	}
+#if !defined (PLATFORM_COOLSTREAM)	
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_HDMI_COLOR_SPACE)) 
+	{
+		if(videoDecoder)
+			videoDecoder->SetSpaceColour(g_settings.hdmi_color_space);
+	}
+	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_VIDEOMENU_WSS)) 
+	{
+		if(videoDecoder)
+			videoDecoder->SetWideScreen(g_settings.wss_mode);
+	}
+#endif	
+
+	return true;
+}
+
+
 

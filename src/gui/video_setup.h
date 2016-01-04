@@ -32,6 +32,12 @@
 #include <string>
 
 
+class CVideoSetupNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t OptionName, void *);
+};
+
 class CVideoSettings : public CMenuTarget
 {
 	private:
@@ -40,6 +46,9 @@ class CVideoSettings : public CMenuTarget
 	public:
 		CVideoSettings();
 		~CVideoSettings();
+
+		CVideoSetupNotifier * videoSetupNotifier;
+		static CVideoSettings* getInstance();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };

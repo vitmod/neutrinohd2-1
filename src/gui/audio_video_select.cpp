@@ -50,6 +50,8 @@
 #include <audio_cs.h>
 
 #include <gui/audio_video_select.h>
+#include <gui/video_setup.h>
+#include <gui/audio_setup.h>
 
 
 
@@ -67,10 +69,6 @@ unsigned int currentapid = 0;
 unsigned int currentac3 = 0;
 
 unsigned int ac3state = CInfoViewer::NO_AC3;
-
-extern CVideoSetupNotifier * videoSetupNotifier;	/* defined neutrino.cpp */
-// ac3
-extern CAudioSetupNotifier * audioSetupNotifier;	/* defined neutrino.cpp */
 
 // aspect ratio
 #if defined (__sh__)
@@ -259,17 +257,17 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 	
 	//ac3
 #if !defined (PLATFORM_COOLSTREAM)				
-	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, CAudioSettings::getInstance()->audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
 #endif				
 				
 	// policy/aspect ratio
 	AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 				
 	// video aspect ratio 4:3/16:9
-	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, CVideoSettings::getInstance()->videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
 	
 	// video format bestfit/letterbox/panscan/non
-	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, CVideoSettings::getInstance()->videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
 	
 	AVPIDSelector->exec(NULL, "");
 	AVPIDSelector->hide();

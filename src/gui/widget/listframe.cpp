@@ -691,7 +691,7 @@ bool CListFrame::setLines(LF_LINES* lines)
 	return(true);
 }
 
-bool CListFrame::setTitle(char* title, const std::string& icon)
+bool CListFrame::setTitle(const char* title, const std::string& icon)
 {
 	dprintf(DEBUG_DEBUG, "CListFrame::setTitle:\r\n");
 	

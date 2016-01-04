@@ -405,9 +405,6 @@ int cAudio::Flush(void)
 /* select channels */
 int cAudio::setChannel(int channel)
 {
-	if (audio_fd < 0)
-		return -1;
-	  
 	const char * aAUDIOCHANNEL[] = {
 		"STEREO",
 		"MONOLEFT",
@@ -415,6 +412,9 @@ int cAudio::setChannel(int channel)
 	};
 	 
 	dprintf(DEBUG_INFO, "%s:%s %s\n", FILENAME, __FUNCTION__, aAUDIOCHANNEL[channel]);
+
+	if (audio_fd < 0)
+		return -1;
 	
 	int ret = -1;
 

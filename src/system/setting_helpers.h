@@ -43,16 +43,6 @@
 #include <string>
 
 
-// dhcp notifier
-class CDHCPNotifier : public CChangeObserver
-{
-	private:
-		CMenuForwarder * toDisable[5];
-	public:
-		CDHCPNotifier( CMenuForwarder*, CMenuForwarder*, CMenuForwarder*, CMenuForwarder*, CMenuForwarder*);
-		bool changeNotify(const neutrino_locale_t, void * data);
-};
-
 // onoff notifier //needed by moviebrowser
 class COnOffNotifier : public CChangeObserver
 {
@@ -111,32 +101,11 @@ class CColorSetupNotifier : public CChangeObserver
 		bool changeNotify(const neutrino_locale_t, void *);
 };
 
-// video setup notifier
-class CVideoSetupNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t OptionName, void *);
-};
-
-// audio setup notifier
-class CAudioSetupNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t OptionName, void *);
-};
-
 // key setup notifier
 class CKeySetupNotifier : public CChangeObserver
 {
 	public:
 		bool changeNotify(const neutrino_locale_t, void *);
-};
-
-// IP change notifier
-class CIPChangeNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t locale, void * Data);
 };
 
 // timing setup notifier
@@ -199,45 +168,11 @@ class CDataResetNotifier : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-// autoaudio select notifier
-class CAutoAudioNotifier : public CChangeObserver
-{
-	private:
-		CMenuItem * toDisable[4];
-		
-	public:
-		CAutoAudioNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3, CMenuItem * item4);
-		bool changeNotify(const neutrino_locale_t, void * /*data*/);
-};
-
-// autoaudio select notifier
-class CSubLangSelectNotifier : public CChangeObserver
-{
-	private:
-		CMenuItem * toDisable[3];
-		
-	public:
-		CSubLangSelectNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3);
-		bool changeNotify(const neutrino_locale_t, void * /*data*/);
-};
-
 // epglanguage select notifier
 class CEPGlangSelectNotifier : public CChangeObserver
 {	
 	public:
 		bool changeNotify(const neutrino_locale_t, void * /*data*/);
 };
-
-// volume conf
-class CAudioSetupNotifierVolPercent : public CChangeObserver
-{
-		int apid;
-		t_channel_id channel_id;
-	public:
-		bool changeNotify(const neutrino_locale_t OptionName, void *);
-};
-
-void testNetworkSettings(const char* ip, const char* netmask, const char* broadcast, const char* gateway, const char* nameserver, bool dhcp);
-void showCurrentNetworkSettings();
 
 #endif

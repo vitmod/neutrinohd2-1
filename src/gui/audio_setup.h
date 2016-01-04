@@ -32,6 +32,12 @@
 #include <string>
 
 
+class CAudioSetupNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t OptionName, void *);
+};
+
 class CAudioSettings : public CMenuTarget
 {
 	private:
@@ -40,8 +46,33 @@ class CAudioSettings : public CMenuTarget
 	public:
 		CAudioSettings();
 		~CAudioSettings();
+
+		CAudioSetupNotifier * audioSetupNotifier;
+		static CAudioSettings* getInstance();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+// autoaudio select notifier
+class CAutoAudioNotifier : public CChangeObserver
+{
+	private:
+		CMenuItem * toDisable[4];
+		
+	public:
+		CAutoAudioNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3, CMenuItem * item4);
+		bool changeNotify(const neutrino_locale_t, void * /*data*/);
+};
+
+// autosub select notifier
+class CSubLangSelectNotifier : public CChangeObserver
+{
+	private:
+		CMenuItem * toDisable[3];
+		
+	public:
+		CSubLangSelectNotifier(CMenuItem * item1, CMenuItem * item2, CMenuItem * item3);
+		bool changeNotify(const neutrino_locale_t, void * /*data*/);
 };
 
 #endif //__audio_setup__

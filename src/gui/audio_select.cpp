@@ -41,17 +41,15 @@
 #include <gui/widget/menue.h>
 
 #include <gui/audio_select.h>
+#include <gui/audio_setup.h>
 
 #include <system/debug.h>
 
 #include <audio_cs.h>
 
 
+extern t_channel_id live_channel_id;
 extern CRemoteControl * g_RemoteControl; 		/* defined neutrino.cpp */
-extern CAudioSetupNotifier * audioSetupNotifier;	/* defined neutrino.cpp */
-
-// volume conf
-extern CAudioSetupNotifierVolPercent * audioSetupNotifierVolPercent;
 
 // dvbsub
 extern int dvbsub_getpid();				// defined in libdvbsub
@@ -119,7 +117,7 @@ int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*act
 }
 
 //
-int CAudioSelectMenuHandler::doMenu()
+void CAudioSelectMenuHandler::doMenu()
 {
 	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::doMenu\n");
 
@@ -135,6 +133,7 @@ int CAudioSelectMenuHandler::doMenu()
 	{
 		char apid[5];
 		sprintf(apid, "%d", count);
+
 		AudioSelector.addItem(new CMenuForwarder(g_RemoteControl->current_PIDs.APIDs[count].desc, true, NULL, &APIDChanger, apid, CRCInput::convertDigitToKey(count + 1)), (count == g_RemoteControl->current_PIDs.PIDs.selected_apid));
 	}
 
@@ -142,11 +141,11 @@ int CAudioSelectMenuHandler::doMenu()
 		AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// analogue output
-	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, CAudioSettings::getInstance()->audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ac3
 #if !defined (PLATFORM_COOLSTREAM)	
-	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
+	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, CAudioSettings::getInstance()->audioSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
 #endif
 
 	//dvb/tuxtxt subs
@@ -210,6 +209,7 @@ int CAudioSelectMenuHandler::doMenu()
 	}
 	
 	// volume percent
+	CAudioSetupNotifierVolPercent * audioSetupNotifierVolPercent = new CAudioSetupNotifierVolPercent;
 	int percent[g_RemoteControl->current_PIDs.APIDs.size()];
 	
 	for(count = 0; count < g_RemoteControl->current_PIDs.APIDs.size(); count++ ) 
@@ -229,5 +229,18 @@ int CAudioSelectMenuHandler::doMenu()
 			g_RemoteControl->current_PIDs.APIDs[count].desc));
 	}
 
-	return AudioSelector.exec(NULL, "");
+	AudioSelector.exec(NULL, "");
+
+	delete audioSetupNotifierVolPercent;
 }
+
+// volume conf
+bool CAudioSetupNotifierVolPercent::changeNotify(const neutrino_locale_t OptionName __attribute__((unused)), void *data)
+{
+	int percent = *(int *) data;
+	
+	g_Zapit->setVolumePercent(percent, live_channel_id, g_RemoteControl->current_PIDs.PIDs.selected_apid);
+	
+	return true;
+}
+

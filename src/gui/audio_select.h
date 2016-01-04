@@ -32,14 +32,23 @@ using namespace std;
 class CAudioSelectMenuHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget * parent, const std::string &actionkey);
-		int  doMenu();
+		int exec( CMenuTarget * parent, const std::string &actionkey);
+		void doMenu();
 };
 
 class CAPIDChangeExec : public CMenuTarget
 {
 	public:
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
+
+// volume conf
+class CAudioSetupNotifierVolPercent : public CChangeObserver
+{
+		int apid;
+		t_channel_id channel_id;
+	public:
+		bool changeNotify(const neutrino_locale_t OptionName, void *);
 };
 
 #endif

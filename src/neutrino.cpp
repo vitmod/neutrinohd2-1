@@ -261,12 +261,6 @@ extern cAudio 		* audioDecoder;		//libcoolstream (audio_cs.cpp)
 int prev_video_Mode;
 
 void stop_daemons();
-			
-CVideoSetupNotifier	* videoSetupNotifier;
-CAudioSetupNotifier	* audioSetupNotifier;
-
-// volume conf
-CAudioSetupNotifierVolPercent * audioSetupNotifierVolPercent;
 
 int current_volume;
 int current_muted;
@@ -2390,24 +2384,42 @@ int CNeutrinoApp::run(int argc, char **argv)
 	if(audioDecoder)
 		audioDecoder->setVolume(g_settings.current_volume, g_settings.current_volume);
 
-	// Video
-	videoSetupNotifier = new CVideoSetupNotifier;
-	
 	// video format
-	videoSetupNotifier->changeNotify(LOCALE_VIDEOMENU_VIDEOFORMAT, NULL);
+	if(videoDecoder)
+		videoDecoder->setAspectRatio(g_settings.video_Ratio, g_settings.video_Format);
 	
 	// wss
-	videoSetupNotifier->changeNotify(LOCALE_VIDEOMENU_WSS, NULL);
+	if(videoDecoder)
+		videoDecoder->SetWideScreen(g_settings.wss_mode);
 	
 	// Audio
-	audioSetupNotifier = new CAudioSetupNotifier;
-	audioSetupNotifier->changeNotify(LOCALE_AUDIOMENU_AVSYNC, NULL);
-	audioSetupNotifier->changeNotify(LOCALE_AUDIOMENU_HDMI_DD, NULL);
-	audioSetupNotifier->changeNotify(LOCALE_AUDIOMENU_AC3_DELAY, NULL);
-	audioSetupNotifier->changeNotify(LOCALE_AUDIOMENU_AC3_DELAY, NULL);
-	
-	// volume conf
-	audioSetupNotifierVolPercent = new CAudioSetupNotifierVolPercent;
+	// avsync
+#if defined (PLATFORM_COOLSTREAM)
+	videoDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+	audioDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+	videoDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+	audioDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+	pcrDemux->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
+#else
+	if(videoDecoder)
+		videoDecoder->SetSyncMode(g_settings.avsync);			
+		
+	if(audioDecoder)
+		audioDecoder->SetSyncMode(g_settings.avsync);
+#endif
+
+	// hdmi_dd
+	if(audioDecoder)
+	{
+		// hdmi_dd
+		audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
+
+		// ac3 delay
+		audioDecoder->setHwAC3Delay(g_settings.ac3_delay);
+
+		// pcm delay 
+		audioDecoder->setHwPCMDelay(g_settings.pcm_delay);
+	}
 
 	// timerd thread
 	pthread_create(&timer_thread, NULL, timerd_main_thread, (void *) NULL);

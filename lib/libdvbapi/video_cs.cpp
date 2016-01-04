@@ -120,6 +120,8 @@ bool cVideo::Close()
 int cVideo::getAspectRatio(void) 
 {  
 	int ratio = ASPECTRATIO_43; // 0 = 4:3, 1 = 16:9
+
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
 	 
 #if !defined (USE_OPENGL)	 
 	unsigned char buffer[2];
@@ -182,6 +184,8 @@ bestfit
 /* set aspect ratio */
 int cVideo::setAspectRatio(int ratio, int format) 
 { 
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
+
 	const char * sRatio[] =
 	{
 	   	"4:3",
@@ -415,6 +419,7 @@ int cVideo::setFastForward(int skip)
 /* set video_system */
 int cVideo::SetVideoSystem(int video_system)
 {	
+	
 #if defined (__sh__)
 /*
 pal 
@@ -624,6 +629,8 @@ void cVideo::SetStreamType(VIDEO_FORMAT type)
 /* set sync mode */
 void cVideo::SetSyncMode(int mode)
 {
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
+
 #if defined (__sh__)
         int clock = 0;
 	
@@ -697,7 +704,7 @@ void cVideo::SetStandby(int val)
 { 
 	const char *sb[] = {"off", "on"};
 	
-	printf("cVideo::SetStandby: %s\n", sb[val]);	
+	dprintf(DEBUG_INFO, "cVideo::SetStandby: %s\n", sb[val]);	
 
 #if !defined (USE_OPENGL)
 	// standby

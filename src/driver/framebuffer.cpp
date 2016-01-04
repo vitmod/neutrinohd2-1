@@ -1739,7 +1739,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 		if (buffer == NULL) 
 		{
 		  	dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error: malloc\n");
-		  	return false;
+		  	return NULL;
 		}
 		
 		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
