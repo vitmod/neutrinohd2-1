@@ -87,6 +87,18 @@ BROWSER:
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
 			file.Name = files->Name;
+
+			// fill file info
+			file.Title = files->getFileName();
+			file.Info1 = files->getFileName();	// IMDB
+			//file.Info2 = files->getFileName(); 	// IMDB
+
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+						
+			if(!access(fname.c_str(), F_OK) )
+				file.Thumbnail = fname.c_str();
 					
 			tmpMoviePlayerGui.addToPlaylist(file);
 		}
