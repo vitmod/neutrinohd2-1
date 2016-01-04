@@ -106,7 +106,7 @@ CNetworkSettings *CNetworkSettings::getInstance()
 
 CNetworkSettings::~CNetworkSettings()
 {
-	delete networkConfig;
+	//delete networkConfig;
 }
 
 int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
