@@ -686,9 +686,10 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 
 	if (dx == 0 || dy == 0) 
 	{
-		//dprintf(DEBUG_INFO, "[CFrameBuffer] [%s - %d]: radius %d, dx %d dy %d\n", __func__, __LINE__, radius, dx, dy);
 		return buf;
 	}
+
+	fb_pixel_t * ret = NULL;
 
 	fb_pixel_t* pixBuf = buf;
 	if (pixBuf == NULL) 
@@ -696,7 +697,6 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 		pixBuf = (fb_pixel_t*)malloc(dx*dy*sizeof(fb_pixel_t));
 		if (pixBuf == NULL) 
 		{
-			//dprintf(DEBUG_NORMAL, "[%s #%d] Error malloc\n", __func__, __LINE__);
 			return NULL;
 		}
 	}
@@ -715,14 +715,6 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 
 			if (dx - ofr - ofl < 1) 
 			{
-				if (dx-ofr-ofl == 0) 
-				{
-					dprintf(DEBUG_INFO, "[%s - %d]: radius %d, end x %d y %d\n", __func__, __LINE__, radius, dx-ofr-ofl, line);
-				}
-				else {
-					dprintf(DEBUG_INFO, "[%s - %04d]: Calculated width: %d\n		      (radius %d, dx %d, offsetLeft %d, offsetRight %d).\n		      Width can not be less than 0, abort.\n",
-					       __func__, __LINE__, dx-ofr-ofl, radius, dx, ofl, ofr);
-				}
 				line++;
 				continue;
 			}
@@ -783,6 +775,8 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
 	}
 
 	blit2FB(boxBuf, dx, dy, x, y);
+
+	free(boxBuf);
 }
 
 void CFrameBuffer::paintVLine(int x, int ya, int yb, const fb_pixel_t col)

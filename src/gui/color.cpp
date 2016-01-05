@@ -286,6 +286,7 @@ fb_pixel_t* gradientColorToTransparent(fb_pixel_t col, fb_pixel_t *gradientBuf, 
 			         ((g  <<  8) & 0x0000FF00) |
 			         ( b         & 0x000000FF);
 	}
+
 	return gradientBuf;
 }
 
@@ -430,6 +431,8 @@ fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pix
 			         ((g  <<  8) & 0x0000FF00) |
 			         ( b         & 0x000000FF);
 	}
+
 	return gradientBuf;
+
 }
 
