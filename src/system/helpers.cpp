@@ -727,6 +727,7 @@ void splitString(std::string &str, std::string delim, std::map<std::string,std::
 	}
 }
 
+// FielHelpers
 CFileHelpers::CFileHelpers()
 {
 	doCopyFlag = true;

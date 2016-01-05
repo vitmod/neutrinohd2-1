@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include <system/debug.h>
+#include <system/helpers.h>
 
 
 double CPictureViewer::m_aspect_ratio_correction;
@@ -468,6 +469,7 @@ void CPictureViewer::Cleanup()
 // get size
 extern int fh_png_id(const char *name);
 extern int png_load_ext(const char * name, unsigned char ** buffer, int * xp, int * yp, int * bpp);
+
 void CPictureViewer::getSize(const std::string &name, int * width, int * height, int * nbpp)
 {
 	unsigned char * rgbbuff;
@@ -499,8 +501,6 @@ void CPictureViewer::getSize(const std::string &name, int * width, int * height,
 			*nbpp = bpp;
 			*width = x;
 			*height = y;
-			
-			//dprintf(DEBUG_INFO, "%s logo: %s (%dx%d)\n", __FUNCTION__, name.c_str(), *width, *height);
 		} 
 	}
 }
@@ -508,20 +508,24 @@ void CPictureViewer::getSize(const std::string &name, int * width, int * height,
 // check for logo
 bool CPictureViewer::checkLogo(t_channel_id channel_id)
 {	
-        char fname[255];
+        std::string logo_name;
 	bool logo_ok = false;
 	
 	// first png, then jpg, then gif
-	std::string strLogoExt[3] = { ".png", ".jpg" , ".gif" };
+	std::string strLogoExt[2] = { ".png", ".jpg" };
 	
 	// check for logo
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		sprintf(fname, "%s/%llx%s", g_settings.logos_dir.c_str(), channel_id & 0xFFFFFFFFFFFFULL, strLogoExt[i].c_str());
-		if(!access(fname, F_OK)) 
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
 		{
 			logo_ok = true;
-			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, fname);
+			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, logo_name.c_str());
 			break;
 		}
 	}
@@ -531,25 +535,40 @@ bool CPictureViewer::checkLogo(t_channel_id channel_id)
 
 void CPictureViewer::getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp)
 {
-	char fname[255];
+	std::string logo_name;
 	bool logo_ok = false;
 	
+	// check for logo/convert channelid to logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
 	// check for logo
-	logo_ok = checkLogo(channel_id);
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
 	
 	if(logo_ok)
 	{
 		// get logo real size
-		getSize(fname, width, height, bpp);
+		getSize(logo_name.c_str(), width, height, bpp);
 		
-		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, fname, *width, *height, *bpp);
+		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
 	}
 }
 
-// display logos
+// display logo
 bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
 {	
-        char fname[255];
+        std::string logo_name;
 	bool ret = false;
 	bool logo_ok = false;
 	
@@ -559,14 +578,27 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 	
 	
 	// check for logo
-	logo_ok = checkLogo(channel_id);
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
 	
 	if(logo_ok)
 	{
-		std::string logo_name = fname; // UTF-8
-		
 		// get logo real size
-		getSize(fname, &logo_w, &logo_h, &logo_bpp);
+		getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
 	
 		// scale only PNG logos
 		if( logo_name.find(".png") == (logo_name.length() - 4) )
@@ -589,11 +621,11 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 				}
 			}
 			
-			ret = CFrameBuffer::getInstance()->DisplayImage(fname, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
+			ret = CFrameBuffer::getInstance()->DisplayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
 		}
 		else
 		{
-			ret = CFrameBuffer::getInstance()->DisplayImage(fname, posx, posy, width, height);
+			ret = CFrameBuffer::getInstance()->DisplayImage(logo_name, posx, posy, width, height);
 		}
         }
 
