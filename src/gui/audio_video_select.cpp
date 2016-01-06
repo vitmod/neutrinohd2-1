@@ -142,7 +142,8 @@ int CAVPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKe
 		currentapid = apids[sel];
 		currentac3 = ac3flags[sel];
 		
-		playback->SetAPid(currentapid, currentac3);
+		if(playback)
+			playback->SetAPid(currentapid, currentac3);
 		
 		if(currentac3)
 			ac3state = CInfoViewer::AC3_ACTIVE;
@@ -175,8 +176,8 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 	CMenuWidget * AVPIDSelector = new CMenuWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	
 	CAVPIDChangeExec AVPIDChanger;
-
-	playback->FindAllPids(apids, ac3flags, &numpida, language);
+	if(playback)
+		playback->FindAllPids(apids, ac3flags, &numpida, language);
 			
 	if (numpida > 0) 
 	{
