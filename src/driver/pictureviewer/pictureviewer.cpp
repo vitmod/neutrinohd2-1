@@ -519,7 +519,7 @@ bool CPictureViewer::checkLogo(t_channel_id channel_id)
 	{
 		logo_name = g_settings.logos_dir;
 		logo_name += "/";
-		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
 		logo_name += strLogoExt[i].c_str();
 
 		if(!access(logo_name.c_str(), F_OK)) 
@@ -546,7 +546,7 @@ void CPictureViewer::getLogoSize(t_channel_id channel_id, int * width, int * hei
 	{
 		logo_name = g_settings.logos_dir;
 		logo_name += "/";
-		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
 		logo_name += strLogoExt[i].c_str();
 
 		if(!access(logo_name.c_str(), F_OK)) 
@@ -585,7 +585,7 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 	{
 		logo_name = g_settings.logos_dir;
 		logo_name += "/";
-		logo_name += channel_id & 0xFFFFFFFFFFFFULL;
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
 		logo_name += strLogoExt[i].c_str();
 
 		if(!access(logo_name.c_str(), F_OK)) 

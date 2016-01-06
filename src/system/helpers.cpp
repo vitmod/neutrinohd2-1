@@ -556,6 +556,14 @@ std::string to_string(unsigned long long i)
 	return s.str();
 }
 
+std::string to_hexstring(unsigned long long i)
+{
+	std::stringstream s;
+	s.setf ( std::ios::hex, std::ios::basefield );
+	s << i;
+	return s.str();
+}
+
 std::string changeFileNameExt(std::string &filename, const char *ext)
 {
 	int ext_pos = 0;
