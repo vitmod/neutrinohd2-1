@@ -1223,9 +1223,12 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			if (!m_playing_entry_is_shown) 
 			{
 				// refreshbox
-				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+
 				m_playing_entry_is_shown = true;
+
 				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
+
 				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
 			}
 		} 
@@ -1235,7 +1238,7 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 				return;
 			
 			// refreshbox
-			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, 0, 0, gradientLight2Dark);
 			m_playing_entry_is_shown = false;
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
@@ -1321,7 +1324,8 @@ void CUpnpBrowserGui::updateTimes(const bool force)
 		{
 			paintDetails(NULL, 0, true);
 			top = m_y + m_height - m_info_height;
-			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, 0, 0, gradientLight2Dark);
+
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + (m_info_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w, play_time, COL_MENUHEAD);			
 		}
 	}

@@ -1626,6 +1626,7 @@ void CAudioPlayerGui::paintItem(int pos)
 		
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(dura) + 5;
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos + m_fheight, m_width - 30 - w, tmp, color, m_fheight, true); // UTF-8
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight, w, dura, color, m_fheight);
 			
 		if ((pos + m_liststart) == m_selected)
@@ -1733,7 +1734,7 @@ void CAudioPlayerGui::paintFoot()
 	int ButtonWidth2 = (m_width - 50) / 2;
 	
 	// foot
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
 	if (!m_playlist.empty())
 	{
@@ -1889,8 +1890,6 @@ void CAudioPlayerGui::paintInfo()
 
 void CAudioPlayerGui::paint()
 {
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::paint\n");
-
 	if(isURL)
 		return;
 	
@@ -1904,6 +1903,7 @@ void CAudioPlayerGui::paint()
 		paintItem(count);
 	}
 
+	// scrollbar
 	int ypos = m_y + m_title_height + m_theight;
 	int sb = m_fheight * m_listmaxshow;
 	m_frameBuffer->paintBoxRel(m_x + m_width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb, COL_MENUCONTENT_PLUS_1);
@@ -1967,8 +1967,11 @@ void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 		m_frameBuffer->paintBoxRel(m_x,			ypos2 + m_info_height -2, m_width -2	, 2		, col1);
 
 		// paint id3 infobox 
-		m_frameBuffer->paintBoxRel(m_x + 2, ypos2 + 2 , m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+		// refresh box
+		m_frameBuffer->paintBoxRel(m_x + 2, ypos2 + 2 , m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos2 + 2 + 1*m_fheight, m_width- 80, m_playlist[m_selected].MetaData.title, COL_MENUCONTENTDARK, 0, true); // UTF-8
+
 		std::string tmp;
 		if (m_playlist[m_selected].MetaData.genre.empty())
 			tmp = m_playlist[m_selected].MetaData.date;

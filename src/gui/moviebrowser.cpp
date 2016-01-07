@@ -90,8 +90,6 @@ static off64_t truncate_movie(MI_MOVIE_INFO * minfo);
 static off64_t cut_movie(MI_MOVIE_INFO * minfo, CMovieInfo * cmovie);
 static off64_t copy_movie(MI_MOVIE_INFO * minfo, CMovieInfo * cmovie, bool onefile);
 
-#define VLC_URI "vlc://"
-
 #define NUMBER_OF_MOVIES_LAST 40 // This is the number of movies shown in last recored and last played list
  
 #define MESSAGEBOX_BROWSER_ROW_ITEM_COUNT 20
@@ -150,9 +148,6 @@ const CMenuOptionChooser::keyval MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS[MESSAGEBOX_
 
 #define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
 #define MIN_WINDOW_HEIGHT 		200	
-
-#define TITLE_BACKGROUND_COLOR 		COL_MENUHEAD_PLUS_0
-#define TITLE_FONT_COLOR 		COL_MENUHEAD
 
 #define TITLE_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
 #define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
@@ -1638,7 +1633,7 @@ void CMovieBrowser::refreshTitle(void)
 	}
 
 	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// movie icon
 	int icon_w, icon_h;
@@ -1667,7 +1662,7 @@ void CMovieBrowser::refreshTitle(void)
 	//
 	
 	// head title
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 void CMovieBrowser::refreshFoot(void) 
@@ -2924,7 +2919,7 @@ bool CMovieBrowser::addDir(std::string& dirname, int* used)
 	MB_DIR newdir;
 	newdir.name = dirname;
 
-	if(newdir.name.rfind('/') != newdir.name.length()-1 || newdir.name.length() == 0 || newdir.name == VLC_URI)
+	if(newdir.name.rfind('/') != newdir.name.length()-1 || newdir.name.length() == 0)
 	{
 		newdir.name += '/';
 	}
