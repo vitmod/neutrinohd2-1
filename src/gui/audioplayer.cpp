@@ -2214,8 +2214,6 @@ void CAudioPlayerGui::updateMetaData()
 	
 	if (CAudioPlayer::getInstance()->hasMetaDataChanged() != 0)
 		updateLcd = true;
-	
-	//printf("CAudioPlayerGui::updateMetaData: updateLcd %d\n", updateLcd);
 		
 	if(updateLcd)
 		paintLCD();
@@ -2229,6 +2227,7 @@ void CAudioPlayerGui::updateMetaData()
 		m_frameBuffer->paintBoxRel(m_x + 10 + m_title_height, m_y + 4 + 2*m_fheight, m_width - 20 - m_title_height, m_sheight, COL_MENUCONTENTSELECTED_PLUS_0);
 		
 		int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
 	}
 }
@@ -2273,14 +2272,18 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 			if (updateTotal)
 			{
+				// refresh box (time total)
 				m_frameBuffer->paintBoxRel(m_x + m_width - w1 - 10, m_y + 4, w1 + 4, m_fheight, COL_MENUCONTENTSELECTED_PLUS_0);
+
 				if(m_time_total > 0)
 					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_fheight, w1, tot_time, COL_MENUCONTENTSELECTED);
 			}
 			
 			if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
 			{
+				// refresh box (played time)
 				m_frameBuffer->paintBoxRel(m_x + m_width - w1 - w2 - 16, m_y + 4, w2 + 5, m_fheight, COL_MENUCONTENTSELECTED_PLUS_0);
+
 				struct timeval tv;
 				gettimeofday(&tv, NULL);
 				if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
