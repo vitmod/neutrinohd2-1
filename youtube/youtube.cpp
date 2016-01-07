@@ -35,9 +35,6 @@ extern "C" void plugin_del(void);
 #define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
 #define MIN_WINDOW_HEIGHT 		200	
 
-#define TITLE_BACKGROUND_COLOR 		COL_MENUHEAD_PLUS_0
-#define TITLE_FONT_COLOR 		COL_MENUHEAD
-
 #define TITLE_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
 #define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
@@ -569,7 +566,7 @@ void CYTBrowser::refreshTitle(void)
 	//
 
 	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
 	
 	// movie icon
 	int icon_w, icon_h;
@@ -596,7 +593,7 @@ void CYTBrowser::refreshTitle(void)
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_0, xpos1 - icon_w - 2 - icon_h_w - 2 - icon_0_w, ypos);
 	
 	// head title
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + icon_w + BORDER_LEFT + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 4*2) - 2*icon_w - icon_h_w - icon_0_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + icon_w + BORDER_LEFT + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 4*2) - 2*icon_w - icon_h_w - icon_0_w, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label CYTBrowserButtons[4] =
