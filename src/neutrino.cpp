@@ -2305,6 +2305,8 @@ void CISendMessage(uint32_t msg, uint32_t data)
 
 int CNeutrinoApp::run(int argc, char **argv)
 {
+	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run:\n");
+
 	CmdParser(argc, argv);
 	
 #if defined (PLATFORM_COOLSTREAM)
@@ -2499,8 +2501,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// setup recording device
 	setupRecordingDevice();
-
-	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: menue setup\n");
 	
 	// HDD mount devices
 	//assuming that mdev/fstab has mounted devices
