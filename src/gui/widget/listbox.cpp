@@ -316,7 +316,7 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 		else if( msg ==CRCInput::RC_ok)
 		{
 			onOkKeyPressed();
-			paintTitleInfo();
+			paintInfo();
 		}
 		else if ( msg ==CRCInput::RC_red)
 		{
@@ -374,7 +374,7 @@ void CListBox::paintDetails(int index)
 		return;
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 }
 
 void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
@@ -432,14 +432,14 @@ void CListBox::clearItem2DetailsLine()
 	  paintItem2DetailsLine(-1, 0);  
 }
 
-void CListBox::paintTitleInfo(int index)
+void CListBox::paintInfo(int index)
 {
 	if(TitleInfo == false)
 		return;
 	
 	// infobox refresh
 	frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
-	frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1);
+	frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, 0, 0, true, gradientLight2Dark);
 }
 
 
