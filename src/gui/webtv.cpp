@@ -540,6 +540,8 @@ void CWebTV::zapTo(int pos, bool rezap)
 		// 
 		if(playback->playing)
 			playback->Stop();
+
+		playback->Close();
 	
 		// parentallock
 		if ( (channels[pos]->locked) && ( (g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_ONSIGNAL) || (g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_CHANGETOLOCKED)) )
