@@ -529,7 +529,7 @@ void CMoviePlayerGui::PlayFile(void)
 				Info2 = filelist[0].Info2;
 				Thumbnail = filelist[0].Thumbnail;
 
-				sel_filename = filelist[0].Name.c_str();
+				sel_filename = filelist[0].getFileName();
 			}
 			else
 			{
@@ -540,7 +540,7 @@ void CMoviePlayerGui::PlayFile(void)
 				Info2 = filelist[0].Info2;
 				Thumbnail = filelist[0].Thumbnail;
 
-				sel_filename = filelist[0].Name.c_str();
+				sel_filename = filelist[0].getFileName();
 			}
 
 			update_lcd = true;
