@@ -11,9 +11,7 @@ AM_CPPFLAGS = \
 if ENABLE_GSTREAMER
 AM_CPPFLAGS += @GST_CFLAGS@
 else
-if ENABLE_LIBEPLAYER3
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
-endif
 endif
 
 noinst_LIBRARIES = libdvbapi.a

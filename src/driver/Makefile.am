@@ -26,12 +26,10 @@ if ENABLE_LCD
 AM_CPPFLAGS += -I$(top_srcdir)/lib/liblcddisplay
 endif
 
-if ENABLE_LIBEPLAYER3
-AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
-else
 if ENABLE_GSTREAMER
 AM_CPPFLAGS += @GST_CFLAGS@
-endif
+else
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
 noinst_LIBRARIES = libneutrino_driver.a 

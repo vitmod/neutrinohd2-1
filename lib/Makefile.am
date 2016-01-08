@@ -16,7 +16,7 @@ if !BOXTYPE_COOLSTREAM
 SUBDIRS += libdvbapi
 endif
 
-if ENABLE_LIBEPLAYER3
+if !ENABLE_GSTREAMER
 SUBDIRS += libeplayer3
 endif
 

@@ -21,7 +21,7 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
-if ENABLE_LIBEPLAYER3
+if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
@@ -84,12 +84,10 @@ neutrino_LDADD += \
 	-lOpenThreads
 endif
 
-if ENABLE_LIBEPLAYER3
-neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a
-else
 if ENABLE_GSTREAMER
 neutrino_LDADD += -lgstreamer-0.10 -lgobject-2.0 -lglib-2.0
-endif
+else
+neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a
 endif
 
 # LCD display

@@ -70,7 +70,7 @@ gchar * uri = NULL;
 GstBus * bus = NULL;
 bool end_eof = false;
 
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 #include <common.h>
 #include <subtitle.h>
 #include <linux/fb.h>
@@ -304,7 +304,7 @@ bool cPlayback::Open()
 #if defined (ENABLE_GSTREAMER)
 	// create gst pipeline
 	m_gst_playbin = gst_element_factory_make("playbin2", "playbin");
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	player = (Context_t*)malloc(sizeof(Context_t));
 
 	//init player
@@ -335,10 +335,6 @@ bool cPlayback::Open()
 	out.shareFramebuffer = 1;
     
 	player->output->subtitle->Command(player, (OutputCmd_t)OUTPUT_SET_SUBTITLE_OUTPUT, (void*) &out);
-#else
-	//FIXME: add sample ts player
-	dprintf(DEBUG_NORMAL, "[playback_cs.cpp]: no player found, sorry we can not play\n");
-	return false;
 #endif
 
 	return true;
@@ -388,7 +384,7 @@ void cPlayback::Close(void)
 		
 		dprintf(DEBUG_NORMAL, "GST playbin closed\n");
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	if(player && player->output) 
 	{
 		player->output->Command(player, OUTPUT_CLOSE, NULL);
@@ -505,7 +501,7 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	// set buffer size
 	if(isHTTP)
 		g_object_set(G_OBJECT(m_gst_playbin), "buffer-size", m_buffer_size, NULL);
-#elif defined (ENABLE_LIBEPLAYER3)	
+#else	
 	//open file
 	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, (char *)file.c_str()) >= 0) 
 	{
@@ -526,10 +522,6 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 		dprintf(DEBUG_NORMAL, "[playback_cs.cpp]: failed to start playing file, sorry we can not play\n");
 		playing = false;
 	}
-#else
-	//FIXME: add sample ts player
-	dprintf(DEBUG_NORMAL, "[playback_cs.cpp]: no player found, sorry we can not play\n");
-	playing = false;
 #endif
 
 	dprintf(DEBUG_NORMAL, "%s:%s (playing %d)\n", FILENAME, __FUNCTION__, playing);	
@@ -551,7 +543,7 @@ bool cPlayback::Play(void)
 		
 		playing = true;
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	if(player && player->output && player->playback) 
 	{
         	player->output->Command(player, OUTPUT_OPEN, NULL);
@@ -581,7 +573,7 @@ bool cPlayback::Stop(void)
 	{
 		gst_element_set_state(m_gst_playbin, GST_STATE_NULL);
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	if(player && player->playback && player->output) 
 		player->playback->Command(player, PLAYBACK_STOP, NULL);
 	
@@ -607,7 +599,7 @@ bool cPlayback::SetAPid(unsigned short pid, int /*_ac3*/)
 		printf("%s: switched to audio stream %i\n", __FUNCTION__, pid);
 		mAudioStream = pid;
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	int track = pid;
 
 	if(pid != mAudioStream)
@@ -672,7 +664,7 @@ bool cPlayback::SetSpeed(int speed)
 		else
 			trickSeek(speed);
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	int speedmap = 0;
 	
 	if(player && player->playback) 
@@ -745,7 +737,7 @@ bool cPlayback::SetSlow(int slow)
 	{
 		trickSeek(0.5);
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	if(player && player->playback) 
 	{
 		player->playback->Command(player, PLAYBACK_SLOWMOTION, (void*)&slow);
@@ -811,7 +803,7 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 
 		dprintf(DEBUG_DEBUG, "(duration: %lld ms)\n", duration);
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	if (player && player->playback && !player->playback->isPlaying) 
 	{	  
 		dprintf(DEBUG_NORMAL, "cPlayback::%s !!!!EOF!!!! < -1\n", __func__);
@@ -866,7 +858,7 @@ bool cPlayback::SetPosition(int64_t position)
 		
 		gst_element_seek(m_gst_playbin, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, time_nanoseconds, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	float pos = (position/1000.0);
 
 	if(player && player->playback)
@@ -940,7 +932,7 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 		// numpids
 		*numpida = i;
 	}
-#elif defined (ENABLE_LIBEPLAYER3)
+#else
 	// audio pids
 	if(player && player->manager && player->manager->audio) 
 	{
