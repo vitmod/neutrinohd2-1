@@ -1,4 +1,4 @@
-AC_INIT(neutrinoHD2,1.0.1)
+AC_INIT(neutrinohd2,1.0.1)
 AM_INIT_AUTOMAKE([1.0.1 nostdinc])
 
 TUXBOX_APPS
