@@ -2373,7 +2373,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	current_volume = g_settings.current_volume;
 
 	// zapit
-	pthread_create (&zapit_thread, NULL, zapit_main_thread, (void *) &ZapStart_arg);	
+	pthread_create(&zapit_thread, NULL, zapit_main_thread, (void *) &ZapStart_arg);	
 
 	// wait until zapit is ready
 	while(!zapit_ready)
@@ -2410,7 +2410,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 		audioDecoder->SetSyncMode(g_settings.avsync);
 #endif
 
-	// hdmi_dd
 	if(audioDecoder)
 	{
 		// hdmi_dd
@@ -2513,9 +2512,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	CMenuWidget mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
 
 	InitMainMenu(mainMenu);
-
-	// init network settings
-	CNetworkSettings::getInstance()->readNetworkSettings(g_settings.ifname);
 
 	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: registering as event client\n");
 	
@@ -2627,8 +2623,9 @@ int CNeutrinoApp::run(int argc, char **argv)
 		// setup network
 		if(ret != menu_return::RETURN_EXIT_ALL)
 		{
-			CNetworkSettings networkSettings;
-			networkSettings.exec(NULL, "");
+			CNetworkSettings * networkSettings = new CNetworkSettings();
+			networkSettings->exec(NULL, "");
+			delete networkSettings;
 		}
 		
 		// recordingsettings

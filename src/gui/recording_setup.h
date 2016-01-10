@@ -46,4 +46,18 @@ class CRecordingSettings : public CMenuTarget, CChangeObserver
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
+// recording safety notifier
+class CRecordingSafetyNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t, void *);
+};
+
+// rec apids notifier
+class CRecAPIDSettingsNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t OptionName, void*);
+};
+
 #endif // __recording_setup__

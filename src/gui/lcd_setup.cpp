@@ -191,4 +191,21 @@ void CLCDSettings::showMenu()
 	lcdSettings.hide();
 }
 
+// lcd notifier
+bool CLcdNotifier::changeNotify(const neutrino_locale_t, void * Data)
+{
+	int state = *(int *)Data;
+
+	dprintf(DEBUG_NORMAL, "ClcdNotifier: state: %d\n", state);
+	
+#if defined (PLATFORM_GIGABLUE) && !defined (ENABLE_LCD)
+	CVFD::getInstance()->vfd_led(state);
+#else	
+	CVFD::getInstance()->setPower(state);
+	CVFD::getInstance()->setlcdparameter();
+#endif	
+
+	return true;
+}
+
 

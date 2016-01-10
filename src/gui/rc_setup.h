@@ -32,12 +32,19 @@
 #include <string>
 
 
+// key setup notifier
+class CKeySetupNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t, void *);
+};
+
 class CRemoteControlSettings : public CMenuTarget, CChangeObserver
 {
 	private:
 		void showMenu();
 		
-		CKeySetupNotifier       	*keySetupNotifier;
+		CKeySetupNotifier* keySetupNotifier;
 		
 	public:
 		CRemoteControlSettings();

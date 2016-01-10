@@ -86,22 +86,6 @@ const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
 };
 #endif
 
-//
-int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
-
-	unsigned int sel = atoi(actionKey.c_str());
-	
-	if (g_RemoteControl->current_PIDs.PIDs.selected_apid != sel )
-	{
-		g_RemoteControl->setAPID(sel);
-	}
-
-	return menu_return::RETURN_EXIT;
-}
-
-//
 int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::exec:\n");
@@ -232,6 +216,21 @@ void CAudioSelectMenuHandler::doMenu()
 	AudioSelector.exec(NULL, "");
 
 	delete audioSetupNotifierVolPercent;
+}
+
+// apid change notifier
+int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
+
+	unsigned int sel = atoi(actionKey.c_str());
+	
+	if (g_RemoteControl->current_PIDs.PIDs.selected_apid != sel )
+	{
+		g_RemoteControl->setAPID(sel);
+	}
+
+	return menu_return::RETURN_EXIT;
 }
 
 // volume conf

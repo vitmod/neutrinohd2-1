@@ -487,6 +487,7 @@ void COSDTimingSettings::showMenu()
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
 	{
 		CStringInput * colorSettings_timing_item = new CStringInput(timing_setting_name[i], g_settings.timing_string[i], 3, LOCALE_TIMING_HINT_1, LOCALE_TIMING_HINT_2, "0123456789 ", &timingsettingsnotifier);
+
 		osdTimingSettings.addItem(new CMenuForwarder(timing_setting_name[i], true, g_settings.timing_string[i], colorSettings_timing_item));
 	}
 
@@ -495,6 +496,23 @@ void COSDTimingSettings::showMenu()
 	
 	osdTimingSettings.exec(NULL, "");
 	osdTimingSettings.hide();
+}
+
+// timing settings notifier
+bool CTimingSettingsNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
+{
+	dprintf(DEBUG_NORMAL, "CTimingSettingsNotifier::changeNotify:\n");
+		
+	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
+	{
+		if (ARE_LOCALES_EQUAL(OptionName, timing_setting_name[i]))
+		{
+			g_settings.timing[i] = 	atoi(g_settings.timing_string[i]);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

@@ -449,4 +449,12 @@ void CKeysBindingSettings::showMenu()
 	bindSettings.hide();
 }
 
+// key setup notifier
+bool CKeySetupNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	g_RCInput->setRepeat(atoi(g_settings.repeat_blocker), atoi(g_settings.repeat_genericblocker));
+
+	return false;
+}
+
 

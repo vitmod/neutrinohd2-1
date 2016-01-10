@@ -258,4 +258,21 @@ void CRecordingSettings::showMenu()
 	recordingSettings.hide();
 }
 
+// recording safety notifier
+bool CRecordingSafetyNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	g_Timerd->setRecordingSafety(atoi(g_settings.record_safety_time_before)*60, atoi(g_settings.record_safety_time_after)*60);
+
+   	return true;
+}
+
+// rec apids notifier
+bool CRecAPIDSettingsNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	g_settings.recording_audio_pids_default = ( (g_settings.recording_audio_pids_std ? TIMERD_APIDS_STD : 0) | (g_settings.recording_audio_pids_alt ? TIMERD_APIDS_ALT : 0) | (g_settings.recording_audio_pids_ac3 ? TIMERD_APIDS_AC3 : 0));
+
+	return true;
+}
+
+
 

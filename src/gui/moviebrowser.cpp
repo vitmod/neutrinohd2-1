@@ -4718,3 +4718,46 @@ ret_err:
 	return retval;
 }
 
+// onoff notifier needed by moviebrowser
+COnOffNotifier::COnOffNotifier( CMenuItem* a1,CMenuItem* a2,CMenuItem* a3,CMenuItem* a4,CMenuItem* a5)
+{
+        number = 0;
+        if(a1 != NULL){ toDisable[0] = a1; number++;};
+        if(a2 != NULL){ toDisable[1] = a2; number++;};
+        if(a3 != NULL){ toDisable[2] = a3; number++;};
+        if(a4 != NULL){ toDisable[3] = a4; number++;};
+        if(a5 != NULL){ toDisable[4] = a5; number++;};
+}
+
+COnOffNotifier::COnOffNotifier(int /*OffValue*/)
+{
+	number = 0;
+}
+
+bool COnOffNotifier::changeNotify(const neutrino_locale_t, void *Data)
+{
+	if(*(int*)(Data) == 0)
+	{
+		for (int i = 0; i < number ; i++)
+			toDisable[i]->setActive(false);
+	}
+	else
+	{
+		for (int i = 0; i < number ; i++)
+			toDisable[i]->setActive(true);
+	}
+	
+	return true;
+}
+
+void COnOffNotifier::addItem(CMenuItem* menuItem)
+{
+	if (number < 15)
+	{
+		toDisable[number] = menuItem;
+		number++;
+	}
+}
+
+
+

@@ -32,6 +32,16 @@
 #include <string>
 
 
+// misc notifier
+class CMiscNotifier : public CChangeObserver
+{
+	private:
+		CMenuItem * toDisable[1];
+	public:
+		CMiscNotifier( CMenuItem * );
+		bool changeNotify(const neutrino_locale_t, void *);
+};
+
 class CMiscSettings : public CMenuTarget, CChangeObserver
 {
 	private:
@@ -42,6 +52,21 @@ class CMiscSettings : public CMenuTarget, CChangeObserver
 		~CMiscSettings();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+// general settings
+// data reset notifier
+class CDataResetNotifier : public CMenuTarget
+{
+	public:
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+// TZ change notifier
+class CTZChangeNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t, void * data);
 };
 
 // general settings
@@ -75,6 +100,14 @@ class CChannelListSettings : public CMenuTarget, CChangeObserver
 };
 
 // epg settings
+// epglanguage select notifier
+class CEPGlangSelectNotifier : public CChangeObserver
+{	
+	public:
+		bool changeNotify(const neutrino_locale_t, void * /*data*/);
+};
+
+// epg settings
 class CEPGSettings : public CMenuTarget, CChangeObserver
 {
 	private:
@@ -87,7 +120,7 @@ class CEPGSettings : public CMenuTarget, CChangeObserver
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-// epg settings
+// filebrowser settings
 class CFileBrowserSettings : public CMenuTarget, CChangeObserver
 {
 	private:

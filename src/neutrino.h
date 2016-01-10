@@ -107,7 +107,6 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		CRCLock *rcLock;
                 CTimerList *Timerlist;			// for user menu
 
-		// neutrino.cpp
 		void firstChannel();
 		
 		void tvMode( bool rezap = true );

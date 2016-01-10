@@ -37,55 +37,11 @@
 
 #include <gui/widget/menue.h>
 
-/* zapit includes */
+// zapit includes
 #include <client/zapittypes.h>
 
 #include <string>
 
-
-// onoff notifier //needed by moviebrowser
-class COnOffNotifier : public CChangeObserver
-{
-        private:
-                int number;
-                CMenuItem * toDisable[15];
-        public:
-                COnOffNotifier(CMenuItem* a1, CMenuItem* a2 = NULL, CMenuItem* a3 = NULL, CMenuItem* a4 = NULL, CMenuItem* a5 = NULL);
-		COnOffNotifier(int OffValue = 0);
-                bool changeNotify(const neutrino_locale_t, void *Data);
-		void addItem(CMenuItem* menuItem);
-};
-
-// recording safety notifier
-class CRecordingSafetyNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void *);
-};
-
-// miscnotifier
-class CMiscNotifier : public CChangeObserver
-{
-	private:
-		CMenuItem * toDisable[1];
-	public:
-		CMiscNotifier( CMenuItem * );
-		bool changeNotify(const neutrino_locale_t, void *);
-};
-
-// lcd notifier
-class CLcdNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void * Data);
-};
-
-// pause sectionsd notifier
-class CPauseSectionsdNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void * Data);
-};
 
 // sectionsd config notifier
 class CSectionsdConfigNotifier : public CChangeObserver
@@ -99,27 +55,6 @@ class CColorSetupNotifier : public CChangeObserver
 {
 	public:
 		bool changeNotify(const neutrino_locale_t, void *);
-};
-
-// key setup notifier
-class CKeySetupNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void *);
-};
-
-// timing setup notifier
-class CTimingSettingsNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t OptionName, void *);
-};
-
-// rec apids notifier
-class CRecAPIDSettingsNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t OptionName, void*);
 };
 
 // subtitle change notifier
@@ -152,27 +87,6 @@ class CUserMenuMenu : public CMenuTarget
         public:
                 CUserMenuMenu(neutrino_locale_t _local, int _button){local = _local; button = _button;};
                 int exec(CMenuTarget* parent, const std::string & actionKey);
-};
-
-// TZ change notifier
-class CTZChangeNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void * data);
-};
-
-// data reset notifier
-class CDataResetNotifier : public CMenuTarget
-{
-	public:
-		int exec(CMenuTarget* parent, const std::string& actionKey);
-};
-
-// epglanguage select notifier
-class CEPGlangSelectNotifier : public CChangeObserver
-{	
-	public:
-		bool changeNotify(const neutrino_locale_t, void * /*data*/);
 };
 
 #endif

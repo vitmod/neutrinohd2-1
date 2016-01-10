@@ -85,6 +85,13 @@ class CLanguageSettings : public CMenuTarget, CChangeObserver
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
+// timing setup notifier
+class CTimingSettingsNotifier : public CChangeObserver
+{
+	public:
+		bool changeNotify(const neutrino_locale_t OptionName, void *);
+};
+
 // osd timing settings
 class COSDTimingSettings : public CMenuTarget
 {

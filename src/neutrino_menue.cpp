@@ -746,7 +746,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 	};
 
         // define classes
-        CPauseSectionsdNotifier * tmpPauseSectionsdNotifier     = NULL;
         CAudioSelectMenuHandler * tmpAudioSelectMenuHandler     = NULL;
         CMenuWidget * tmpNVODSelector                           = NULL;
         CStreamInfo2Handler * tmpStreamInfo2Handler          	= NULL;
@@ -978,9 +977,6 @@ bool CNeutrinoApp::showUserMenu(int button)
                 menu_item->exec( NULL );
 
         // clear the heap
-        if(tmpPauseSectionsdNotifier)
-		delete tmpPauseSectionsdNotifier;
-
         if(tmpAudioSelectMenuHandler)   
 		delete tmpAudioSelectMenuHandler;
 

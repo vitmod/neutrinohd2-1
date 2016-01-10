@@ -34,8 +34,11 @@
 #include <stdio.h> 
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sys/vfs.h>
 
 #include <xmlinterface.h>
+
+#include <gui/widget/messagebox.h>
 
 #include <gui/filebrowser.h>
 #include <gui/misc_setup.h>
@@ -47,6 +50,17 @@
 #include <system/setting_helpers.h>
 #include <system/helpers.h>
 
+// configfiles
+#include <gui/moviebrowser.h>
+#include <timerd/timermanager.h>
+#include <nhttpd/yconfig.h>
+
+#include <audio_cs.h>
+#include <video_cs.h>
+
+
+extern cVideo *videoDecoder;
+extern cAudio *audioDecoder;
 
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
@@ -440,6 +454,169 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.hide();
 }
 
+// TZ notifier
+bool CTZChangeNotifier::changeNotify(const neutrino_locale_t, void * Data)
+{
+	bool found = false;
+	std::string name, zone;
+	
+	dprintf(DEBUG_NORMAL, "CTZChangeNotifier::changeNotify: %s\n", (char *) Data);
+
+        xmlDocPtr parser = parseXmlFile("/etc/timezone.xml");
+	
+        if (parser != NULL) 
+	{
+                xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
+                while (search) 
+		{
+                        if (!strcmp(xmlGetName(search), "zone")) 
+			{
+                                name = xmlGetAttribute(search, (char *) "name");
+                                zone = xmlGetAttribute(search, (char *) "zone");
+
+				if(!strcmp(g_settings.timezone, name.c_str())) 
+				{
+					found = true;
+					break;
+				}
+                        }
+                        search = search->xmlNextNode;
+                }
+                xmlFreeDoc(parser);
+        }
+
+	if(found) 
+	{
+		dprintf(DEBUG_NORMAL, "CTZChangeNotifier::changeNotify: Timezone: %s -> %s\n", name.c_str(), zone.c_str());
+		
+		std::string cmd = "ln -sf /usr/share/zoneinfo/" + zone + " /etc/localtime";
+		
+		dprintf(DEBUG_NORMAL, "exec %s\n", cmd.c_str());
+		
+		system(cmd.c_str());
+		
+		tzset();
+	}
+
+	return true;
+}
+
+// data reset notifier
+extern Zapit_config zapitCfg;
+void loadZapitSettings();
+void getZapitConfig(Zapit_config *Cfg);
+
+int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionKey)
+{
+	CFileBrowser fileBrowser;
+	CFileFilter fileFilter;
+
+	if( actionKey == "factory") 
+	{
+		int result = MessageBox(LOCALE_RESET_SETTINGS, g_Locale->getText(LOCALE_RESET_CONFIRM), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
+		if(result != CMessageBox::mbrYes) 
+			return true;
+		
+		// neutrino settings
+		unlink(NEUTRINO_SETTINGS_FILE);
+		
+		// moviebrowser settings
+		unlink(MOVIEBROWSER_SETTINGS_FILE);
+		
+		// timerd settings
+		unlink(TIMERD_CONFIGFILE);
+		
+		// nhttpd settings
+		unlink(HTTPD_CONFIGFILE );
+		unlink(YWEB_CONFIGFILE);
+		
+		// load default settings
+		CNeutrinoApp::getInstance()->loadSetup(NEUTRINO_SETTINGS_FILE);
+		
+		// create default settings to stop wizard
+		CNeutrinoApp::getInstance()->saveSetup(NEUTRINO_SETTINGS_FILE);
+		
+		CFrameBuffer::getInstance()->paintBackground();
+#ifdef FB_BLIT
+		CFrameBuffer::getInstance()->blit();
+#endif		
+		// video mode
+		if(videoDecoder)
+		{
+			videoDecoder->SetVideoSystem(g_settings.video_Mode);
+
+			//aspect-ratio
+			videoDecoder->setAspectRatio(g_settings.video_Ratio, g_settings.video_Format);
+#if defined (PLATFORM_COOLSTREAM)
+			videoDecoder->SetVideoMode((analog_mode_t) g_settings.analog_mode);
+#else			
+			videoDecoder->SetAnalogMode( g_settings.analog_mode); 
+#endif
+
+#if !defined (PLATFORM_COOLSTREAM)	
+			videoDecoder->SetSpaceColour(g_settings.hdmi_color_space);
+#endif
+		}
+
+		// audio mode
+		g_Zapit->setAudioMode(g_settings.audio_AnalogMode);
+
+		if(audioDecoder)
+			audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
+
+		CNeutrinoApp::getInstance()->SetupTiming();
+	}
+	else if(actionKey == "backup") 
+	{
+		fileBrowser.Dir_Mode = true;
+		if (fileBrowser.exec("/media") == true) 
+		{
+			char  fname[256];
+			struct statfs s;
+			int ret = ::statfs(fileBrowser.getSelectedFile()->Name.c_str(), &s);
+
+			if(ret == 0 && s.f_type != 0x72b6L/*jffs2*/ && s.f_type != 0x5941ff53L /*yaffs2*/)
+			{ 
+				const char backup_sh[] = "backup.sh";
+
+				sprintf(fname, "%s %s", backup_sh, fileBrowser.getSelectedFile()->Name.c_str());
+				
+				dprintf(DEBUG_NORMAL, "CDataResetNotifier::exec: executing %s\n", fname);
+				
+				system(fname);
+			} 
+			else
+				MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED),CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_ERROR);
+		}
+	}
+	else if(actionKey == "restore") 
+	{
+		fileFilter.addFilter("tar");
+		fileBrowser.Filter = &fileFilter;
+		if (fileBrowser.exec("/media") == true) 
+		{
+			int result = MessageBox(LOCALE_SETTINGS_RESTORE, g_Locale->getText(LOCALE_SETTINGS_RESTORE_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
+			if(result == CMessageBox::mbrYes) 
+			{
+				char  fname[256];
+				
+				const char restore_sh[] = "restore.sh";
+				
+				sprintf(fname, "%s %s", restore_sh, fileBrowser.getSelectedFile()->Name.c_str());
+				
+				dprintf(DEBUG_NORMAL, "CDataResetNotifier::exec: executing %s\n", fname);
+				
+				system(fname);
+			}
+			
+			
+		}
+	}
+
+	return true;
+}
+
+
 // channellist settings
 extern t_channel_id live_channel_id;
 
@@ -655,6 +832,44 @@ void CEPGSettings::showMenu()
 	miscSettingsEPG.hide();
 }
 
+// epg language select notifier
+void sectionsd_set_languages(const std::vector<std::string>& newLanguages);
+
+bool CEPGlangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	std::vector<std::string> v_languages;
+	bool found = false;
+	std::map<std::string, std::string>::const_iterator it;
+
+	//prefered audio languages
+	for(int i = 0; i < 3; i++) 
+	{
+		if(strlen(g_settings.pref_epgs[i])) 
+		{
+			dprintf(DEBUG_NORMAL, "EPG: setLanguages: %d: %s\n", i, g_settings.pref_epgs[i]);
+			
+			std::string temp(g_settings.pref_epgs[i]);
+			
+			for(it = iso639.begin(); it != iso639.end(); it++) 
+			{
+				if(temp == it->second) 
+				{
+					v_languages.push_back(it->first);
+					
+					dprintf(DEBUG_NORMAL, "EPG: setLanguages: adding %s\n", it->first.c_str());
+					
+					found = true;
+				}
+			}
+		}
+	}
+	
+	if(found)
+		sectionsd_set_languages(v_languages);
+	
+	return true;
+}
+
 // filebrowser settings
 CFileBrowserSettings::CFileBrowserSettings()
 {
@@ -707,4 +922,18 @@ void CFileBrowserSettings::showMenu()
 	miscSettingsFileBrowser.hide();
 }
 
+// misc notifier
+CMiscNotifier::CMiscNotifier( CMenuItem* i1)
+{
+   	toDisable[0] = i1;
+}
+
+bool CMiscNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	dprintf(DEBUG_NORMAL, "CMiscNotifier::changeNotify\n");
+
+   	toDisable[0]->setActive(!g_settings.shutdown_real);
+
+   	return true;
+}
 
