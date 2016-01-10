@@ -1069,9 +1069,7 @@ int CRadioText::RassImage(int QArchiv, int QKey, bool DirUp)
 				(Rass_Flags[QKey][0]) ? QArchiv = QKey * 1000 : QArchiv = 0;
 		}
 	}
-
-	// Gallery
-	else if (QKey > 9 && Rass_GalCount >= 0) 
+	else if (QKey > 9 && Rass_GalCount >= 0) // gallery
 	{
 		if (QArchiv < Rass_GalStart || QArchiv > Rass_GalEnd)
 			QArchiv = Rass_GalStart - 1; 

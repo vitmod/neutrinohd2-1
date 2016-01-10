@@ -158,6 +158,12 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		static CNeutrinoApp * getInstance();
 
 		void channelsInit(bool bOnly = false);
+
+		//
+		void initSectionsdClient();
+		void initZapitClient();
+		void initTimerdClient();
+
 		int run(int argc, char **argv);
 
 		//callback stuff only....

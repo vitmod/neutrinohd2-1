@@ -149,7 +149,7 @@
 
 #include <timerdclient/timerdmsg.h>
 
-/*zapit includes*/
+// zapit includes
 #include <frontend_c.h>
 #include <getservices.h>
 #include <satconfig.h>
@@ -161,7 +161,7 @@
 // dvbsubs selct menu
 #include <gui/dvbsub_select.h>
 
-/* zapit includes */
+// zapit includes
 #include <channel.h>
 #include <bouquets.h>
 
@@ -175,8 +175,6 @@ cPlayback * playback = NULL;
 
 // ugly and dirty://FIXME
 #if defined (USE_OPENGL)
-//#include <playback_cs.h>
-//extern cPlayback *playback;
 extern char rec_filename[1024];				// defined in stream2file.cpp
 #endif
 
@@ -185,9 +183,6 @@ extern tallchans allchans;				// defined in zapit.cpp
 extern CBouquetManager * g_bouquetManager;		// defined in zapit.cpp
 
 int old_b_id = -1;
-
-// hintbox
-CHintBox * reloadhintBox = NULL;
 
 // record and timeshift
 bool autoshift = false;
@@ -244,7 +239,7 @@ extern CFrontend * live_fe;
 extern CScanSettings * scanSettings;			// defined in scan_setup.cpp
 extern int FrontendCount;				// defined in zapit.cpp
 
-//nhttpd thread
+// nhttpd thread
 void * nhttpd_main_thread(void *data);
 static pthread_t nhttpd_thread ;
 
@@ -254,7 +249,7 @@ static pthread_t sections_thread;
 void * sectionsd_main_thread(void *data);
 extern bool timeset;
 
-//Audio/Video Decoder
+// Audio/Video Decoder
 extern cVideo 		* videoDecoder;		//libcoolstream (video_cs.cpp)
 extern cAudio 		* audioDecoder;		//libcoolstream (audio_cs.cpp)
 
@@ -265,7 +260,7 @@ void stop_daemons();
 int current_volume;
 int current_muted;
 
-/* bouquets lists */
+// bouquets lists
 CBouquetList   		* bouquetList; 				//current bqt list
 
 CBouquetList   		* TVbouquetList;
@@ -1805,6 +1800,8 @@ void CNeutrinoApp::SetupFonts()
 // setup the menu timeouts
 void CNeutrinoApp::SetupTiming()
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupTiming\n");
+
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
 		sprintf(g_settings.timing_string[i], "%d", g_settings.timing[i]);
 };
@@ -1812,6 +1809,8 @@ void CNeutrinoApp::SetupTiming()
 // setup recording device
 void CNeutrinoApp::setupRecordingDevice(void)
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::setupRecordingDevice\n");
+
 	if (recDir != NULL)
 	{
 		recordingdevice = new CVCRControl::CFileDevice(g_settings.network_nfs_recordingdir );
@@ -2200,6 +2199,8 @@ void CNeutrinoApp::startNextRecording()
 // send sectionsd config
 void CNeutrinoApp::SendSectionsdConfig(void)
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SendSectionsdConfig\n");
+
         CSectionsdClient::epg_config config;
 	
         config.epg_cache                = atoi(g_settings.epg_cache.c_str());
@@ -2217,6 +2218,8 @@ void CNeutrinoApp::SendSectionsdConfig(void)
 // init zapper
 void CNeutrinoApp::InitZapper()
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitZapper\n");
+
 	// start infobar
 	g_InfoViewer->start();
 	
@@ -2296,6 +2299,82 @@ static void CSSendMessage(uint32_t msg, uint32_t data)
 		g_RCInput->postMsg(msg, data);
 }
 #endif
+
+//
+void CNeutrinoApp::initSectionsdClient()
+{
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::initSectionsdClient\n");
+
+	g_Sectionsd->registerEvent(CSectionsdClient::EVT_TIMESET, 222, NEUTRINO_UDS_NAME);
+	g_Sectionsd->registerEvent(CSectionsdClient::EVT_GOT_CN_EPG, 222, NEUTRINO_UDS_NAME);
+	g_Sectionsd->registerEvent(CSectionsdClient::EVT_SERVICES_UPDATE, 222, NEUTRINO_UDS_NAME);
+	g_Sectionsd->registerEvent(CSectionsdClient::EVT_BOUQUETS_UPDATE, 222, NEUTRINO_UDS_NAME);
+	g_Sectionsd->registerEvent(CSectionsdClient::EVT_WRITE_SI_FINISHED, 222, NEUTRINO_UDS_NAME);
+}
+
+void CNeutrinoApp::initZapitClient()
+{
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::initZapitClient\n");
+
+#define ZAPIT_EVENT_COUNT 30
+	const CZapitClient::events zapit_event[ZAPIT_EVENT_COUNT] =
+	{
+		CZapitClient::EVT_ZAP_COMPLETE,
+		CZapitClient::EVT_ZAP_COMPLETE_IS_NVOD,
+		CZapitClient::EVT_ZAP_FAILED,
+		CZapitClient::EVT_ZAP_SUB_COMPLETE,
+		CZapitClient::EVT_ZAP_SUB_FAILED,
+		CZapitClient::EVT_ZAP_MOTOR,
+		CZapitClient::EVT_ZAP_CA_CLEAR,
+		CZapitClient::EVT_ZAP_CA_LOCK,
+		CZapitClient::EVT_ZAP_CA_FTA,
+		CZapitClient::EVT_ZAP_CA_ID,
+		CZapitClient::EVT_RECORDMODE_ACTIVATED,
+		CZapitClient::EVT_RECORDMODE_DEACTIVATED,
+		CZapitClient::EVT_SCAN_COMPLETE,
+		CZapitClient::EVT_SCAN_FAILED,
+		CZapitClient::EVT_SCAN_NUM_TRANSPONDERS,
+		CZapitClient::EVT_SCAN_REPORT_NUM_SCANNED_TRANSPONDERS,
+		CZapitClient::EVT_SCAN_REPORT_FREQUENCY,
+		CZapitClient::EVT_SCAN_REPORT_FREQUENCYP,
+		CZapitClient::EVT_SCAN_SATELLITE,
+		CZapitClient::EVT_SCAN_NUM_CHANNELS,
+		CZapitClient::EVT_SCAN_PROVIDER,
+		CZapitClient::EVT_BOUQUETS_CHANGED,
+		CZapitClient::EVT_SERVICES_CHANGED,
+		CZapitClient::EVT_SCAN_SERVICENAME,
+		CZapitClient::EVT_SCAN_FOUND_A_CHAN,
+		CZapitClient::EVT_SCAN_FOUND_TV_CHAN,
+		CZapitClient::EVT_SCAN_FOUND_RADIO_CHAN,
+		CZapitClient::EVT_SCAN_FOUND_DATA_CHAN,
+		CZapitClient::EVT_SDT_CHANGED,
+		CZapitClient::EVT_PMT_CHANGED
+	};
+
+	for (int i = 0; i < ZAPIT_EVENT_COUNT; i++)
+		g_Zapit->registerEvent(zapit_event[i], 222, NEUTRINO_UDS_NAME);
+}
+
+void CNeutrinoApp::initTimerdClient()
+{
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::initTimerdClient\n");
+
+	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_SHUTDOWN, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_SHUTDOWN, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_NEXTPROGRAM, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_NEXTPROGRAM, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_STANDBY_ON, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_STANDBY_OFF, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_RECORD, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_RECORD_START, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_RECORD_STOP, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_ZAPTO, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_ZAPTO, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_SLEEPTIMER, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_SLEEPTIMER, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_REMIND, 222, NEUTRINO_UDS_NAME);
+	g_Timerd->registerEvent(CTimerdClient::EVT_EXEC_PLUGIN, 222, NEUTRINO_UDS_NAME);
+}
 
 void CISendMessage(uint32_t msg, uint32_t data)
 {
@@ -2517,68 +2596,14 @@ int CNeutrinoApp::run(int argc, char **argv)
 	
 	sleep(1);
 
-	// g_sectionsd
-	g_Sectionsd->registerEvent(CSectionsdClient::EVT_TIMESET, 222, NEUTRINO_UDS_NAME);
-	g_Sectionsd->registerEvent(CSectionsdClient::EVT_GOT_CN_EPG, 222, NEUTRINO_UDS_NAME);
-	g_Sectionsd->registerEvent(CSectionsdClient::EVT_SERVICES_UPDATE, 222, NEUTRINO_UDS_NAME);
-	g_Sectionsd->registerEvent(CSectionsdClient::EVT_BOUQUETS_UPDATE, 222, NEUTRINO_UDS_NAME);
-	g_Sectionsd->registerEvent(CSectionsdClient::EVT_WRITE_SI_FINISHED, 222, NEUTRINO_UDS_NAME);
+	// init sectionsd client
+	initSectionsdClient();
 
-	// g_ZapitClient
-#define ZAPIT_EVENT_COUNT 30
-	const CZapitClient::events zapit_event[ZAPIT_EVENT_COUNT] =
-	{
-		CZapitClient::EVT_ZAP_COMPLETE,
-		CZapitClient::EVT_ZAP_COMPLETE_IS_NVOD,
-		CZapitClient::EVT_ZAP_FAILED,
-		CZapitClient::EVT_ZAP_SUB_COMPLETE,
-		CZapitClient::EVT_ZAP_SUB_FAILED,
-		CZapitClient::EVT_ZAP_MOTOR,
-		CZapitClient::EVT_ZAP_CA_CLEAR,
-		CZapitClient::EVT_ZAP_CA_LOCK,
-		CZapitClient::EVT_ZAP_CA_FTA,
-		CZapitClient::EVT_ZAP_CA_ID,
-		CZapitClient::EVT_RECORDMODE_ACTIVATED,
-		CZapitClient::EVT_RECORDMODE_DEACTIVATED,
-		CZapitClient::EVT_SCAN_COMPLETE,
-		CZapitClient::EVT_SCAN_FAILED,
-		CZapitClient::EVT_SCAN_NUM_TRANSPONDERS,
-		CZapitClient::EVT_SCAN_REPORT_NUM_SCANNED_TRANSPONDERS,
-		CZapitClient::EVT_SCAN_REPORT_FREQUENCY,
-		CZapitClient::EVT_SCAN_REPORT_FREQUENCYP,
-		CZapitClient::EVT_SCAN_SATELLITE,
-		CZapitClient::EVT_SCAN_NUM_CHANNELS,
-		CZapitClient::EVT_SCAN_PROVIDER,
-		CZapitClient::EVT_BOUQUETS_CHANGED,
-		CZapitClient::EVT_SERVICES_CHANGED,
-		CZapitClient::EVT_SCAN_SERVICENAME,
-		CZapitClient::EVT_SCAN_FOUND_A_CHAN,
-		CZapitClient::EVT_SCAN_FOUND_TV_CHAN,
-		CZapitClient::EVT_SCAN_FOUND_RADIO_CHAN,
-		CZapitClient::EVT_SCAN_FOUND_DATA_CHAN,
-		CZapitClient::EVT_SDT_CHANGED,
-		CZapitClient::EVT_PMT_CHANGED
-	};
+	// init zapit client
+	initZapitClient();
 
-	for (int i = 0; i < ZAPIT_EVENT_COUNT; i++)
-		g_Zapit->registerEvent(zapit_event[i], 222, NEUTRINO_UDS_NAME);
-
-	// g_timerd
-	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_SHUTDOWN, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_SHUTDOWN, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_NEXTPROGRAM, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_NEXTPROGRAM, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_STANDBY_ON, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_STANDBY_OFF, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_RECORD, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_RECORD_START, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_RECORD_STOP, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_ZAPTO, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_ZAPTO, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_SLEEPTIMER, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_ANNOUNCE_SLEEPTIMER, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_REMIND, 222, NEUTRINO_UDS_NAME);
-	g_Timerd->registerEvent(CTimerdClient::EVT_EXEC_PLUGIN, 222, NEUTRINO_UDS_NAME);
+	// init timerd client
+	initTimerdClient();
 
 	CVFD::getInstance()->setPower(g_settings.lcd_setting[SNeutrinoSettings::LCD_POWER]);
 	CVFD::getInstance()->setlcdparameter();	
@@ -2796,7 +2821,7 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 		check_timer();
 #endif		
 
-		// mode TV/Radio
+		// mode TV/Radio/IPTV
 		if( (mode == mode_tv) || (mode == mode_radio) || (mode == mode_iptv) ) 
 		{
 			if(msg == NeutrinoMessages::SHOW_EPG && (mode != mode_iptv)) 
@@ -3219,7 +3244,32 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 			}			
 			else if (CRCInput::isNumeric(msg) && (mode == mode_radio && g_settings.radiotext_enable && g_Radiotext != NULL && g_Radiotext->Rass_Show) ) 
 			{
-				g_Radiotext->RassImage(0, msg, true);
+				// convert msg to int
+				int QKey = 0;
+				if(msg == CRCInput::RC_0)
+					QKey = 0;
+				else if(msg == CRCInput::RC_1)
+					QKey = 1;
+				else if(msg == CRCInput::RC_2)
+					QKey = 2;
+				else if(msg == CRCInput::RC_3)
+					QKey = 3;
+				else if(msg == CRCInput::RC_4)
+					QKey = 4;
+				else if(msg == CRCInput::RC_5)
+					QKey = 5;
+				else if(msg == CRCInput::RC_6)
+					QKey = 6;
+				else if(msg == CRCInput::RC_7)
+					QKey = 7;
+				else if(msg == CRCInput::RC_8)
+					QKey = 8;
+				else if(msg == CRCInput::RC_9)
+					QKey = 9;
+
+				//FIXME: think about gallery i.e QKey > 9
+
+				g_Radiotext->RassImage(0, QKey, true);
 			}			
 			else if((msg == CRCInput::RC_info) || ( msg == NeutrinoMessages::SHOW_INFOBAR ))
 			{
@@ -3296,6 +3346,8 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 // handle msg
 int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
+	dprintf(DEBUG_INFO, "CNeutrinoApp::handleMsg\n");
+
 	int res = 0;
 
 	// handle neutrino msg
@@ -3354,7 +3406,6 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		{
 			scrambled_timer = 0;
 			
-			// what shall neutrino do???
 			//if(videoDecoder->getBlank() && videoDecoder->getPlayState()) 
 			//{
 			//	const char * text = g_Locale->getText(LOCALE_SCRAMBLED_CHANNEL);
@@ -3596,8 +3647,7 @@ _repeat:
 	}
 	else if( msg == NeutrinoMessages::EVT_BOUQUETSCHANGED ) 
 	{
-		if(!reloadhintBox)
-			reloadhintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
+		CHintBox * reloadhintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
 
 		reloadhintBox->paint();
 
@@ -4145,6 +4195,7 @@ void CNeutrinoApp::ExitRun(int retcode)
 
 		// network down
 		CNetworkSettings::getInstance()->networkConfig->automatic_start = (CNetworkSettings::getInstance()->network_automatic_start == 1);
+
 		CNetworkSettings::getInstance()->networkConfig->commitConfig();
 		
 		// save neutrino.conf
@@ -5031,45 +5082,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		delete hintBox;
 		hintBox = NULL;
 	}
-	else if(actionKey == "epgdir") 
-	{
-		if(parent)
-			parent->hide();
-		
-		CFileBrowser b;
-		b.Dir_Mode = true;
-		
-		if ( b.exec(g_settings.epg_dir.c_str())) 
-		{
-			const char * newdir = b.getSelectedFile()->Name.c_str();
-			if(check_dir(newdir))
-				printf("CNeutrinoApp::exec: Wrong/unsupported epg dir %s\n", newdir);
-			else
-			{
-				g_settings.epg_dir = b.getSelectedFile()->Name;
-				SendSectionsdConfig();
-			}
-		}
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "logos_dir") 
-	{
-		if(parent)
-			parent->hide();
-		
-		CFileBrowser b;
-		b.Dir_Mode = true;
-		
-		if (b.exec(g_settings.logos_dir.c_str())) 
-		{
-			g_settings.logos_dir = b.getSelectedFile()->Name;
-
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new logos dir %s\n", b.getSelectedFile()->Name.c_str());
-		}
-
-		return menu_return::RETURN_REPAINT;
-	}
 	else if(actionKey == "features")
 	{
 		if(parent)
@@ -5088,6 +5100,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 // changeNotify - features menu recording start / stop
 bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data*/)
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::changeNotify\n");
+
 	if ((ARE_LOCALES_EQUAL(OptionName, LOCALE_MAINMENU_RECORDING_START)) || (ARE_LOCALES_EQUAL(OptionName, LOCALE_MAINMENU_RECORDING)))
 	{
 		if(g_RemoteControl->is_video_started) 
@@ -5107,6 +5121,8 @@ bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data
 
 void stop_daemons()
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::stop_daemons\n");
+
 	// stop dvbsub
 	dvbsub_close();
 
@@ -5157,7 +5173,7 @@ void CNeutrinoApp::StopSubtitles()
 	if(mode == mode_iptv)
 		return;
 	
-	printf("[neutrino] %s\n", __FUNCTION__);
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::StopSubtitles\n");
 	
 	int ttx, ttxpid, ttxpage;
 
@@ -5188,7 +5204,7 @@ void CNeutrinoApp::StartSubtitles(bool show)
 	if(mode == mode_iptv)
 		return;
 	
-	printf("%s: %s\n", __FUNCTION__, show ? "Show" : "Not show");
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::StartSubtitles\n");
 	
 	if(!show)
 		return;
