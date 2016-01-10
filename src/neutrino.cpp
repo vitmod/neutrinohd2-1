@@ -3346,8 +3346,6 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 // handle msg
 int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
-	dprintf(DEBUG_INFO, "CNeutrinoApp::handleMsg\n");
-
 	int res = 0;
 
 	// handle neutrino msg

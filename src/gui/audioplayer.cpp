@@ -1577,8 +1577,8 @@ void CAudioPlayerGui::paintItem(int pos)
 		{
 			if ((pos + m_liststart) == (unsigned)m_current)
 			{
-				color   = COL_MENUCONTENTDARK + 2;
-				bgcolor = COL_MENUCONTENTDARK_PLUS_2;
+				color   = COL_MENUCONTENTDARK + 1;    // NOTE: was 2
+				bgcolor = COL_MENUCONTENTDARK_PLUS_1; //NOTE: was 2
 			}
 			else
 			{
@@ -1590,8 +1590,8 @@ void CAudioPlayerGui::paintItem(int pos)
 		{
 			if ((pos + m_liststart) == (unsigned)m_current)
 			{
-				color   = COL_MENUCONTENT + 2;
-				bgcolor = COL_MENUCONTENT_PLUS_2;
+				color   = COL_MENUCONTENT + 1;
+				bgcolor = COL_MENUCONTENT_PLUS_1;
 			}
 			else
 			{

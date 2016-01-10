@@ -660,7 +660,7 @@ showList:
 	// foot
 	paintFoot();
 		
-	// paint all
+	// paint body
 	paint();
 		
 	frameBuffer->blit();
@@ -936,6 +936,7 @@ void CWebTV::paintDetails(int index)
 	
 	// name/description
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - 30, channels[index]->title, COL_MENUCONTENTDARK, 0, true);
+
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - 30, channels[index]->description, COL_MENUCONTENTDARK, 0, true); // UTF-8
 }
 
@@ -983,7 +984,7 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
-		// untere info box lines
+		// untere info box background
 		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
 	}
 }

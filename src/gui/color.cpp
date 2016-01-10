@@ -68,45 +68,6 @@ int convertSetupAlpha2Alpha(unsigned char alpha)
 	return ret;
 }
 
-/*
-void recalcColor(unsigned char &orginal, int fade)
-{
-	if(fade == 100)
-		return;
-	
-	int color =  orginal * fade / 100;
-	
-	if(color > 255)
-		color = 255;
-	
-	if(color < 0)
-		color = 0;
-	
-	orginal = color;
-}
-
-void protectColor( unsigned char &r, unsigned char &g, unsigned char &b, bool protect )
-{
-	if (!protect)
-		return;
-	
-	if ((r == 0) && (g == 0) && (b == 0))
-	{
-		r = 1;
-		g = 1;
-		b = 1;
-	}
-}
-
-void fadeColor(unsigned char &r, unsigned char &g, unsigned char &b, int fade, bool protect)
-{
-	recalcColor(r, fade);
-	recalcColor(g, fade);
-	recalcColor(b, fade);
-	protectColor(r, g, b, protect);
-}
-*/
-
 uint8_t limitChar(int c)
 {
 	uint8_t ret;
