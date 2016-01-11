@@ -136,7 +136,7 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 {
 	//stop playing if already playing (multiselect)
 	if(playback->playing)
-		playback->Stop();
+		playback->Close();
 	
 #if defined (PLATFORM_COOLSTREAM)
 	if(! playback->Open(PLAYMODE_FILE))
