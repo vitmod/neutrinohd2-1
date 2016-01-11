@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/tuxbox/apps/dvb/zapit/lib/zapitclient.cpp,v 1.11 2013/08/18 11:23:30 mohousch Exp $ *
+ * $Header: zapitclient.cpp 2013/08/18 11:23:30 mohousch Exp $ *
  *
  * Zapit client interface - DBoxII-Project
  *

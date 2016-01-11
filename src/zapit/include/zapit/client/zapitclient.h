@@ -114,7 +114,6 @@ class CZapitClient : public CBasicClient
 			SORT_BOUQUET
 		} channelsOrder;
 
-
 		struct commandAddSubServices
 		{
 			t_original_network_id original_network_id;
@@ -313,15 +312,12 @@ class CZapitClient : public CBasicClient
 		/* gets all channels */
 		bool getChannels(BouquetChannelList& channels, const channelsMode mode = MODE_CURRENT, const channelsOrder order = SORT_BOUQUET, const bool utf_encoded = false);
 
-
 		/* request information about a particular channel_id */
-
 		/* channel name */
 		std::string getChannelName(const t_channel_id channel_id);
 
 		/* is channel a TV channel ? */
 		bool isChannelTVChannel(const t_channel_id channel_id);
-
 
 		/* get the current_TP */
 		bool get_current_TP(TP_params *TP);
