@@ -110,41 +110,36 @@ void CServiceSetup::showMenu()
 	
 	CMenuWidget service(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
 	
-#if !defined (USE_OPENGL)  // needed for testing/debugging	
-	if(FrontendCount)
-#endif	  
+	// scan setup
+	if(FrontendCount > 1)
 	{
-		// scan setup
-		if(FrontendCount > 1)
-		{
-			// scan settings
-			service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
-		}
-		else
-		{
-			// scan settings
-			service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
-		}
+		// scan settings
+		service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
+	}
+	else
+	{
+		// scan settings
+		service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
+	}
 
-		// reload Channels
-		service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RELOAD, true, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_RELOADCHANNELS ));
+	// reload Channels
+	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RELOAD, true, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_RELOADCHANNELS ));
 
-		// Bouquets Editor
-		service.addItem(new CMenuForwarderExtended(LOCALE_BOUQUETEDITOR_NAME, true, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_BOUQUETSEDITOR ));
+	// Bouquets Editor
+	service.addItem(new CMenuForwarderExtended(LOCALE_BOUQUETEDITOR_NAME, true, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_BOUQUETSEDITOR ));
 	
 	// CI Cam 	
 #if defined (ENABLE_CI)
-		service.addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CAM, LOCALE_HELPTEXT_CAM ));
+	service.addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CAM, LOCALE_HELPTEXT_CAM ));
 #endif
-	}
 	
+	// image info
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
 
 	// restart neutrino
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RESTART, true, this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SOFTRESTART ));
 	
 	// software update
-	// updatesettings
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_UPDATE, true, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));
 	
 	service.exec(NULL, "");
