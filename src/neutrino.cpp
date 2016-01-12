@@ -2434,7 +2434,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// VFD clear	
 	CVFD::getInstance()->Clear();	
 
-	// show msg in vfd
+	// show start up msg in vfd
 	CVFD::getInstance()->ShowText( (char *)"NHD2");	
 	
 	// zapit	
@@ -2473,7 +2473,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	if(videoDecoder)
 		videoDecoder->SetWideScreen(g_settings.wss_mode);
 	
-	// Audio
 	// avsync
 #if defined (PLATFORM_COOLSTREAM)
 	videoDecoder->SetSyncMode((AVSYNC_TYPE)g_settings.avsync);
@@ -2581,7 +2580,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	setupRecordingDevice();
 	
 	// HDD mount devices
-	//assuming that mdev/fstab has mounted devices
+	// assuming that mdev/fstab has mounted devices
 	CHDDDestExec * hdd = new CHDDDestExec();
 	hdd->exec(NULL, "");
 	
@@ -2593,9 +2592,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	InitMainMenu(mainMenu);
 
 	// init network
-	readNetworkSettings(g_settings.ifname);
-
-	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: registering as event client\n");
+	CNetworkSettings::getInstance()->readNetworkSettings(g_settings.ifname);
 	
 	sleep(1);
 
