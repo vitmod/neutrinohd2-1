@@ -1274,12 +1274,24 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 		return 0;
 	}
 		
+#if defined (ENABLE_CI)	
+	int retry = 5;
+#else
 	int retry = false;
-	
+#endif	
 tune_again:
 	// parse pat pmt
 	failed = !parse_channel_pat_pmt(live_channel, live_fe);
 		
+#if defined (ENABLE_CI)	
+	if(failed && retry > 0)
+	{
+		usleep(25000);  /* give some 25000us for demuxer: borrowed from e2*/
+		retry--;
+ 		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
+ 		goto tune_again;
+ 	}
+#else
 	if(failed && !retry)
 	{
 		usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
@@ -1287,7 +1299,7 @@ tune_again:
 		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
 		goto tune_again;
 	}	
-
+#endif
 	if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
 	{
 		dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
