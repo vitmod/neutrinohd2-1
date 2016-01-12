@@ -87,7 +87,8 @@ typedef enum {
 
 typedef enum {
 	eStatusNone, 
-	eStatusWait
+	eStatusWait,
+	eStatusReset
 } eStatus;
 
 struct queueData
@@ -112,39 +113,42 @@ class eDVBCICAManagerSession;
 
 typedef struct
 {
-        pthread_t   slot_thread;
-	int          slot;
-	int          fd;
-	int          connection_id;
-        eStatus     status;  
+	pthread_t slot_thread;
+	int slot;
+	int fd;
+	int connection_id;
+	eStatus status;  
 
-        int          receivedLen;
-	unsigned char * receivedData;
-	
-	void*        pClass;
-        
-	bool        pollConnection;
-	bool        camIsReady;
-	
+	int receivedLen;
+	unsigned char* receivedData;
+
+	void* pClass;
+
+	bool pollConnection;
+	bool camIsReady;
+
 	eDVBCIMMISession* mmiSession;
 	eDVBCIApplicationManagerSession* appSession;
 	eDVBCICAManagerSession* camgrSession;
-	
-	bool	    hasAppManager;
-	bool        hasMMIManager;
-	bool        hasCAManager;
-	bool        hasDateTime;
-	
-	bool        mmiOpened;
 
-	char         name[512];
+	bool hasAppManager;
+	bool hasMMIManager;
+	bool hasCAManager;
+	bool hasDateTime;
+	bool mmiOpened;
 
-        bool        init;
+	char name[512];
+
+	bool init;
  
+	int counter;
 	std::priority_queue<queueData> sendqueue;
 
-        CCaPmt      *caPmt;
+	CCaPmt *caPmt;
 	int source;
+
+	bool DataLast;
+	bool DataRCV;
 } tSlot;
 
 eData sendData(tSlot *slot, unsigned char* data, int len);
@@ -155,16 +159,16 @@ class cDvbCi {
 	private:
 		int slots;
 
-	        std::list<tSlot*> slot_data;
-                pthread_t slot_thread;
+		std::list<tSlot*> slot_data;
+		pthread_t slot_thread;
 	public:
 		int ci_num;
-		
-                bool SendCaPMT(CCaPmt *caPmt, int source = TUNER_A);
 
-                void slot_pollthread(void *c);
-                void setSource(int slot, int source);
- 
+		bool SendCaPMT(CCaPmt *caPmt, int source = TUNER_A);
+
+		void slot_pollthread(void *c);
+		void setSource(int slot, int source);
+
 		//
 		cDvbCi(int Slots);
 		~cDvbCi();
@@ -174,13 +178,13 @@ class cDvbCi {
 		bool CamPresent(int slot);
 		bool GetName(int slot, char * name);
 
-                void CI_MenuAnswer(unsigned char bSlotIndex,unsigned char choice);
-                void CI_Answer(unsigned char bSlotIndex,unsigned char *pBuffer,unsigned char nLength);
-                void CI_CloseMMI(unsigned char bSlotIndex);
-                void CI_EnterMenu(unsigned char bSlotIndex);
-                bool checkQueueSize(tSlot* slot);
-                void process_tpdu(tSlot* slot, unsigned char tpdu_tag, __u8* data, int asn_data_length, int con_id);
-                void reset(int slot);
+		void CI_MenuAnswer(unsigned char bSlotIndex,unsigned char choice);
+		void CI_Answer(unsigned char bSlotIndex,unsigned char *pBuffer,unsigned char nLength);
+		void CI_CloseMMI(unsigned char bSlotIndex);
+		void CI_EnterMenu(unsigned char bSlotIndex);
+		bool checkQueueSize(tSlot* slot);
+		void process_tpdu(tSlot* slot, unsigned char tpdu_tag, __u8* data, int asn_data_length, int con_id);
+		void reset(int slot);
 };
 
 #endif //__DVBCI_H

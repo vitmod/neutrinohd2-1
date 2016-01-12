@@ -105,6 +105,7 @@ cam.empty No CAM in slot
 cam.init_ok CAM init complete
 cam.inserted CAM inserted in slot
 cam.removed CAM removed from slot
+cam.reset CI cam reset
 cam.settings CI Cam
 cam.timeout Timeout waiting CI menu ready
 cam.waiting Waiting for CI answer

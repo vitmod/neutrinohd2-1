@@ -1,41 +1,36 @@
 /* DVB CI Application Manager */
 #include <stdio.h>
 #include <string.h>
+#include <system/debug.h>
 
 #include "dvbci_appmgr.h"
 
 eDVBCIApplicationManagerSession::eDVBCIApplicationManagerSession(tSlot *tslot)
 {
-#if 1
-	printf("%s >\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s >\n", __func__);
+
 	slot = tslot;
-#if 1
+
 	slot->hasAppManager = true;
 	slot->appSession = this;
 
-	printf("%s <\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
 }
 
 eDVBCIApplicationManagerSession::~eDVBCIApplicationManagerSession()
 {
-#if 1
-	printf("%s >\n", __func__);
-#endif
-#if 1
+	dprintf(DEBUG_DEBUG, "%s >\n", __func__);
+
 	slot->hasAppManager = false;
 	slot->appSession = NULL;
 
-	printf("%s <\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
 }
 
 int eDVBCIApplicationManagerSession::receivedAPDU(const unsigned char *tag,const void *data, int len)
 {
-#if 1
-	printf("eDVBCIApplicationManagerSession::%s >\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "eDVBCIApplicationManagerSession::%s >\n", __func__);
+
 	printf("SESSION(%d)/APP %02x %02x %02x: ", session_nb, tag[0], tag[1], tag[2]);
 	for (int i=0; i<len; i++)
 		printf("%02x ", ((const unsigned char*)data)[i]);
@@ -53,7 +48,7 @@ int eDVBCIApplicationManagerSession::receivedAPDU(const unsigned char *tag,const
 			printf("  application_type: %d\n", ((unsigned char*)data)[0]);
 			printf("  application_manufacturer: %02x %02x\n", ((unsigned char*)data)[2], ((unsigned char*)data)[1]);
 			printf("  manufacturer_code: %02x %02x\n", ((unsigned char*)data)[4],((unsigned char*)data)[3]);
-			printf("  menu string: \n");
+			printf("  menu string: ");
 			dl=((unsigned char*)data)[5];
 			if ((dl + 6) > len)
 			{
@@ -68,7 +63,7 @@ int eDVBCIApplicationManagerSession::receivedAPDU(const unsigned char *tag,const
 			printf("\n");
 
 			strcpy(slot->name, str);
-printf("set name %s on slot %d, %p\n", slot->name, slot->slot, slot);
+			printf("set name %s on slot %d, %p\n", slot->name, slot->slot, slot);
 			break;
 		}
 		default:
@@ -76,73 +71,54 @@ printf("set name %s on slot %d, %p\n", slot->name, slot->slot, slot);
 			break;
 		}
 	}
-#if 1
-	printf("%s <", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s <", __func__);
 	return 0;
 }
 
 int eDVBCIApplicationManagerSession::doAction()
 {
-#if 1
-	printf("%s >", __func__);
-#endif
-  switch (state)
-  {
-  case stateStarted:
-  {
-    const unsigned char tag[3]={0x9F, 0x80, 0x20}; // application manager info e    sendAPDU(tag);
-    
-    sendAPDU(tag);
-    state=stateFinal;
-#if 1
-	printf("%s <", __func__);
-#endif
-    return 1;
-  }
-  case stateFinal:
-    printf("in final state.");
-    
-    wantmenu = 0;
-    
-    if (wantmenu)
-    {
-      printf("wantmenu: sending Tenter_menu\n");
-      const unsigned char tag[3]={0x9F, 0x80, 0x22};  // Tenter_menu
-      sendAPDU(tag);
-      wantmenu=0;
-#if 1
-	printf("%s <\n", __func__);
-#endif
-      return 0;
-    } else
-      return 0;
-  default:
-#if 1
-	printf("%s <\n", __func__);
-#endif
-    return 0;
-  }
-#if 1
-	printf("%s <\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s >", __func__);
+	switch (state)
+	{
+		case stateStarted:
+		{
+	    		const unsigned char tag[3]={0x9F, 0x80, 0x20}; // application manager info e    sendAPDU(tag);
+			sendAPDU(tag);
+			state=stateFinal;
+			dprintf(DEBUG_DEBUG, "%s <", __func__);
+			return 1;
+		}
+		case stateFinal:
+			dprintf(DEBUG_DEBUG, "in final state.");
+			wantmenu = 0;
+			if (wantmenu)
+			{
+				printf("wantmenu: sending Tenter_menu\n");
+				const unsigned char tag[3]={0x9F, 0x80, 0x22};  // Tenter_menu
+				sendAPDU(tag);
+				wantmenu=0;
+				dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+				return 0;
+			} else
+				return 0;
+		default:
+			dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+			return 0;
+	}
+	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
 }
 
 int eDVBCIApplicationManagerSession::startMMI()
 {
-#if 1
-	printf("%s >\n", __func__);
-#endif
-	printf("in appmanager -> startmmi()\n");
+	dprintf(DEBUG_DEBUG, "%s >\n", __func__);
+	dprintf(DEBUG_INFO, "in appmanager -> startmmi()\n");
 	const unsigned char tag[3]={0x9F, 0x80, 0x22};  // Tenter_menu
 	sendAPDU(tag);
 
 	slot->mmiOpened = true;
 
-#if 1
 	//fixme slot->mmiOpened();
-	printf("%s <\n", __func__);
-#endif
+	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
 	return 0;
 }
 

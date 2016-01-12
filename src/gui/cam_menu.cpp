@@ -86,6 +86,16 @@ int CCAMMenuHandler::exec(CMenuTarget * parent, const std::string &actionKey)
 	{
 		return doMenu(1);
 	}	
+	if(actionKey == "reset1") 
+	{
+		ci->reset(0);
+		return menu_return::RETURN_EXIT_ALL;
+	}	
+	if(actionKey == "reset2") 
+	{
+		ci->reset(1);
+		return menu_return::RETURN_EXIT_ALL;
+	}	
 
 	return doMainMenu();
 }
@@ -116,12 +126,17 @@ int CCAMMenuHandler::doMainMenu()
 			char CAM[255];
 			sprintf(CAM, "cam%d", i + 1);
 			cammenu->addItem(new CMenuForwarder(name, true, NULL, this, CAM, CRCInput::RC_nokey));
+			char RESET[32];
+			sprintf(RESET, "reset%d", i + 1);
+			cammenu->addItem(new CMenuForwarder(LOCALE_CAM_RESET, true, NULL, this, RESET, CRCInput::RC_nokey));
+			cammenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		} 
 		else 
 		{
 			sprintf(str, "%s %d", g_Locale->getText(LOCALE_CAM_EMPTY), i + 1);
 			tempMenu = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
 			cammenu->addItem(new CMenuForwarder(str, false, NULL, tempMenu));
+			cammenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		}
 	}	
 

@@ -105,6 +105,7 @@ cam.empty Kein CAM im Slot
 cam.init_ok CI Modul initalisiert
 cam.inserted CI Modul hinzugefügt
 cam.removed CI Modul entfernt
+cam.reset CI Modul neu starten
 cam.settings CI Module
 cam.timeout CI Modul Timeout
 cam.waiting Warte auf CI Modul

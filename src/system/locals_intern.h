@@ -1463,6 +1463,7 @@ const char * locale_real_names[] = {
 	"video_mode_ok",
 	"scrambled_channel",
 	"neutrino_starting",
+	"cam.reset",
 	"cam.settings",
 	"cam.empty",
 	"cam.inserted",
