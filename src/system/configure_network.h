@@ -2,7 +2,7 @@
 #define __configure_network_h__
 
 /*
- * $Header: /cvsroot/tuxbox/apps/tuxbox/neutrino/src/system/configure_network.h,v 1.3 2003/03/10 21:22:41 thegoodguy Exp $
+ * $Header: configure_network.cpp 2016.01.12 12:13:30 mohousch Exp $
  *
  * (C) 2003 by thegoodguy <thegoodguy@berlios.de>
  *

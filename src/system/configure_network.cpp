@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/tuxbox/apps/tuxbox/neutrino/src/system/configure_network.cpp,v 1.6 2003/03/26 17:53:12 thegoodguy Exp $
+ * $Header: configure_network.cpp 2016.01.12 12:13:30 mohousch Exp $
  *
  * (C) 2003 by thegoodguy <thegoodguy@berlios.de>
  *
